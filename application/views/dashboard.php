@@ -323,7 +323,7 @@
 </section>
 <!-- end widget grid -->
 
-<?php } else if ($this->ion_auth->in_group(2)) { ?>
+<?php } else if ($this->ion_auth->in_group(3)) { ?>
 <section class="">
 	<!-- row -->
 	<div class="row">
