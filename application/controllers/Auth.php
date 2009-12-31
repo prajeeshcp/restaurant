@@ -101,45 +101,70 @@ class Auth extends Cpanel_Controller
 	}
 	
 	public function create_user() { // create new user . Admin privilege
-		
+
+
 		if ($this->ion_auth->logged_in() && $this->ion_auth->is_admin()) { // Check whether the user is already logged-in and is admin 
 			
 		$this->load->library('form_validation');
-		$this->form_validation->set_rules('user_name', 'user name', 'required');
-		$this->form_validation->set_rules('new_password', 'new password', 'required');
-		$this->form_validation->set_rules('con_password', 'confirm password', 'required');
-		$this->form_validation->set_rules('user_email', 'email address', 'required');
-		$this->form_validation->set_rules('user_first_name', 'first name', 'required');
-		$this->form_validation->set_rules('user_group', 'user type', 'required');
+		$this->form_validation->set_rules('userName', 'user name', 'trim|required|min_length[5]|max_length[12]|is_unique[users.username]|alpha');
+		//$this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[5]');
+		//$this->form_validation->set_rules('confPassword', 'Confirm password', 'trim|matches[password]');
+		$this->form_validation->set_rules('email', 'email address', 'trim|required|valid_email|is_unique[users.email]');
+		$this->form_validation->set_rules('phone', 'Phone Number', 'required|integer|min_length[10]|max_length[12]');
+		$this->form_validation->set_rules('firstName', 'First name', 'required');
+		$this->form_validation->set_rules('lastName', 'Last name', 'required');
+		$this->form_validation->set_rules('address', 'Address', 'required');
+
+		$this->form_validation->set_rules('userType', 'user type', 'required');
 		if ($this->form_validation->run() == true) {
 			
-			$userName			= $this->input->post('user_name');
-			$password			= $this->input->post('new_password');
-			$email 				= $this->input->post('user_email');
-			$fisrtName			= $this->input->post('user_first_name');
-			$lastName			= $this->input->post('user_last_name');
-			$userGroup			= $this->input->post('user_group');
+			$userName			= $this->input->post('userName');
+			$password			= $this->input->post('password');
+			$confpassword 		= $this->input->post('confpassword');
+			$email 				= $this->input->post('email');
+			$fisrtName			= $this->input->post('firstName');
+			$lastName			= $this->input->post('lastName');
+			$userGroup			= $this->input->post('userType');
+			$phone 				= $this->input->post('phone');
+			$address 			= $this->input->post('address');
 			$additionalData 	= array(
 								'first_name' => $fisrtName,
 								'last_name' => $lastName,
+								'company'	=> $address,
+								'phone' 	=> $phone
 								);
 			$group 				= array($userGroup); // Sets user.
-			if ($this->ion_auth->register($userName, $password, $email, $additionalData, $group)) {
-				$this->session->set_flashdata('message', $this->ion_auth->messages());
-				$this->session->set_flashdata('message_type', 'success');
-				redirect('manage/', 'refresh');
+
+			
+			if ($this->ion_auth->register($userName, $confpassword, $email, $additionalData, $group)) {
+				// $this->session->set_flashdata('message', $this->ion_auth->messages());
+				// $this->session->set_flashdata('message_type', 'success');
+				// redirect('manage/', 'refresh');
+				$data 	= array('message' => $this->ion_auth->messages(),
+								'message_type' => 'success'
+								);
+				print_r(json_encode($data));
 			} else {
-				$this->session->set_flashdata('message', $this->ion_auth->errors());
-				$this->session->set_flashdata('message_type', 'danger');
-				redirect('manage/', 'refresh');
+				// $this->session->set_flashdata('message', $this->ion_auth->errors());
+				// $this->session->set_flashdata('message_type', 'danger');
+				$data 	= array('message' => $this->ion_auth->errors(),
+								'message_type' => 'danger'
+								);
+				print_r(json_encode($data));
 			}
 				
+			} else {
+				$data 	= array('message' => validation_errors(),
+								'message_type' => 'danger'
+								);
+				print_r(json_encode($data));
+
 			}
 			
 		}
 	
 	}
-	public function staus_control(){ // status changing of users
+	public function status_control(){ // status changing of users
 		if ($this->ion_auth->logged_in() && $this->ion_auth->is_admin()) { // Check whether the user is already logged-in and is admin 
 			 $userID			= $this->input->post('userDt');
 			 $user 				= $this->ion_auth->user($userID)->row();
@@ -153,11 +178,16 @@ class Auth extends Cpanel_Controller
 		}
 	}
 	
-	public function remove_user() {
+	public function remove_user($userId = null) {
+
 		if ($this->ion_auth->logged_in() && $this->ion_auth->is_admin()) { // Check whether the user is already logged-in and is admin 
-			 $userID			= $this->input->post('userDt');
-			 if ($this->ion_auth->delete_user($userID)) {
-				 $this->render('ajax/user-list');
+			 //$userID			= $this->input->post('userDt');
+			 if ($this->ion_auth->delete_user($userId)) {
+				 //$this->render('ajax/user-list');
+			 	$data 	= array('message' => $this->ion_auth->messages(),
+								'message_type' => 'success'
+								);
+				print_r(json_encode($data));
 			 }
 		}
 	}

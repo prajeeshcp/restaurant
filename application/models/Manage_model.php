@@ -31,6 +31,29 @@ class Manage_model extends CI_Model
 						->get()->result_array();
 	}
 		
-	
+	#get all user_details
+	public function get_user_details($id=null) {
+		// select u.*, g.name as user_type from users u join users_groups ug on u.id = ug.user_id join groups g on ug.group_id = g.id where active=1 
+		 if(!empty($id)){
+		 	return $this->db->select('u.*, g.name as user_type')
+						->from("users u")
+						->join("users_groups ug", "u.id = ug.user_id")
+						->join("groups g", "ug.group_id = g.id")
+						->where("active",1)
+						->where('u.id',$id)
+						->order_by('u.id')
+						->get()->result_array();
+
+		 } else {
+		 	return $this->db->select('u.*, g.name as user_type')
+						->from("users u")
+						->join("users_groups ug", "u.id = ug.user_id")
+						->join("groups g", "ug.group_id = g.id")
+						->where("active",1)
+						->order_by('u.id')
+						->get()->result_array();
+		 }
+		 
+	}
 	
 }

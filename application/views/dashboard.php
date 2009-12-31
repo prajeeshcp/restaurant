@@ -1704,12 +1704,18 @@
 	// open chat list
 	$.chat_list_btn.click(function () {
 	    $(this).parent('#chat-container').toggleClass('open');
-	})
+	});
 	
 	$.chat_body.animate({
 	    scrollTop: $.chat_body[0].scrollHeight
 	}, 500);
+
+
+
+	
 </script>
+<?php $this->load->view('includes/footer'); ?>
+
 	</body>
 
 </html>

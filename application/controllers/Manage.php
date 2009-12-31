@@ -416,4 +416,45 @@ class Manage extends Cpanel_Controller
 			redirect('manage/manage_menu', 'refresh');
 		}
 	}
+
+	#get user details
+	public function get_userDetails($userId  = null){
+
+		$get_data 	= $this->manage_model->get_user_details();
+		$userData="";
+		foreach ($get_data as $rows) {
+			$userData .='<tr class="odd gradeX" >
+			<td>'. stripslashes($rows['first_name']).'</td>
+			<td>'. stripslashes($rows['user_type']).'</td>
+			<td>'. stripslashes($rows['username']).'</td>
+            <td>'. stripslashes($rows['email']).'</td>					
+			<td><a href="'.site_url("manage/edit_userDetails/".$rows['id']).'" class="btn btn-warning btn-xs" onclick="edit_userDetails('.$rows['id'].')><i class="fa fa-edit"></i> Edit</a></td>';
+			if(($rows['id'] != 1) && ($rows['id'] != 'administrator')){
+				$userData.='<td id="td_id_'.$rows['id'].'" ><a href="#" class="btn btn-warning btn-xs btn_delete" onclick="deleteUser('.$rows['id'].')"><i class="fa fa-edit"></i> Delete</a></td>
+		</tr>';
+
+			}
+
+			
+		}
+		if(!empty($userId)){
+			$data = array('userData'=>$userData);
+			print_r(json_encode($data));
+
+		} else {
+			$data = array('userData'=>$userData);
+			print_r(json_encode($data));
+		}
+				
+	}
+
+	#edit user_details
+	public function edit_userDetails($userId){
+
+		$get_data 	= $this->manage_model->get_user_details($userId);
+		$data = array('userData'=>$get_data);
+		print_r(json_encode($data));
+
+
+	}
 }

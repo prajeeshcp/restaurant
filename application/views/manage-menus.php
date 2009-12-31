@@ -386,6 +386,8 @@
 		});
 	<?php endif; ?>
 </script> 
+<?php $this->load->view('includes/footer'); ?>
+
 	</body>
 
 </html>
