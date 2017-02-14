@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 13, 2017 at 04:28 PM
+-- Generation Time: Feb 14, 2017 at 08:21 PM
 -- Server version: 10.1.13-MariaDB
 -- PHP Version: 5.6.23
 
@@ -23,16 +23,45 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `attributes`
+--
+
+CREATE TABLE `attributes` (
+  `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Attribute Id',
+  `attribute_name` varchar(200) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Attribute Name',
+  `status` tinyint(3) UNSIGNED NOT NULL DEFAULT '1' COMMENT 'Status'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `attributes`
+--
+
+INSERT INTO `attributes` (`entity_id`, `attribute_name`, `status`) VALUES
+(1, 'Veg', 1),
+(2, 'Non veg', 1);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `category_entity`
 --
 
 CREATE TABLE `category_entity` (
   `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Category Id',
+  `attribute_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Attribute Id',
   `entity_name` varchar(250) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Category Name',
   `created_at` datetime NOT NULL COMMENT 'Created At',
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Updated At',
   `status` tinyint(3) UNSIGNED NOT NULL COMMENT 'Status'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `category_entity`
+--
+
+INSERT INTO `category_entity` (`entity_id`, `attribute_id`, `entity_name`, `created_at`, `updated_at`, `status`) VALUES
+(1, 1, 'Category', '0000-00-00 00:00:00', '2017-02-14 18:49:52', 1),
+(2, 2, 'Second Category', '2017-02-14 19:55:19', '2017-02-14 14:35:08', 2);
 
 -- --------------------------------------------------------
 
@@ -110,7 +139,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `ip_address`, `username`, `password`, `salt`, `email`, `activation_code`, `forgotten_password_code`, `forgotten_password_time`, `remember_code`, `created_on`, `last_login`, `active`, `first_name`, `last_name`, `company`, `phone`) VALUES
-(1, '127.0.0.1', 'administrator', '$2y$08$eFoSZ7WQx7o9Iq5cbDbDeOYyjYCs/FSztxBQUM/vJEJ6iNBCLD7gS', '', 'admin@admin.com', '', NULL, NULL, 'aQVIa73LL8P9NnYcFbMvuu', 1268889823, 1486995994, 1, 'Admin', 'istrator', 'ADMIN', '0');
+(1, '127.0.0.1', 'administrator', '$2y$08$eFoSZ7WQx7o9Iq5cbDbDeOYyjYCs/FSztxBQUM/vJEJ6iNBCLD7gS', '', 'admin@admin.com', '', NULL, NULL, 'Jozn.86F2F2VPvYvS.Y.9u', 1268889823, 1487086357, 1, 'Admin', 'istrator', 'ADMIN', '0');
 
 -- --------------------------------------------------------
 
@@ -134,6 +163,12 @@ INSERT INTO `users_groups` (`id`, `user_id`, `group_id`) VALUES
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `attributes`
+--
+ALTER TABLE `attributes`
+  ADD PRIMARY KEY (`entity_id`);
 
 --
 -- Indexes for table `category_entity`
@@ -179,10 +214,15 @@ ALTER TABLE `users_groups`
 --
 
 --
+-- AUTO_INCREMENT for table `attributes`
+--
+ALTER TABLE `attributes`
+  MODIFY `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Attribute Id', AUTO_INCREMENT=3;
+--
 -- AUTO_INCREMENT for table `category_entity`
 --
 ALTER TABLE `category_entity`
-  MODIFY `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Category Id';
+  MODIFY `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Category Id', AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT for table `groups`
 --

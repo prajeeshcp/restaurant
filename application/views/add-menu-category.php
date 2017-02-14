@@ -3,7 +3,7 @@
 
 		<!-- Left panel : Navigation area -->
 		<!-- Note: This width of the aside area can be adjusted through LESS variables -->
-		<?php $this->load->view('includes/sidebar', array('selected' => 'menuattribute')); ?>
+		<?php $this->load->view('includes/sidebar', array('selected' => 'menucategory')); ?>
 		<!-- END NAVIGATION -->
 
 		<!-- MAIN PANEL -->
@@ -42,7 +42,7 @@
 			<i class="fa fa-table fa-fw "></i> 
 				Catalog 
 			<span>> 
-				<?=(empty($get_data)) ? 'Add Attribute' : 'Edit Attribute '?>
+				<?=(empty($get_data)) ? 'Add Category' : 'Edit Category'?>
 			</span>
 		</h1>
          
@@ -104,7 +104,7 @@
 				-->
 				<header>
 					<span class="widget-icon"> <i class="fa fa-check txt-color-green"></i> </span>
-					<h2><?=(empty($get_data)) ? 'Add New Attribute' : 'Edit '.$get_data['attribute_name'] ?>  </h2>				
+					<h2><?=(empty($get_data)) ? 'Add New Category ' : 'Edit '.$get_data['entity_name']?></h2>				
 					
 				</header>
 
@@ -120,9 +120,8 @@
 					
 					<!-- widget content -->
 					<div class="widget-body no-padding">
-						
 						<!-- Success states for elements -->
-						<form action="<?=site_url('manage/submit_attribute')?>" method="post" class="smart-form">
+						<form action="<?=site_url('manage/submit_category')?>" method="post" class="smart-form">
                         <?php if (!empty($get_data)) { ?>
                         <input type="hidden" name="edit_id" value="<?=$get_data['entity_id']?>" />
                         <?php } ?>
@@ -130,17 +129,33 @@
 								<section>
 									<label class="label">Name</label>
 									<label class="input state-success">
-										<input type="text" value="<?=(!empty($get_data)) ? $get_data['attribute_name'] : $attribute_name ?>" name="attribute_name" required>
+										<input type="text" value="<?=(!empty($get_data)) ? $get_data['entity_name'] : '' ?>" name="category_name" required>
 									</label>
 									<div class="note note-success">This is a required field.</div>
+								</section>
+                                
+                                <section>
+									<label class="label">Attribute</label>
+									<label class="select state-success">
+										<select id="" name="attribute_name" required>
+                                         <option value="">SELECT ATTRIBUTE</option>
+                                        <?php if (!empty($attributes)) {
+												foreach ($attributes as $attr) {
+											 ?>
+											<option <?=(!empty($get_data) && $get_data['attribute_id'] == $attr['entity_id'])  ? 'selected' : ''?> value="<?=$attr['entity_id']?>"><?=stripslashes($attr['attribute_name'])?></option>
+											<?php } } ?>
+										</select>
+										<i></i>
+									</label>
+									<div class="note note-success">Thanks for your selection.</div>
 								</section>
 								
 								<section>
 									<label class="label">Status</label>
 									<label class="select state-success">
-										<select id="" name="attribute_status" required>
-											<option <?=(($attribute_status == 1) || (!empty($get_data) && $get_data['status'] == 1) ) ? 'selected' : ''?> value="1">Enabled</option>
-											<option <?=(($attribute_status == 2) || (!empty($get_data) && $get_data['status'] == 2)) ? 'selected' : ''?> value="2">Disabled</option>
+										<select id="" name="category_status" required>
+											<option <?=(!empty($get_data) && $get_data['status'] == 1)  ? 'selected' : ''?> value="1">Enabled</option>
+											<option <?=(!empty($get_data) && $get_data['status'] == 2) ? 'selected' : ''?> value="2">Disabled</option>
 										</select>
 										<i></i>
 									</label>

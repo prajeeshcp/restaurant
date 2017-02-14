@@ -3,7 +3,7 @@
 
 		<!-- Left panel : Navigation area -->
 		<!-- Note: This width of the aside area can be adjusted through LESS variables -->
-		<?php $this->load->view('includes/sidebar', array('selected' => 'menuattribute')); ?>
+		<?php $this->load->view('includes/sidebar', array('selected' => 'menucategory')); ?>
 		<!-- END NAVIGATION -->
 
 		<!-- MAIN PANEL -->
@@ -42,7 +42,7 @@
 			<i class="fa fa-table fa-fw "></i> 
 				Catalog 
 			<span>> 
-				Manage attributes
+				Manage categories
 			</span>
 		</h1>
 	</div>
@@ -74,8 +74,8 @@
 				-->
 				<header>
 					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
-					<h2>Attributes</h2>
-			<a href="<?=site_url('manage/add_attribute')?>" class="btn btn-success btn-sm pull-right">Add new attribute</a>
+					<h2>Categories</h2>
+			<a href="<?=site_url('manage/add_category')?>" class="btn btn-success btn-sm pull-right">Add new category</a>
 				</header>
 
 				<!-- widget div-->
@@ -95,7 +95,8 @@
 							<thead>
 								<tr>
 									<th>SL NO</th>
-									<th>Attribute</th>
+									<th>Category</th>
+                                    <th>Attribute</th>
 									<th>Status</th>
 									<th>Action</th>
 								</tr>
@@ -107,7 +108,12 @@
 									</td>
 									<td>
 										<label class="input">
-											<input type="text" name="search_browser" value="Filter attribute" class="search_init">
+											<input type="text" name="search_browser" value="Filter category" class="search_init">
+										</label>	
+									</td>
+                                    <td>
+										<label class="input">
+											<input type="text" name="search_attribute" value="Filter attribute" class="search_init">
 										</label>	
 									</td>
 									<td>
@@ -121,15 +127,15 @@
 								</tr>
 							</thead>
 							<tbody>
-                            <?php if (!empty($allAttributes)) { 
-									foreach ($allAttributes as $key => $attribute) {
+                            <?php if (!empty($categories)) { 
+									foreach ($categories as $key => $category) {
 							?>
 								<tr class="odd gradeX">
 									<td><?=$key+1?></td>
-									<td><?=stripslashes($attribute['attribute_name'])?></td>
-									<td><a href="javascript:void(0);" class="btn btn-<?=($attribute['status'] == 1) ? 'success' : 'warning'?> btn-xs"><?=($attribute['status'] == 1) ? 'Enabled' : 'Disabled'?></a></td>
-									
-									<td><a href="<?=site_url('manage/edit_attribute/'.$attribute['entity_id'])?>" class="btn btn-warning btn-xs"><i class="fa fa-edit"></i> Edit</a></td>
+									<td><?=stripslashes($category['entity_name'])?></td>
+                                    <td><?=stripslashes($category['attribute_name'])?></td>
+									<td><a href="javascript:void(0);" class="btn btn-<?=($category['status'] == 1) ? 'success' : 'warning'?> btn-xs"><?=($category['status'] == 1) ? 'Enabled' : 'Disabled'?></a></td>		
+									<td><a href="<?=site_url('manage/edit_category/'.$category['entity_id'])?>" class="btn btn-warning btn-xs"><i class="fa fa-edit"></i> Edit</a></td>
 								</tr>
                                 <?php  } } ?>
 							</tbody>

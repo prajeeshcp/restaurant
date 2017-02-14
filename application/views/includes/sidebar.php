@@ -1,3 +1,9 @@
+<?php $selected		= (isset($selected) ? $selected : 'dashboard');
+	$catelog		= FALSE;
+	if ($selected == "menuattribute" || $selected == "menucategory") {
+		$catelog	= TRUE;
+	}
+ ?>
 <aside id="left-panel">
 
 			<!-- User info -->
@@ -25,20 +31,20 @@
 
 				<ul>
 					<li class="">
-						<a href="ajax/dashboard.html" title="Dashboard"><i class="fa fa-lg fa-fw fa-home"></i> <span class="menu-item-parent">Dashboard</span></a>
+						<a href="<?=site_url('manage')?>" title="Dashboard"><i class="fa fa-lg fa-fw fa-home"></i> <span class="menu-item-parent">Dashboard</span></a>
 					</li>
 					
-					<li>
+					<li class="<?=($catelog) ? 'open' : ''?>">
 						<a href="#"><i class="fa fa-lg fa-fw fa-list-alt"></i> <span class="menu-item-parent">Catalog</span></a>
-						<ul>
+						<ul style=" <?=($catelog) ? 'display: block;' : ''?>">
 							<li>
 								<a href="ajax/flot.html">Manage Menu</a>
 							</li>
-							<li>
-								<a href="ajax/morris.html">Manage Category</a>
+							<li class="<?=($selected == 'menucategory') ? 'active' : ''?>">
+								<a href="<?=site_url('manage/menu_categories')?>">Manage Category</a>
 							</li>
-							<li>
-								<a href="ajax/inline-charts.html">Manage Attributes</a>
+							<li class="<?=($selected == 'menuattribute') ? 'active' : ''?>">
+								<a href="<?=site_url('manage/menu_attribute')?>">Manage Attributes</a>
 							</li>
 						</ul>
 					</li>
