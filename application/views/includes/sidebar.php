@@ -1,6 +1,6 @@
 <?php $selected		= (isset($selected) ? $selected : 'dashboard');
 	$catelog		= FALSE;
-	if ($selected == "menuattribute" || $selected == "menucategory") {
+	if ($selected == "menuattribute" || $selected == "menucategory" || $selected == "tablecategory" || $selected == "tabledetails") {
 		$catelog	= TRUE;
 	}
  ?>
@@ -48,14 +48,14 @@
 							</li>
 						</ul>
 					</li>
-					<li>
+					<li class="<?=($catelog) ? 'open' : ''?>">
 						<a href="#"><i class="fa fa-lg fa-fw fa-table"></i> <span class="menu-item-parent">Tables</span></a>
-						<ul>
-							<li>
-								<a href="ajax/table.html">Manage Tables</a>
+						<ul style=" <?=($catelog) ? 'display: block;' : ''?>">							
+							<li class="<?=($selected == 'tablecategory') ? 'active' : ''?>">
+								<a href="<?=site_url('manage/table_categories')?>">Table Category</a>
 							</li>
-							<li>
-								<a href="ajax/datatables.html">Table Category</a>
+							<li class="<?=($selected == 'tabledetails') ? 'active' : ''?>">
+								<a href="<?=site_url('manage/table_details')?>">Manage Tables</a>
 							</li>
 						</ul>
 					</li>

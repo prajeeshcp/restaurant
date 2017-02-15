@@ -173,6 +173,80 @@ class Manage extends Cpanel_Controller
 			$this->session->set_flashdata('message_type', 'danger');
 			redirect('manage/menu_categories', 'refresh');
 		}
-	} 
+	}
+
+	#list table categories
+	function table_categories() {
+		//$allCategories				= $this->manage_model->get_table_categories();
+		$allCategories					= _DB_data($this->tables['table_category'], null, null, null, null);
+
+		$this->data['categories']	= $allCategories;
+		$this->render('manage-table-categories');
+	}
+
+	#add new table category
+	function add_table_category() {
+		
+		$this->render('add-table-category');
+	}
+
+	#sumbit table category
+	function submit_table_category() {
+		$dateTime				= date('Y-m-d H:i:s');		
+		$editId					= $this->input->post('edit_id', true);
+		if (!$editId) {
+		$this->form_validation->set_rules('category_name','Category Name','trim|required|is_unique[table_category.name]');
+		} else {
+			$this->form_validation->set_rules('category_name','Category Name','trim|required');
+		}
+		$this->form_validation->set_rules('category_status','Category Status','trim|required');
+		$category_name			= $this->input->post('category_name', true);		
+		$category_status		= $this->input->post('category_status', true);
+		if ($this->form_validation->run() == true) {
+		 	
+			if ($editId) {
+			$update				= _DB_update($this->tables['table_category'], array('name' => $category_name,  'updated_at' => $dateTime, 'status' => $category_status), array('id' => $editId));
+				if ($update) {
+				 $this->session->set_flashdata('message', "Category '<strong>$category_name</strong>' has been updated successfully.");
+				$this->session->set_flashdata('message_type', 'success');
+				redirect('manage/table_categories', 'refresh');
+			} else {
+				 $this->session->set_flashdata('message', "Oops! Something went wrong. Try again later");
+				 $this->session->set_flashdata('message_type', 'danger');
+				 redirect('manage/table_categories', 'refresh');
+			}
+			} else {
+				$insert				= _DB_insert($this->tables['table_category'], array('name' => $category_name, 'created_at' => $dateTime, 'status' => $category_status));
+				if ($insert) {
+				 $this->session->set_flashdata('message', "Category '<strong>$category_name</strong>' has been Added successfully.");
+				$this->session->set_flashdata('message_type', 'success');
+				redirect('manage/table_categories', 'refresh');
+				} else {
+					 $this->session->set_flashdata('message', "Oops! Something went wrong. Try again later");
+					 $this->session->set_flashdata('message_type', 'danger');
+					 redirect('manage/table_categories', 'refresh');
+				}
+			}
+			
+		} else {
+			 $this->session->set_flashdata('message', validation_errors());
+			 $this->session->set_flashdata('message_type', 'danger'); 
+		}		
+		redirect('manage/add_table_category', 'refresh');
+	}
 	
+	#load edit tabel category
+	function edit_table_category($catId	= NULL) {
+		if ($catId) {
+			
+			$get_data					= _DB_get_record($this->tables['table_category'], array('id' => $catId));			
+			$this->add_data(compact('get_data'));
+			$this->render('add-table-category');
+			
+		} else {
+			$this->session->set_flashdata('message', "Oops! something went wrong. Try again later.");
+			$this->session->set_flashdata('message_type', 'danger');
+			redirect('manage/table_categories', 'refresh');
+		}
+	}
 }
