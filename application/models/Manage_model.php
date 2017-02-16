@@ -13,6 +13,14 @@ class Manage_model extends CI_Model
 						->order_by('cat.entity_id', 'desc')
 						->get()->result_array();
 		}
+
+	public function get_tables() { 
+		 return $this->db->select('td.*, tc.name as category')
+						->from("table_details td")
+						->join("table_category tc", "tc.id = td.table_cat_id", "left")
+						->order_by('td.id', 'desc')
+						->get()->result_array();
+		}
 		
 	
 	

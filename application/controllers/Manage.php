@@ -249,4 +249,83 @@ class Manage extends Cpanel_Controller
 			redirect('manage/table_categories', 'refresh');
 		}
 	}
+
+	#list table details
+	function table_details() {
+		$allTabels				= $this->manage_model->get_tables();
+		$this->data['tables']	= $allTabels;
+		$this->render('manage-table-details');
+	}
+	
+	#add new table details
+	function add_table_details() {
+		$this->data['category']		= _DB_data($this->tables['table_category'], array('status' => 1), null, null, null);
+		$this->render('add-table-details');
+	}
+	
+	#sumbit table details
+	function submit_table_details() {
+		$dateTime				= date('Y-m-d H:i:s');		
+		$editId					= $this->input->post('edit_id', true);
+		if (!$editId) {
+		$this->form_validation->set_rules('table_number','Table Number','trim|required|is_unique[table_details.table_number]');
+		} else {
+			$this->form_validation->set_rules('table_number','Table Number','trim|required');
+		}
+		$this->form_validation->set_rules('capacity','Capacity','trim|required');
+		$this->form_validation->set_rules('table_category','Table Category','trim|required');
+		$this->form_validation->set_rules('table_status','Status','trim|required');
+		$table_number			= $this->input->post('table_number', true);
+		$capacity				= $this->input->post('capacity', true);
+		$table_category			= $this->input->post('table_category', true);
+		$table_status			= $this->input->post('table_status', true);
+		if ($this->form_validation->run() == true) {
+		 	
+			if ($editId) {
+			$update				= _DB_update($this->tables['table_details'], array('table_cat_id' => $table_category,'table_number' => $table_number, 'capacity' => $capacity,  'updated_at' => $dateTime, 'status' => $table_status), array('id' => $editId));
+				if ($update) {
+				 $this->session->set_flashdata('message', "Table '<strong>$table_number</strong>' has been updated successfully.");
+				$this->session->set_flashdata('message_type', 'success');
+				redirect('manage/table_details', 'refresh');
+			} else {
+				 $this->session->set_flashdata('message', "Oops! Something went wrong. Try again later");
+				 $this->session->set_flashdata('message_type', 'danger');
+				 redirect('manage/table_details', 'refresh');
+			}
+			} else {
+				$insert				= _DB_insert($this->tables['table_details'], array('table_cat_id' => $table_category, 'table_number' => $table_number, 'capacity' => $capacity, 'created_at' => $dateTime, 'status' => $table_status));
+				if ($insert) {
+				 $this->session->set_flashdata('message', "Table '<strong>$table_number</strong>' has been Added successfully.");
+				$this->session->set_flashdata('message_type', 'success');
+				redirect('manage/table_details', 'refresh');
+			} else {
+				 $this->session->set_flashdata('message', "Oops! Something went wrong. Try again later");
+				 $this->session->set_flashdata('message_type', 'danger');
+				 redirect('manage/table_details', 'refresh');
+			}
+			}
+			
+			} else {
+				 $this->session->set_flashdata('message', validation_errors());
+				 $this->session->set_flashdata('message_type', 'danger'); 
+			}
+			
+			redirect('manage/add_table_details', 'refresh');
+	}
+	
+	#load edit table details
+	function edit_table_details($tabId	= NULL) {
+		if ($tabId) {
+			
+			$get_data					= _DB_get_record($this->tables['table_details'], array('id' => $tabId));
+			$category					= _DB_data($this->tables['table_category'], array('status' => 1), null, null, null);
+			$this->add_data(compact('get_data', 'category'));
+			$this->render('add-table-details');
+			
+		} else {
+			$this->session->set_flashdata('message', "Oops! something went wrong. Try again later.");
+			$this->session->set_flashdata('message_type', 'danger');
+			redirect('manage/table_details', 'refresh');
+		}
+	}
 }
