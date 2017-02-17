@@ -22,6 +22,15 @@ class Manage_model extends CI_Model
 						->get()->result_array();
 		}
 		
+	#get all menus
+	public function get_menus() {
+		 return $this->db->select('menu.*, cat.entity_name')
+						->from("menu_entity menu")
+						->join("category_entity cat", "menu.category_id = cat.entity_id", "left")
+						->order_by('menu.entity_id', 'desc')
+						->get()->result_array();
+	}
+		
 	
 	
 }

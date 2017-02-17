@@ -1,6 +1,8 @@
 <?php $selected		= (isset($selected) ? $selected : 'dashboard');
 	$catelog		= FALSE;
+
 	if ($selected == "menuattribute" || $selected == "menucategory" || $selected == "tablecategory" || $selected == "tabledetails") {
+
 		$catelog	= TRUE;
 	}
  ?>
@@ -37,8 +39,8 @@
 					<li class="<?=($catelog) ? 'open' : ''?>">
 						<a href="#"><i class="fa fa-lg fa-fw fa-list-alt"></i> <span class="menu-item-parent">Catalog</span></a>
 						<ul style=" <?=($catelog) ? 'display: block;' : ''?>">
-							<li>
-								<a href="ajax/flot.html">Manage Menu</a>
+							<li class="<?=($selected == 'allmenus') ? 'active' : ''?>"> 
+								<a href="<?=site_url('manage/manage_menu')?>" >Manage Menu</a>
 							</li>
 							<li class="<?=($selected == 'menucategory') ? 'active' : ''?>">
 								<a href="<?=site_url('manage/menu_categories')?>">Manage Category</a>

@@ -235,6 +235,7 @@ class Manage extends Cpanel_Controller
 		redirect('manage/add_table_category', 'refresh');
 	}
 	
+
 	#load edit tabel category
 	function edit_table_category($catId	= NULL) {
 		if ($catId) {
@@ -321,11 +322,98 @@ class Manage extends Cpanel_Controller
 			$category					= _DB_data($this->tables['table_category'], array('status' => 1), null, null, null);
 			$this->add_data(compact('get_data', 'category'));
 			$this->render('add-table-details');
+		} else {
+		$this->session->set_flashdata('message', "Oops! something went wrong. Try again later.");
+		$this->session->set_flashdata('message_type', 'danger');
+		redirect('manage/table_details', 'refresh');
+		}
+	}
+
+	#list menus
+	function manage_menu() {
+		$this->data['menus']		= $this->manage_model->get_menus();
+		$this->render('manage-menus');
+	}
+	
+	#add new menu
+	function add_menu() {
+		$this->data['categories']	= _DB_data($this->tables['category_entity'], array('status' => 1), null, null, null);
+		$this->render('add-menu');
+	}
+	
+	#insert menu
+	function submit_menu() {
+		$dateTime					= date('Y-m-d H:i:s');	
+		$editId						= $this->input->post('edit_id', true);
+		if (!$editId) {
+			$this->form_validation->set_rules('menu_name','Menu Name','trim|required|is_unique[menu_entity.menu_name]');
+		} else {
+			$this->form_validation->set_rules('menu_name','Menu Name','trim|required');
+		}
+		$this->form_validation->set_rules('category','Category','trim|required');
+		if ($this->form_validation->run() == true) {
+				$menuName			= $this->input->post('menu_name', true);
+				$category			= $this->input->post('category', true);
+				$status				= $this->input->post('menu_status', true);
+				$ingredients		= $this->input->post('ingredients', true);
+				
+				if (!$editId) {
+				$insert				= _DB_insert($this->tables['menu_entity'], array('category_id' => $category, 'menu_name' => $menuName, 'created_at' => $dateTime, 'updated_at' => $dateTime, 'status' => $status));
+				if ($insert) {
+					$menuId			= _DB_insert_id();
+					if (!empty($ingredients)) {
+						foreach ($ingredients as $inds) {
+							_DB_insert($this->tables['menu_entity_ingredients'], array('menu_id' => $menuId, 'ingredient_name' => $inds));
+						}
+					}
+					$this->session->set_flashdata('message', "Menu has been addedd successfully");
+					$this->session->set_flashdata('message_type', 'success');
+					redirect('manage/manage_menu', 'refresh');
+				} else {
+					$this->session->set_flashdata('message', "Oops something went wrong try again later");
+					$this->session->set_flashdata('message_type', 'danger');
+					redirect('manage/add_menu', 'refresh');
+				}
+		} else {
+			$update				= _DB_update($this->tables['menu_entity'], array('category_id' => $category, 'menu_name' => $menuName, 'updated_at' => $dateTime, 'status' => $status), array('entity_id' => $editId));
+				if ($update) {
+					if (!empty($ingredients)) {
+						foreach ($ingredients as $key => $inds) {
+							_DB_update($this->tables['menu_entity_ingredients'], array( 'ingredient_name' => $inds), array('ingredient_id' => $key, 'menu_id' => $editId));
+						}
+					}
+					$this->session->set_flashdata('message', "Menu has been updated successfully");
+					$this->session->set_flashdata('message_type', 'success');
+					redirect('manage/manage_menu', 'refresh');
+				} else {
+					$this->session->set_flashdata('message', "Oops something went wrong try again later");
+					$this->session->set_flashdata('message_type', 'danger');
+					redirect('manage/add_menu', 'refresh');
+				}
+		}
+			 } else {
+			 		$this->session->set_flashdata('message', validation_errors());
+					$this->session->set_flashdata('message_type', 'danger');
+					redirect('manage/add_menu', 'refresh');
+			 }
+		
+	}
+	
+	#edit menu
+	function edit_menu($menu = NULL) {
+		
+		if ($menu) {
 			
+			$get_data					= _DB_get_record($this->tables['menu_entity'], array('entity_id' => $menu));
+			$categories					= _DB_data($this->tables['category_entity'], array('status' => 1), null, null, null);
+			$ingredients				= _DB_data($this->tables['menu_entity_ingredients'], array('menu_id' => $menu), null, null, null);
+			$this->add_data(compact('get_data', 'categories', 'ingredients'));
+			$this->render('add-menu');
+			redirect('manage/manage_menu', 'refresh');
 		} else {
 			$this->session->set_flashdata('message', "Oops! something went wrong. Try again later.");
 			$this->session->set_flashdata('message_type', 'danger');
-			redirect('manage/table_details', 'refresh');
+			redirect('manage/manage_menu', 'refresh');
 		}
 	}
 }
