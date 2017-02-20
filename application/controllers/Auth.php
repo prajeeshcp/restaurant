@@ -135,13 +135,34 @@ class Auth extends Cpanel_Controller
 								);
 			$group 				= array($userGroup); // Sets user.
 
+			if($userGroup == 2){
+				$userType = 'cashier';
+			} elseif($userGroup == 3){
+				$userType = 'waiter';
+			}
+
 			
 			if ($this->ion_auth->register($userName, $confpassword, $email, $additionalData, $group)) {
+				$user_id = _DB_insert_id();
+
+				$userData="";
 				// $this->session->set_flashdata('message', $this->ion_auth->messages());
 				// $this->session->set_flashdata('message_type', 'success');
 				// redirect('manage/', 'refresh');
+
+				$userData .='<tr class="odd gradeX" >
+					<td>'. stripslashes($fisrtName).'</td>
+					<td>'. stripslashes($userType).'</td>
+					<td>'. stripslashes($userName).'</td>
+		            <td>'. stripslashes($email).'</td>					
+					<td><a href="#" class="btn btn-warning btn-xs" onclick="edit_userDetails('.$user_id.')"><i class="fa fa-edit"></i> Edit</a></td>';
+					if($user_id != 1){
+						$userData.='<td id="td_id_'.$user_id.'" ><a href="#" class="btn btn-warning btn-xs btn_delete" onclick="deleteUser('.$user_id.')"><i class="fa fa-edit"></i> Delete</a></td>';
+					}
+				$userData.='</tr>';
 				$data 	= array('message' => $this->ion_auth->messages(),
-								'message_type' => 'success'
+								'message_type' => 'success',
+								'userData'  => $userData
 								);
 				print_r(json_encode($data));
 			} else {

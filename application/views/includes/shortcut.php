@@ -10,17 +10,9 @@
 		</li>
 		<?php } ?>
 		<li>
-			<a href="#ajax/gmap-xml.html" class="jarvismetro-tile big-cubes bg-color-orangeDark"> <span class="iconbox"> <i class="fa fa-map-marker fa-4x"></i> <span>Maps</span> </span> </a>
+			<a href="#ajax/gmap-xml.html" class="jarvismetro-tile big-cubes bg-color-greenLight"> <span class="iconbox"> <i class="fa fa-map-marker fa-4x"></i> <span>Maps</span> </span> </a>
 		</li>
-		<li>
-			<a href="#ajax/invoice.html" class="jarvismetro-tile big-cubes bg-color-blueDark"> <span class="iconbox"> <i class="fa fa-book fa-4x"></i> <span>Invoice <span class="label pull-right bg-color-darken">99</span></span> </span> </a>
-		</li>
-		<li>
-			<a href="#ajax/gallery.html" class="jarvismetro-tile big-cubes bg-color-greenLight"> <span class="iconbox"> <i class="fa fa-picture-o fa-4x"></i> <span>Gallery </span> </span> </a>
-		</li>
-		<li>
-			<a href="javascript:void(0);" class="jarvismetro-tile big-cubes selected bg-color-pinkDark"> <span class="iconbox"> <i class="fa fa-user fa-4x"></i> <span>My Profile </span> </span> </a>
-		</li>
+		
 	</ul>
 </div>
 
@@ -137,85 +129,16 @@
 				<h4 class="modal-title" id="myModalLabel">Edit User</h4>
 			</div>
 
-			<div class="modal-body">
-				<div class="row" id="messages" style="display:none">
-					<div class="col-lg-12 col-sm-offset-12">
-		            	<div class="alert alert-danger" ></div>
-		          	</div>					
-				</div>
+			<div class="modal-body" id="myModalEditBody">
 				
-				<!-- <form id="registerForm"> -->
-				<div class="row">
-					<div class="col-md-6">
-						<div class="form-group">
-							<input type="text" class="form-control" placeholder="First Name" name="firstName" id="firstName" required />
-						</div>
-					</div>
-					<div class="col-md-6">
-						<div class="form-group">
-							<input type="text" class="form-control" placeholder="Last Name" name="lastName" id="lastName" required />
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-6">
-						<div class="form-group">
-							<input type="text" class="form-control" placeholder="User Name" name="userName" id="userName" required />
-						</div>
-					</div>
-					<div class="col-md-6">
-						<div class="form-group">
-							<input type="number" class="form-control" placeholder="Phone" name="phone" id="phone"   required />
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-6">
-						<div class="form-group">
-							<input type="password" class="form-control" placeholder="Password" name="password" id="password" required />
-						</div>
-					</div>
-					<div class="col-md-6">
-						<div class="form-group">
-							<input type="password" class="form-control" placeholder="Confirm Password" name="confPassword" id="confPassword" required />
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-12">
-						<div class="form-group">
-							<input type="email" class="form-control" placeholder="Email" name="email" id="email" required />
-						</div>
-						<div class="form-group">
-							<textarea class="form-control" placeholder="Address" rows="5" id="address" name="address" required></textarea>
-						</div>
-					</div>
-				</div>
-				
-				<div class="row">
-					<div class="col-md-6">
-						<div class="form-group">
-							<label for="category"> User Type</label>
-							<select class="form-control" id="userType" name="userType" id="userType">
-								<option value="" selected>Select A Type</option>
-								<option value="2">Cashier</option>
-								<option value="3">Waiter</option>
-							</select>
-						</div>
-					</div>
-					<div class="col-md-6">
-						<div class="form-group">
-							
-						</div>
-					</div>
-				</div>
+
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal">
 					Cancel
 				</button>
-				<button type="button" class="btn btn-primary" id="register" >
-					Add
+				<button type="button" class="btn btn-primary" id="editUser" >
+					Edit
 				</button>
 			</div>
 				
