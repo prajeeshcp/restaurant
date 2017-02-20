@@ -9,4 +9,6 @@ $config['tables']['attributes']            		= 'attributes';
 $config['tables']['category_entity']       		= 'category_entity';
 $config['tables']['menu_entity']       			= 'menu_entity';
 $config['tables']['menu_entity_ingredients']    = 'menu_entity_ingredients';
-
+$config['tables']['menu_entity_price_type']    	= 'menu_entity_price_type';
+$config['tables']['tax_entity']    				= 'tax_entity';
+$config['tables']['menu_entity_price']    		= 'menu_entity_price';
