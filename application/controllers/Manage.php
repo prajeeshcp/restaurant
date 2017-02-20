@@ -377,11 +377,22 @@ class Manage extends Cpanel_Controller
 		} else {
 			$update				= _DB_update($this->tables['menu_entity'], array('category_id' => $category, 'menu_name' => $menuName, 'updated_at' => $dateTime, 'status' => $status), array('entity_id' => $editId));
 				if ($update) {
+					#update ingredients
 					if (!empty($ingredients)) {
+						$getAllIngredients		= _DB_data($this->tables['menu_entity_ingredients'], null, null, null, null);
+						$tmp					= array();
+						foreach ($getAllIngredients as $allIngredients) {
+							$tmp[]				= $allIngredients['ingredient_id'];
+						}
 						foreach ($ingredients as $key => $inds) {
+							if (in_array($key, $tmp)) {
 							_DB_update($this->tables['menu_entity_ingredients'], array( 'ingredient_name' => $inds), array('ingredient_id' => $key, 'menu_id' => $editId));
+							} else {
+								_DB_insert($this->tables['menu_entity_ingredients'], array('menu_id' => $editId, 'ingredient_name' => $inds));
+							}
 						}
 					}
+					
 					$this->session->set_flashdata('message', "Menu has been updated successfully");
 					$this->session->set_flashdata('message_type', 'success');
 					redirect('manage/manage_menu', 'refresh');
@@ -403,7 +414,6 @@ class Manage extends Cpanel_Controller
 	function edit_menu($menu = NULL) {
 		
 		if ($menu) {
-			
 			$get_data					= _DB_get_record($this->tables['menu_entity'], array('entity_id' => $menu));
 			$categories					= _DB_data($this->tables['category_entity'], array('status' => 1), null, null, null);
 			$ingredients				= _DB_data($this->tables['menu_entity_ingredients'], array('menu_id' => $menu), null, null, null);

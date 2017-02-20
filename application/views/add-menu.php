@@ -111,7 +111,11 @@
 							<a data-toggle="tab" href="#hb1"> <i class="fa fa-lg fa-sitemap"></i> <span class="hidden-mobile hidden-tablet"> Genaral Information </span> </a>
 
 						</li>
+						<li>
 
+							<a data-toggle="tab" href="#hb3"> <i class="fa fa-lg fa-inr"></i> <span class="hidden-mobile hidden-tablet"> Price </span> </a>
+
+						</li>
 						<li>
 							<a data-toggle="tab" href="#hb2"> <i class="fa fa-lg fa-list"></i> <span class="hidden-mobile hidden-tablet"> Ingredients </a>
 						</li>
@@ -186,6 +190,25 @@
 					</div>
 
 							</div>
+                            <div class="tab-pane active" id="hb3">
+  <div class="widget-body no-padding"> 
+    <!-- Success states for elements -->
+    
+    <fieldset>
+      <section>
+        <label class="label">Price</label>
+        <label class="input state-success">
+          <input type="text" value="<?=(!empty($get_data)) ? $get_data['menu_name'] : '' ?>" name="menu_name" required>
+        </label>
+        <div class="note note-success">This is a required field.</div>
+      </section>
+    </fieldset>
+    
+    <!--/ Success states for elements --> 
+    
+  </div>
+</div>
+
 							<div class="tab-pane" id="hb2">
 								<input type="hidden" id="option-count" name="option-count" value="<?=(!empty($get_data)) ? count($ingredients) : 0 ?>" />
 					  			<input type="hidden" id="option-last-count" name="option-last-count" value="<?=(!empty($get_data)) ? count($ingredients) : 0 ?>" />			
@@ -225,9 +248,9 @@
 							</footer>
 							</div>
 						</div>
-
+ </form>
 					</div>
-                    </form>
+                   
 					<!-- end widget content -->
 
 				</div>
