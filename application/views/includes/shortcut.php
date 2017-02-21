@@ -10,7 +10,7 @@
 		</li>
 		<?php } ?>
 		<li>
-			<a href="#ajax/gmap-xml.html" class="jarvismetro-tile big-cubes bg-color-greenLight"> <span class="iconbox"> <i class="fa fa-map-marker fa-4x"></i> <span>Maps</span> </span> </a>
+			<a href="#ajax/gmap-xml.html" class="jarvismetro-tile big-cubes bg-color-greenLight"> <span class="iconbox"> <i class="fa fa-key fa-4x"></i> <span>Change password</span> </span> </a>
 		</li>
 		
 	</ul>
