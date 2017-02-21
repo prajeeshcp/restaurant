@@ -1,9 +1,11 @@
 <?php $selected		= (isset($selected) ? $selected : 'dashboard');
 	$catelog		= FALSE;
 
-	if ($selected == "menuattribute" || $selected == "menucategory" || $selected == "tablecategory" || $selected == "tabledetails") {
-
-		$catelog	= TRUE;
+	if ($selected == "menuattribute" || $selected == "menucategory" || $selected == "tablecategory" || $selected == "tabledetails" || $selected == "allmenus") {
+		$system			= FALSE;
+		$catelog		= TRUE;
+	} else if($selected == "system") {
+		$system		= TRUE;
 	}
  ?>
 <aside id="left-panel">
@@ -61,7 +63,9 @@
 							</li>
 						</ul>
 					</li>
-					
+					<li class="<?=($system) ? 'active' : ''?>">
+						<a href="<?=site_url('manage/system_config')?>"><i class="fa fa-lg fa-fw fa-cog"></i> <span class="menu-item-parent">System</span></a>
+					</li>
 				</ul>
 			</nav>
 			<span class="minifyme"> <i class="fa fa-arrow-circle-left hit"></i> </span>

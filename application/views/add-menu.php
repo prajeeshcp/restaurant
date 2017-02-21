@@ -190,22 +190,60 @@
 					</div>
 
 							</div>
-                            <div class="tab-pane active" id="hb3">
+                            <div class="tab-pane" id="hb3">
   <div class="widget-body no-padding"> 
     <!-- Success states for elements -->
-    
+    <?php if (!empty($price_types)){ 
+		foreach($price_types as $types) {
+	?>
     <fieldset>
-      <section>
-        <label class="label">Price</label>
-        <label class="input state-success">
-          <input type="text" value="<?=(!empty($get_data)) ? $get_data['menu_name'] : '' ?>" name="menu_name" required>
-        </label>
-        <div class="note note-success">This is a required field.</div>
-      </section>
+    <div class="row">
+        <section class="col col-4">
+        <label class="label">Price Type</label>
+            <label class="select">
+                <select name="price_type_<?=$types['entity_id']?>">
+                
+                	<option value="<?=$types['entity_id']?>"><?=stripslashes($types['type_name'])?></option>
+                  
+                </select>
+            </label>
+        </section>
+        <section class="col col-8">
+        <label class="label">Price Amount</label>
+            <label class="input">
+                <input name="price_amt_<?=$types['entity_id']?>" type="text" value="<?=(!empty($price_list) && $price_list[$types['entity_id']]) ? $price_list[$types['entity_id']] : ''?>" placeholder="Enter amount">
+            </label>
+        </section>
+    </div>
     </fieldset>
-    
+    <?php } } else { ?>
+    <fieldset>
+    <div class="row">
+        <section class="col col-12">
+        <label class="label">Price Amount</label>
+            <label class="input">
+                <input name="price_amt_<?=$types['entity_id']?>" type="text" placeholder="Enter amount">
+            </label>
+        </section>
+        </div>
+        </fieldset>
+    <?php } ?>
     <!--/ Success states for elements --> 
-    
+    <fieldset>
+    <div class="row">
+        <section class="col col-8">
+        <label class="label">Tax Class</label>
+            <label class="select">
+                <select name="tax_class">
+                	<option value="">SELECT TAX CLASS</option>
+                	<?php if (!empty($tax_class)) : foreach ($tax_class as $tax) { ?>
+                	<option value="<?=$tax['entity_id']?>" <?=($get_data['tax_class'] == $tax['entity_id']) ? 'selected' : ''?>><?=stripslashes($tax['tax_class'])?></option>
+                    <?php } endif; ?>
+                </select>
+            </label>
+        </section>
+        </div>
+        </fieldset>
   </div>
 </div>
 

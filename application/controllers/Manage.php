@@ -338,6 +338,8 @@ class Manage extends Cpanel_Controller
 	#add new menu
 	function add_menu() {
 		$this->data['categories']	= _DB_data($this->tables['category_entity'], array('status' => 1), null, null, null);
+		$this->data['price_types']	= _DB_data($this->tables['menu_entity_price_type'], array('status' => 1), null, null, null);
+		$this->data['tax_class']	= _DB_data($this->tables['tax_entity'], array('status' => 1), null, null, null);
 		$this->render('add-menu');
 	}
 	
@@ -354,13 +356,23 @@ class Manage extends Cpanel_Controller
 		if ($this->form_validation->run() == true) {
 				$menuName			= $this->input->post('menu_name', true);
 				$category			= $this->input->post('category', true);
+				$taxClass			= $this->input->post('tax_class', true);
 				$status				= $this->input->post('menu_status', true);
 				$ingredients		= $this->input->post('ingredients', true);
-				
+				$price_types		= _DB_data($this->tables['menu_entity_price_type'], array('status' => 1), null, null, null);
 				if (!$editId) {
-				$insert				= _DB_insert($this->tables['menu_entity'], array('category_id' => $category, 'menu_name' => $menuName, 'created_at' => $dateTime, 'updated_at' => $dateTime, 'status' => $status));
+				$insert				= _DB_insert($this->tables['menu_entity'], array('category_id' => $category, 'menu_name' => $menuName, 'tax_class' => $taxClass, 'created_at' => $dateTime, 'updated_at' => $dateTime, 'status' => $status));
 				if ($insert) {
 					$menuId			= _DB_insert_id();
+					if (!empty($price_types)) {
+						foreach ($price_types as $types) {
+							$pricetyp	= $this->input->post('price_type_'.$types['entity_id'], true);
+							$priceAmt	=  $this->input->post('price_amt_'.$types['entity_id'], true);
+							if ($pricetyp) {
+								_DB_insert($this->tables['menu_entity_price'], array('menu_id' => $menuId, 'price_type' => $pricetyp, 'price_amount' => $priceAmt));
+							}
+						}
+					}
 					if (!empty($ingredients)) {
 						foreach ($ingredients as $inds) {
 							_DB_insert($this->tables['menu_entity_ingredients'], array('menu_id' => $menuId, 'ingredient_name' => $inds));
@@ -374,11 +386,25 @@ class Manage extends Cpanel_Controller
 					$this->session->set_flashdata('message_type', 'danger');
 					redirect('manage/add_menu', 'refresh');
 				}
-		} else {
-			$update				= _DB_update($this->tables['menu_entity'], array('category_id' => $category, 'menu_name' => $menuName, 'updated_at' => $dateTime, 'status' => $status), array('entity_id' => $editId));
+		} else { 
+			$update				= _DB_update($this->tables['menu_entity'], array('category_id' => $category, 'menu_name' => $menuName, 'tax_class' => $taxClass, 'updated_at' => $dateTime, 'status' => $status), array('entity_id' => $editId));
 				if ($update) {
 					#update ingredients
 					if (!empty($ingredients)) {
+						if (!empty($price_types)) {
+						foreach ($price_types as $types) {
+							$pricetyp	= $this->input->post('price_type_'.$types['entity_id'], true);
+							$priceAmt	=  $this->input->post('price_amt_'.$types['entity_id'], true);
+							if ($pricetyp) {
+								$checkPrice		= _DB_get_record($this->tables['menu_entity_price'], array('menu_id' => $editId, 'price_type' => $pricetyp));
+								if (empty($checkPrice)) {
+								_DB_insert($this->tables['menu_entity_price'], array('menu_id' => $editId, 'price_type' => $pricetyp, 'price_amount' => $priceAmt));
+								} else {
+									_DB_update($this->tables['menu_entity_price'], array('price_type' => $pricetyp, 'price_amount' => $priceAmt), array('menu_id' => $editId, 'price_type' => $pricetyp));
+								}
+							}
+						}
+					}
 						$getAllIngredients		= _DB_data($this->tables['menu_entity_ingredients'], null, null, null, null);
 						$tmp					= array();
 						foreach ($getAllIngredients as $allIngredients) {
@@ -417,7 +443,14 @@ class Manage extends Cpanel_Controller
 			$get_data					= _DB_get_record($this->tables['menu_entity'], array('entity_id' => $menu));
 			$categories					= _DB_data($this->tables['category_entity'], array('status' => 1), null, null, null);
 			$ingredients				= _DB_data($this->tables['menu_entity_ingredients'], array('menu_id' => $menu), null, null, null);
-			$this->add_data(compact('get_data', 'categories', 'ingredients'));
+			$this->data['price_types']	= _DB_data($this->tables['menu_entity_price_type'], array('status' => 1), null, null, null);
+			$this->data['tax_class']	= _DB_data($this->tables['tax_entity'], array('status' => 1), null, null, null);
+			$priceList					= _DB_data($this->tables['menu_entity_price'], array('menu_id' => $menu), null, null, null);
+			$price_list 				= array();
+			foreach ($priceList as $price) {
+				$price_list[$price['price_type']]	= $price['price_amount'];
+			}
+			$this->add_data(compact('get_data', 'categories', 'ingredients', 'price_list'));
 			$this->render('add-menu');
 			redirect('manage/manage_menu', 'refresh');
 		} else {
@@ -638,6 +671,138 @@ class Manage extends Cpanel_Controller
 
 			}
 			
+		}
+	}
+	
+	#load system config 
+	function system_config() {
+		$this->data['price_type']	= _DB_data($this->tables['menu_entity_price_type'], null, null, null, array('entity_id', 'desc'));
+		$this->data['tax_classes']	= _DB_data($this->tables['tax_entity'], null, null, null, array('entity_id', 'desc'));
+		$this->render('system');
+	}
+	
+	#load add price type option
+	function add_price_type() {
+		$this->render('add-price-type');
+	}
+	
+	#submit price type
+	function submit_price_type() {
+		$editId						= $this->input->post('edit_id', true);
+		if ($editId) {
+			$this->form_validation->set_rules('price_type','Price Type Name','trim|required');
+		} else {
+			$this->form_validation->set_rules('price_type','Price Type Name','trim|required|is_unique[menu_entity_price_type.type_name]');
+		}
+		$this->form_validation->set_rules('status','Price Type Status','trim|required');
+		$priceType					= $this->input->post('price_type', true);
+		$status						= $this->input->post('status', true);
+		if ($this->form_validation->run() == true) {
+			if ($editId) {
+				$update				=  _DB_update($this->tables['menu_entity_price_type'], array('type_name' => $priceType, 'status' => $status), array('entity_id' => $editId));
+				if ($update) {
+					$this->session->set_flashdata('message', "Price type has been updated.");
+					$this->session->set_flashdata('message_type', 'success');
+					redirect('manage/system_config', 'refresh');
+				} else {
+					$this->session->set_flashdata('message', "Oops something went wrong. Try again later");
+					$this->session->set_flashdata('message_type', 'danger');
+					redirect('manage/system_config', 'refresh');
+				}
+			} else {
+				$insert				= _DB_insert($this->tables['menu_entity_price_type'], array('type_name' => $priceType, 'status' => $status));
+				if ($insert) {
+					$this->session->set_flashdata('message', "Price type has been added.");
+					$this->session->set_flashdata('message_type', 'success');
+					redirect('manage/system_config', 'refresh');
+				
+				} else {
+					$this->session->set_flashdata('message', "Oops! Something went wrong. Try again later.");
+					$this->session->set_flashdata('message_type', 'danger');
+					redirect('manage/add_price_type', 'refresh');
+				}
+			}
+		} else {
+			$this->session->set_flashdata('message', validation_errors());
+			$this->session->set_flashdata('message_type', 'danger');
+			redirect('manage/add_price_type', 'refresh');
+		}
+	}
+	
+	#load edit price type
+	function edit_price_type($editId = NULL) {
+		if ($editId) {
+			$get_data				= _DB_get_record($this->tables['menu_entity_price_type'], array('entity_id' => $editId));
+			$this->data['get_data']	= $get_data;
+			$this->render('add-price-type');
+		} else {
+		$this->session->set_flashdata('message', "Oops! Something went wrong. Try again later.");
+		$this->session->set_flashdata('message_type', 'danger');
+		redirect('manage/system_config', 'refresh');
+		}
+	}
+	
+	#load add tax class
+	function add_tax() {
+		$this->render('add-tax-class');
+	}
+	
+	#submit tax class
+	function submit_tax_class() {
+		$editId						= $this->input->post('edit_id', true);
+		if ($editId) {
+			$this->form_validation->set_rules('tax_class','Tax Class Name','trim|required');
+			$this->form_validation->set_rules('tax_rate','Tax Rate','trim|required');
+		} else {
+			$this->form_validation->set_rules('tax_class','Tax Class Name','trim|required|is_unique[tax_entity.tax_class]');
+			$this->form_validation->set_rules('tax_rate','Tax Rate','trim|required|is_unique[tax_entity.tax_rate]');
+		}
+		$this->form_validation->set_rules('status','Price Status','trim|required');
+		$taxClass					= $this->input->post('tax_class', true);
+		$taxRate					= $this->input->post('tax_rate', true);
+		$status						= $this->input->post('status', true);
+		if ($this->form_validation->run() == true) {
+			if ($editId) {
+				$update				=  _DB_update($this->tables['tax_entity'], array('tax_class' => $taxClass, 'tax_rate' => $taxRate, 'status' => $status), array('entity_id' => $editId));
+				if ($update) {
+					$this->session->set_flashdata('message', "Tax class has been updated.");
+					$this->session->set_flashdata('message_type', 'success');
+					redirect('manage/system_config', 'refresh');
+				} else {
+					$this->session->set_flashdata('message', "Oops something went wrong. Try again later");
+					$this->session->set_flashdata('message_type', 'danger');
+					redirect('manage/system_config', 'refresh');
+				}
+			} else {
+				$insert				= _DB_insert($this->tables['tax_entity'], array('tax_class' => $taxClass, 'tax_rate' => $taxRate, 'status' => $status));
+				if ($insert) {
+					$this->session->set_flashdata('message', "Tax calss has been added.");
+					$this->session->set_flashdata('message_type', 'success');
+					redirect('manage/system_config', 'refresh');
+				
+				} else {
+					$this->session->set_flashdata('message', "Oops! Something went wrong. Try again later.");
+					$this->session->set_flashdata('message_type', 'danger');
+					redirect('manage/add_tax', 'refresh');
+				}
+			}
+		} else {
+			$this->session->set_flashdata('message', validation_errors());
+			$this->session->set_flashdata('message_type', 'danger');
+			redirect('manage/add_tax', 'refresh');
+		}
+	}
+	
+	#load tax edit window
+	function edit_tax($editId = NULL) {
+		if ($editId) {
+			$get_data				= _DB_get_record($this->tables['tax_entity'], array('entity_id' => $editId));
+			$this->data['get_data']	= $get_data;
+			$this->render('add-tax-class');
+		} else {
+		$this->session->set_flashdata('message', "Oops! Something went wrong. Try again later.");
+		$this->session->set_flashdata('message_type', 'danger');
+		redirect('manage/system_config', 'refresh');
 		}
 	}
 }
