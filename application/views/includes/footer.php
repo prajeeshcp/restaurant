@@ -76,6 +76,7 @@
 
 	function edit_userDetails(id = null){
 
+
 		$.ajax({
 
 			type 	: "POST",
@@ -95,16 +96,16 @@
 
 	$('#editUser').click(function () {
 
-		var user_id		=	$('#user_id').val();		
-		var firstName 	= 	$('#firstName').val();
-		var lastName 	= 	$('#lastName').val();
-		var userName 	= 	$('#userName').val();
-		var phone 		= 	$('#phone').val();
-		//var password 	= 	$('#password').val();
-		//var confPassword= 	$('#confPassword').val();
-		var email 		= 	$('#email').val();
-		var address 	= 	$('#address').val();
-		var userType	= 	$('#userType').val();
+		var user_id		=	$('#edituser_id').val();		
+		var firstName 	= 	$('#editfirstName').val();
+		var lastName 	= 	$('#editlastName').val();
+		var userName 	= 	$('#edituserName').val();
+		var phone 		= 	$('#editphone').val();
+		//var password 	= 	$('#editpassword').val();
+		//var confPassword= 	$('#editconfPassword').val();
+		var email 		= 	$('#editemail').val();
+		var address 	= 	$('#editaddress').val();
+		var userType	= 	$('#edituserType').val();
 
 		$.ajax({
 
@@ -114,15 +115,16 @@
 			data 	: {'firstName':firstName,'lastName':lastName,'userName':userName,'phone':phone,'email':email,'address':address,'userType':userType,'user_id':user_id},
 			success : function (objResult) {
 				if (objResult.message_type == 'danger') {
-					$('#messages').show();
-					$('#messages').html(objResult.message);
+					$('#editsuccessMessages').show();
+					$('#editsuccessMessages').html(objResult.message);
 				}
 
 				if (objResult.message_type == 'success') {
 					//$('#messages').show();
-					$('#editsuccessMessages').show();
-					$('#editsuccessMessages').html(objResult.message);
-					$("#userData").append(objResult.userData);
+					$('#successMessages').show();
+					$('#successMessages').html(objResult.message);
+					$('#td_id_'+user_id).parent().replaceWith(objResult.userData);
+					//("#userData").append(objResult.userData);
 					$('#myModalEdit').modal('hide');					
 					$('#myModalListUsers').modal('show');
 					
