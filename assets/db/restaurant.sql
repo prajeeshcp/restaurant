@@ -107,7 +107,7 @@ CREATE TABLE `menu_entity` (
   `entity_id` int(11) UNSIGNED NOT NULL COMMENT 'Menu Entity Id',
   `category_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Category Id',
   `menu_name` varchar(200) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Manu Name',
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Ctrated At',
+  `created_at` datetime NOT NULL COMMENT 'Created At',
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Updated At',
   `status` tinyint(4) NOT NULL DEFAULT '1' COMMENT 'Status'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -157,7 +157,7 @@ CREATE TABLE `table_category` (
   `id` int(11) NOT NULL,
   `name` varchar(75) NOT NULL,
   `status` int(11) NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_at` datetime NOT NULL COMMENT 'Created At',
   `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

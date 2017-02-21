@@ -509,53 +509,53 @@ class Manage extends Cpanel_Controller
 				<div class="row">
 					<div class="col-md-6">
 						<div class="form-group">
-							<input type="hidden" class="form-control" placeholder="First Name" name="user_id" id="user_id" value="'.$rows['id'].'"  />
+							<input type="hidden" class="form-control" placeholder="First Name" name="edituser_id" id="edituser_id" value="'.$rows['id'].'"  />
 						</div>
 					</div>					
 				</div>
 				<div class="row">
 					<div class="col-md-6">
 						<div class="form-group">
-							<input type="text" class="form-control" placeholder="First Name" name="firstName" id="firstName" value="'.$rows['first_name'].'" required />
+							<input type="text" class="form-control" placeholder="First Name" name="editfirstName" id="editfirstName" value="'.$rows['first_name'].'" required />
 						</div>
 					</div>
 					<div class="col-md-6">
 						<div class="form-group">
-							<input type="text" class="form-control" placeholder="Last Name" name="lastName" id="lastName" value="'.$rows['last_name'].'" required />
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-6">
-						<div class="form-group">
-							<input type="text" class="form-control" placeholder="User Name" name="userName" id="userName" value="'.$rows['username'].'" required />
-						</div>
-					</div>
-					<div class="col-md-6">
-						<div class="form-group">
-							<input type="number" class="form-control" placeholder="Phone" name="phone" id="phone" value="'.$rows['phone'].'"   required />
+							<input type="text" class="form-control" placeholder="Last Name" name="editlastName" id="editlastName" value="'.$rows['last_name'].'" required />
 						</div>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-md-6">
 						<div class="form-group">
-							<input type="password" class="form-control" placeholder="Password" name="password" id="password" value="'.$rows['password'].'" required readonly />
+							<input type="text" class="form-control" placeholder="User Name" name="edituserName" id="edituserName" value="'.$rows['username'].'" required />
 						</div>
 					</div>
 					<div class="col-md-6">
 						<div class="form-group">
-							<input type="password" class="form-control" placeholder="Confirm Password" name="confPassword" id="confPassword" value="'.$rows['password'].'"  readonly required />
+							<input type="number" class="form-control" placeholder="Phone" name="editphone" id="editphone" value="'.$rows['phone'].'"   required />
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<div class="form-group">
+							<input type="password" class="form-control" placeholder="Password" name="editpassword" id="editpassword" value="'.$rows['password'].'" required readonly />
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<input type="password" class="form-control" placeholder="Confirm Password" name="editconfPassword" id="editconfPassword" value="'.$rows['password'].'"  readonly required />
 						</div>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-md-12">
 						<div class="form-group">
-							<input type="email" class="form-control" placeholder="Email" name="email" id="email" value="'.$rows['email'].'" required />
+							<input type="email" class="form-control" placeholder="Email" name="editemail" id="editemail" value="'.$rows['email'].'" required />
 						</div>
 						<div class="form-group">
-							<textarea class="form-control" placeholder="Address" rows="5" id="address" name="address" required>'.$rows['company'].'</textarea>
+							<textarea class="form-control" placeholder="Address" rows="5" id="editaddress" name="editaddress" required>'.$rows['company'].'</textarea>
 						</div>
 					</div>
 				</div>
@@ -564,10 +564,14 @@ class Manage extends Cpanel_Controller
 					<div class="col-md-6">
 						<div class="form-group">
 							<label for="category"> User Type</label>
-							<select class="form-control" id="userType" name="userType" id="userType">
-								<option value="" selected>Select A Type</option>
-								<option value="2">Cashier</option>
-								<option value="3">Waiter</option>
+							<select class="form-control" id="edituserType" name="edituserType" id="userType">
+								<option value="" selected>Select A Type</option>';
+
+								$c_selected= $w_selected= '';
+								(!empty($rows['user_type']) && $rows['user_type']=='cashier') ? $c_selected='selected="selected"' : $w_selected='selected="selected"';
+
+					$userData.='<option '.$c_selected.' value="2">Cashier</option>
+								<option '.$w_selected.' value="3">Waiter</option>
 							</select>
 						</div>
 					</div>
@@ -626,7 +630,7 @@ class Manage extends Cpanel_Controller
 				$userType = 'waiter';
 			}
 
-			$userUpdate = _DB_update($this->tables['users'], array('first_name' => $fisrtName, 'last_name' => $last_name, 'email' => $email,  'company' => $address, 'phone' => $phone), array('id' => $user_id));
+			$userUpdate = _DB_update($this->tables['users'], array('first_name' => $fisrtName, 'last_name' => $lastName, 'username' => $userName, 'email' => $email,  'company' => $address, 'phone' => $phone), array('id' => $user_id));
 			$userUpdateGroup = _DB_update($this->tables['users_groups'], array('group_id' => $userGroup), array('id' => $user_id));
 
 
