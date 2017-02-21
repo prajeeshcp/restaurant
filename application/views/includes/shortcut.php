@@ -10,7 +10,10 @@
 		</li>
 		<?php } ?>
 		<li>
-			<a href="#ajax/gmap-xml.html" class="jarvismetro-tile big-cubes bg-color-greenLight"> <span class="iconbox"> <i class="fa fa-key fa-4x"></i> <span>Change password</span> </span> </a>
+			<a href="#" class="jarvismetro-tile big-cubes bg-color-greenLight" data-toggle="modal" data-target="#myModalChangePassword"> <span class="iconbox"> <i class="fa fa-key fa-4x"></i> <span>Change password</span> </span> </a>
+		</li>
+		<li>
+			<a href="#ajax/gmap-xml.html" class="jarvismetro-tile big-cubes bg-color-purple"> <span class="iconbox"> <i class="fa fa-pencil-square-o fa-4x"></i> <span>Edit Profile</span> </span> </a>
 		</li>
 		
 	</ul>
@@ -139,6 +142,70 @@
 				</button>
 				<button type="button" class="btn btn-primary" id="editUser" >
 					Edit
+				</button>
+			</div>
+				
+			<!-- </form> -->
+
+				
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!-- Modal -->
+<div class="modal fade" id="myModalChangePassword" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+					&times;
+				</button>
+				<h4 class="modal-title" id="myModalLabel">Change Password</h4>
+			</div>
+
+			<div class="modal-body" id="myModalEditBody">
+				<div class="row" id="changePasswordMessages" style="display:none">
+					<div class="col-lg-12 col-sm-offset-12">
+		            	<div class="alert alert-danger" ></div>
+		          	</div>					
+				</div>
+				
+				<!-- <form id="registerForm"> -->				
+				<div class="row">
+					<div class="col-md-6">
+						<div class="form-group">
+							<input type="text" class="form-control" placeholder="User Name" name="user_name" id="user_name" required />
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<input type="password" class="form-control" placeholder="Current Password" name="current_pass" id="current_pass" required />
+						</div>
+					</div>
+					
+				</div>
+				<div class="row">
+					
+					<div class="col-md-6">
+						<div class="form-group">
+							<input type="password" class="form-control" placeholder="New Password" name="new_password" id="new_password"   required />
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<input type="password" class="form-control" placeholder="Confirm Password" name="con_password" id="con_password" required />
+						</div>
+					</div>
+				</div>
+				
+
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">
+					Cancel
+				</button>
+				<button type="button" class="btn btn-primary" id="changePassword" >
+					Change
 				</button>
 			</div>
 				
