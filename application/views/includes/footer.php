@@ -8,13 +8,16 @@
 			dataType: "json",			
 			success : function (objResult) {
 				$('#userData').html(objResult.userData);
-				// $.each(objResult.userGroups,function(index,value){
-				// 	//alert(index+":"+value);
-				// });
+				
 
 			}
 		});
 
+	});
+
+	$(document).ready(function(){
+		// $('#messages').hide();
+		
 		$.ajax({
 
 			type 	: "POST",
@@ -22,16 +25,14 @@
 			dataType: "json",			
 			success : function (objResult) {
 				//$('#myModalListUsers').modal('hide');				
-				$('#myModalEditProfileBody').html(objResult.userData);
-				//$('#myModalEdit').modal('show');
-
-					
-
+				$('#myModalEditProfileBody').html(objResult.editUserData);
+				//$('#myModalEdit').modal('show');	
 				
 			}			
 		});
 
 	});
+
 
 
 	$('#register').click(function () {

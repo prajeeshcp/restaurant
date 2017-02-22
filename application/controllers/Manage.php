@@ -591,15 +591,15 @@ class Manage extends Cpanel_Controller
 
 	}
 
-	#load edit userprofile details oflogined user
+	#load edit userprofile details of logined user
 	public function editUserProfile(){
 
 		$userId = $this->ion_auth->get_user_id();		
 		$get_data 	= $this->manage_model->get_user_details($userId);		
-		$userData="";
+		$editUserData="";
 		foreach ($get_data as $rows) {			
 		
-		$userData.='
+		$editUserData.='
 				<div class="row" id="editProfilesuccessMessages" style="display:none">
 					<div class="col-lg-12 col-sm-offset-12">
 		            	<div class="alert alert-danger" ></div>
@@ -671,7 +671,7 @@ class Manage extends Cpanel_Controller
 								$c_selected= $w_selected= '';
 								(!empty($rows['user_type']) && $rows['user_type']=='cashier') ? $c_selected='selected="selected"' : $w_selected='selected="selected"';
 
-					$userData.='<option '.$c_selected.' value="2">Cashier</option>
+					$editUserData.='<option '.$c_selected.' value="2">Cashier</option>
 								<option '.$w_selected.' value="3">Waiter</option>
 							</select>
 						</div>
@@ -684,7 +684,7 @@ class Manage extends Cpanel_Controller
 				</div>
 			';
 			}
-		$data = array('userData'=>$userData);
+		$data = array('editUserData'=>$editUserData);
 		print_r(json_encode($data));
 
 
