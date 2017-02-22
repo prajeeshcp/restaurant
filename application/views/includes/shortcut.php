@@ -172,7 +172,7 @@
 				<button type="button" class="btn btn-default" data-dismiss="modal">
 					Cancel
 				</button>
-				<button type="button" class="btn btn-primary" id="editUser" >
+				<button type="button" class="btn btn-primary" id="editUserProfile" >
 					Edit
 				</button>
 			</div>
@@ -206,7 +206,7 @@
 				<div class="row">
 					<div class="col-md-6">
 						<div class="form-group">
-							<input type="text" class="form-control" placeholder="User Name" name="user_name" id="user_name" required />
+							<input type="text" class="form-control" placeholder="User Email" name="user_email" id="user_email" required />
 						</div>
 					</div>
 					<div class="col-md-6">

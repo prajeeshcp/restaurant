@@ -12,16 +12,10 @@
 
 			}
 		});
-
-	});
-
-	$(document).ready(function(){
-		// $('#messages').hide();
-		
 		$.ajax({
 
 			type 	: "POST",
-			url 	: "<?=site_url('manage/editUserProfile/')?>",
+			url 	: "<?=site_url('manage/loadeditUserProfile/')?>",
 			dataType: "json",			
 			success : function (objResult) {
 				//$('#myModalListUsers').modal('hide');				
@@ -33,6 +27,7 @@
 
 	});
 
+	
 
 
 	$('#register').click(function () {
@@ -77,7 +72,7 @@
 
 	$('#changePassword').click(function () {
 		
-		var user_name 		= 	$('#user_name').val();
+		var user_email 		= 	$('#user_email').val();
 		var current_pass 	= 	$('#current_pass').val();
 		var new_password 	= 	$('#new_password').val();
 		var con_password 	= 	$('#con_password').val();
@@ -87,7 +82,7 @@
 			type 	: "POST",
 			url 	: "<?=site_url('auth/change_password')?>",
 			dataType: "json",
-			data 	: {'user_name':user_name,'current_pass':current_pass,'new_password':new_password,'con_password':con_password},
+			data 	: {'user_email':user_email,'current_pass':current_pass,'new_password':new_password,'con_password':con_password},
 			success : function (objResult) {
 				if (objResult.message_type == 'danger') {
 					$('#changePasswordMessages').show();
@@ -96,11 +91,9 @@
 
 				if (objResult.message_type == 'success') {
 					//$('#messages').show();
-					$('#successMessages').show();
-					$('#successMessages').html(objResult.message);
-					$("#userData").append(objResult.userData);
-					$('#myModalRegister').modal('hide');					
-					$('#myModalListUsers').modal('show');
+					$('#changePasswordMessages').show();
+					$('#changePasswordMessages').html(objResult.message);
+				
 					
 				}
 
@@ -135,7 +128,7 @@
 		$.ajax({
 
 			type 	: "POST",
-			url 	: "<?=site_url('manage/edit_userDetails/')?>"+id,
+			url 	: "<?=site_url('manage/loadEditUserDetails/')?>"+id,
 			dataType: "json",			
 			success : function (objResult) {
 				$('#myModalListUsers').modal('hide');				
@@ -182,6 +175,45 @@
 					//("#userData").append(objResult.userData);
 					$('#myModalEdit').modal('hide');					
 					$('#myModalListUsers').modal('show');
+					
+				}
+
+
+			}
+		});
+	});
+
+	$('#editUserProfile').click(function () {
+
+		var user_id		=	$('#editProfileuser_id').val();		
+		var firstName 	= 	$('#editProfilefirstName').val();
+		var lastName 	= 	$('#editProfilelastName').val();
+		var userName 	= 	$('#editProfileuserName').val();
+		var phone 		= 	$('#editProfilephone').val();		
+		var email 		= 	$('#editProfileemail').val();
+		var address 	= 	$('#editProfileaddress').val();
+		
+
+		$.ajax({
+
+			type 	: "POST",
+			url 	: "<?=site_url('manage/edit_user/')?>"+1,
+			dataType: "json",
+			data 	: {'firstName':firstName,'lastName':lastName,'userName':userName,'phone':phone,'email':email,'address':address,'user_id':user_id},
+			success : function (objResult) {
+				if (objResult.message_type == 'danger') {
+					$('#editProfilesuccessMessage').show();
+					$('#editProfilesuccessMessage').html(objResult.message);
+				}
+
+				if (objResult.message_type == 'success') {
+					//$('#messages').show();
+					$('#editProfilesuccessMessage').show();
+					$('#editProfilesuccessMessage').html(objResult.message);
+					// $('#td_id_'+user_id).parent().replaceWith(objResult.userData);
+					// //("#userData").append(objResult.userData);
+					// $('#myModalEdit').modal('hide');					
+					// $('#myModalListUsers').modal('show');
 					
 				}
 
