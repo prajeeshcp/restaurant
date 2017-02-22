@@ -8,8 +8,19 @@
 			dataType: "json",			
 			success : function (objResult) {
 				$('#userData').html(objResult.userData);
-				
 
+             	options = '<option selected="selected" value="0">Select A Type</option>';
+
+             	$.each(objResult.userGroups, function(index, value) {
+             	  if(value["id"] != 1){
+             	  	options = options + '<option value="' + value["id"] + '">' + value["name"] + '</option>';
+             	  }	
+                  
+             	 });
+              	closeSelect = '</select>';
+
+              	selectHtml = options + closeSelect;
+              	$( "#userType" ).html( selectHtml ); 
 			}
 		});
 		$.ajax({
