@@ -10,7 +10,7 @@
 		</li>
 		<?php } ?>
 		<li>
-			<a href="#ajax/gmap-xml.html" class="jarvismetro-tile big-cubes bg-color-greenLight"> <span class="iconbox"> <i class="fa fa-map-marker fa-4x"></i> <span>Maps</span> </span> </a>
+			<a href="#ajax/gmap-xml.html" class="jarvismetro-tile big-cubes bg-color-greenLight"> <span class="iconbox"> <i class="fa fa-user fa-4x"></i> <span>Profile</span> </span> </a>
 		</li>
 		
 	</ul>
@@ -87,7 +87,7 @@
 					<div class="col-md-6">
 						<div class="form-group">
 							<label for="category"> User Type</label>
-							<select class="form-control" id="userType" name="userType" id="userType">
+							<select class="form-control" id="userType" name="userType" >
 								<option value="" selected>Select A Type</option>
 								<option value="2">Cashier</option>
 								<option value="3">Waiter</option>
