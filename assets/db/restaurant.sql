@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 17, 2017 at 05:40 PM
+-- Generation Time: Feb 21, 2017 at 09:59 PM
 -- Server version: 10.1.13-MariaDB
 -- PHP Version: 5.6.23
 
@@ -39,7 +39,8 @@ CREATE TABLE `attributes` (
 INSERT INTO `attributes` (`entity_id`, `attribute_name`, `status`) VALUES
 (1, 'None', 1),
 (2, 'Veg', 1),
-(3, 'Non Veg', 1);
+(3, 'Non Veg', 2),
+(4, 'New Attributes', 1);
 
 -- --------------------------------------------------------
 
@@ -62,7 +63,8 @@ CREATE TABLE `category_entity` (
 
 INSERT INTO `category_entity` (`entity_id`, `attribute_id`, `entity_name`, `created_at`, `updated_at`, `status`) VALUES
 (1, 1, 'Default Category', '0000-00-00 00:00:00', '2017-02-15 12:04:36', 1),
-(2, 2, 'North Indian Thali', '2017-02-14 19:55:19', '2017-02-15 14:50:04', 1);
+(2, 4, 'North Indian Thali', '2017-02-14 19:55:19', '2017-02-21 13:37:20', 1),
+(3, 1, 'Ice cream', '2017-02-21 19:07:34', '2017-02-21 18:07:34', 1);
 
 -- --------------------------------------------------------
 
@@ -82,7 +84,8 @@ CREATE TABLE `groups` (
 
 INSERT INTO `groups` (`id`, `name`, `description`) VALUES
 (1, 'admin', 'Administrator'),
-(2, 'members', 'General User');
+(2, 'Cashier', 'Cashier'),
+(3, 'Waiter', 'Waiter');
 
 -- --------------------------------------------------------
 
@@ -107,7 +110,8 @@ CREATE TABLE `menu_entity` (
   `entity_id` int(11) UNSIGNED NOT NULL COMMENT 'Menu Entity Id',
   `category_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Category Id',
   `menu_name` varchar(200) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Manu Name',
-  `created_at` datetime NOT NULL COMMENT 'Created At',
+  `tax_class` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Tax Class',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Ctrated At',
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Updated At',
   `status` tinyint(4) NOT NULL DEFAULT '1' COMMENT 'Status'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -116,9 +120,11 @@ CREATE TABLE `menu_entity` (
 -- Dumping data for table `menu_entity`
 --
 
-INSERT INTO `menu_entity` (`entity_id`, `category_id`, `menu_name`, `created_at`, `updated_at`, `status`) VALUES
-(1, 2, 'First Menu Edit', '2017-02-15 15:30:55', '2017-02-15 16:26:54', 1),
-(2, 2, 'Second menu edit', '2017-02-15 16:27:47', '2017-02-16 15:08:07', 2);
+INSERT INTO `menu_entity` (`entity_id`, `category_id`, `menu_name`, `tax_class`, `created_at`, `updated_at`, `status`) VALUES
+(1, 2, 'First Menu Edit', 1, '2017-02-15 15:30:55', '2017-02-19 06:15:13', 1),
+(2, 2, 'Second menu edit', 2, '2017-02-15 16:27:47', '2017-02-18 16:24:35', 2),
+(3, 2, 'New menu', 1, '2017-02-19 05:56:12', '2017-02-19 06:15:23', 1),
+(4, 1, 'First Menu', 0, '2017-02-21 13:37:56', '2017-02-21 13:39:59', 2);
 
 -- --------------------------------------------------------
 
@@ -145,7 +151,124 @@ INSERT INTO `menu_entity_ingredients` (`ingredient_id`, `menu_id`, `ingredient_n
 (5, 2, 'Menu ing 3', 1),
 (6, 2, 'New Ingreadiant', 1),
 (7, 2, '1', 1),
-(8, 2, '2', 1);
+(8, 2, '2', 1),
+(9, 3, '', 1),
+(10, 4, '', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `menu_entity_price`
+--
+
+CREATE TABLE `menu_entity_price` (
+  `price_id` int(10) UNSIGNED NOT NULL COMMENT 'Price Id',
+  `menu_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Menu Id',
+  `price_type` int(10) NOT NULL DEFAULT '0' COMMENT 'Price Type',
+  `price_amount` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Amount'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `menu_entity_price`
+--
+
+INSERT INTO `menu_entity_price` (`price_id`, `menu_id`, `price_type`, `price_amount`) VALUES
+(1, 3, 1, 100),
+(2, 3, 2, 200),
+(3, 1, 1, 10),
+(4, 1, 2, 5),
+(5, 4, 1, 0),
+(6, 4, 2, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `menu_entity_price_type`
+--
+
+CREATE TABLE `menu_entity_price_type` (
+  `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Price Type Id',
+  `type_name` varchar(50) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Type Name',
+  `status` tinyint(4) NOT NULL DEFAULT '1' COMMENT 'Status'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `menu_entity_price_type`
+--
+
+INSERT INTO `menu_entity_price_type` (`entity_id`, `type_name`, `status`) VALUES
+(1, 'Normal', 1),
+(2, 'Half ', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `order_entity`
+--
+
+CREATE TABLE `order_entity` (
+  `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Order Id',
+  `status` varchar(20) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Order Status',
+  `table_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Table Id',
+  `user_id` int(10) UNSIGNED NOT NULL COMMENT 'User Id',
+  `grand_total` decimal(12,2) UNSIGNED NOT NULL DEFAULT '0.00' COMMENT 'Grand Total',
+  `subtotal` decimal(12,2) UNSIGNED NOT NULL DEFAULT '0.00' COMMENT 'Subtotal',
+  `tax_amount` float(12,2) UNSIGNED NOT NULL DEFAULT '0.00' COMMENT 'Tax Amount',
+  `total_paid` decimal(12,2) UNSIGNED NOT NULL DEFAULT '0.00' COMMENT 'Total Paid',
+  `discount_amount` decimal(12,2) UNSIGNED NOT NULL DEFAULT '0.00' COMMENT 'Discount Amount',
+  `delivery_charge` decimal(12,2) UNSIGNED NOT NULL DEFAULT '0.00' COMMENT 'Delivery Charge',
+  `total_qty_ordered` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Toatal Qty Ordered',
+  `created_at` datetime NOT NULL COMMENT 'Created At',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `order_entity_items`
+--
+
+CREATE TABLE `order_entity_items` (
+  `item_id` int(10) UNSIGNED NOT NULL COMMENT 'Item Id',
+  `order_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Order Id',
+  `is_kot` tinyint(3) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'i for created KOT',
+  `menu_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Menu Item Id',
+  `order_type` varchar(50) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'table' COMMENT 'Type of order like parcel',
+  `Name` varchar(250) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Name of Item',
+  `qty_ordered` decimal(12,2) UNSIGNED NOT NULL DEFAULT '0.00' COMMENT 'Qty',
+  `price` decimal(12,2) UNSIGNED NOT NULL DEFAULT '0.00' COMMENT 'Price for single ',
+  `tax_percent` decimal(12,2) UNSIGNED NOT NULL DEFAULT '0.00' COMMENT 'Tax Percent',
+  `tax_amount` decimal(12,2) UNSIGNED NOT NULL DEFAULT '0.00' COMMENT 'Tax Amount',
+  `row_total` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Total Amount',
+  `created_at` datetime NOT NULL COMMENT 'Created At',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Updated At'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `order_status`
+--
+
+CREATE TABLE `order_status` (
+  `status` varchar(32) NOT NULL COMMENT 'Status',
+  `label` varchar(128) NOT NULL COMMENT 'Label'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Order Status Table';
+
+--
+-- Dumping data for table `order_status`
+--
+
+INSERT INTO `order_status` (`status`, `label`) VALUES
+('canceled', 'Canceled'),
+('closed', 'Closed'),
+('complete', 'Complete'),
+('fraud', 'Suspected Fraud'),
+('holded', 'On Hold'),
+('payment_review', 'Payment Review'),
+('pending', 'Pending'),
+('pending_payment', 'Pending Payment'),
+('processing', 'Processing');
 
 -- --------------------------------------------------------
 
@@ -154,10 +277,10 @@ INSERT INTO `menu_entity_ingredients` (`ingredient_id`, `menu_id`, `ingredient_n
 --
 
 CREATE TABLE `table_category` (
-  `id` int(11) NOT NULL,
+  `id` int(10) NOT NULL,
   `name` varchar(75) NOT NULL,
   `status` int(11) NOT NULL,
-  `created_at` datetime NOT NULL COMMENT 'Created At',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -166,9 +289,10 @@ CREATE TABLE `table_category` (
 --
 
 INSERT INTO `table_category` (`id`, `name`, `status`, `created_at`, `updated_at`) VALUES
-(1, 'family', 1, '2017-02-15 16:16:19', '2017-02-15 16:16:19'),
-(2, 'couples', 2, '2017-02-16 18:33:24', '2017-02-16 14:03:24'),
-(3, 'party', 1, '2017-02-16 12:24:37', '0000-00-00 00:00:00');
+(1, 'Bill desk', 1, '2017-02-21 20:52:11', '2017-02-21 16:22:11'),
+(2, 'couples', 1, '2017-02-21 20:52:26', '2017-02-21 16:22:26'),
+(3, 'party', 1, '2017-02-21 18:06:09', '2017-02-21 13:36:09'),
+(4, 'Lovers Room', 1, '2017-02-21 17:56:21', '2017-02-21 13:26:21');
 
 -- --------------------------------------------------------
 
@@ -177,10 +301,10 @@ INSERT INTO `table_category` (`id`, `name`, `status`, `created_at`, `updated_at`
 --
 
 CREATE TABLE `table_details` (
-  `id` int(11) NOT NULL,
+  `id` int(10) NOT NULL,
   `table_number` varchar(75) NOT NULL,
   `capacity` int(11) NOT NULL,
-  `table_cat_id` int(11) NOT NULL,
+  `table_cat_id` int(10) NOT NULL,
   `status` int(11) NOT NULL,
   `created_at` int(11) NOT NULL,
   `updated_at` int(11) NOT NULL
@@ -191,9 +315,32 @@ CREATE TABLE `table_details` (
 --
 
 INSERT INTO `table_details` (`id`, `table_number`, `capacity`, `table_cat_id`, `status`, `created_at`, `updated_at`) VALUES
-(1, 'table one ', 4, 1, 1, 2017, 0),
-(2, 'table two ', 6, 1, 1, 2017, 2017),
-(3, 'table three', 4, 3, 1, 2017, 2017);
+(1, 'Bill Desk 001', 0, 1, 1, 2017, 2017),
+(2, '00001', 6, 3, 1, 2017, 2017),
+(3, '00002', 4, 3, 1, 2017, 2017),
+(4, '00003', 5, 3, 1, 2017, 2017);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tax_entity`
+--
+
+CREATE TABLE `tax_entity` (
+  `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Tax Id',
+  `tax_class` varchar(50) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Tax Class',
+  `tax_rate` decimal(12,2) UNSIGNED NOT NULL DEFAULT '0.00' COMMENT 'Tax Rate',
+  `status` tinyint(3) UNSIGNED NOT NULL DEFAULT '1' COMMENT 'Status'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `tax_entity`
+--
+
+INSERT INTO `tax_entity` (`entity_id`, `tax_class`, `tax_rate`, `status`) VALUES
+(1, 'None', '0.00', 1),
+(2, 'VAT', '0.50', 1),
+(3, 'INCOME', '14.00', 1);
 
 -- --------------------------------------------------------
 
@@ -226,7 +373,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `ip_address`, `username`, `password`, `salt`, `email`, `activation_code`, `forgotten_password_code`, `forgotten_password_time`, `remember_code`, `created_on`, `last_login`, `active`, `first_name`, `last_name`, `company`, `phone`) VALUES
-(1, '127.0.0.1', 'administrator', '$2y$08$eFoSZ7WQx7o9Iq5cbDbDeOYyjYCs/FSztxBQUM/vJEJ6iNBCLD7gS', '', 'admin@admin.com', '', NULL, NULL, 'cIpDKHmOD.QSFNMiyW4Wje', 1268889823, 1487262878, 1, 'Admin', 'istrator', 'ADMIN', '0');
+(1, '127.0.0.1', 'administrator', '$2y$08$eFoSZ7WQx7o9Iq5cbDbDeOYyjYCs/FSztxBQUM/vJEJ6iNBCLD7gS', '', 'admin@admin.com', '', NULL, NULL, 'Vca45vzHyy8ABwPu5gQTPe', 1268889823, 1487699412, 1, 'Admin', 'istrator', 'ADMIN', '0'),
+(8, '', 'haridas', '$2y$08$eFoSZ7WQx7o9Iq5cbDbDeOYyjYCs/FSztxBQUM/vJEJ6iNBCLD7gS', NULL, 'haridas@gmail.com', NULL, NULL, NULL, 'UR8aOHsJO/XfVnbM/B2qpe', 1268889823, 1487702095, 1, 'Haridas K', 'Kurup', 'IT', '8904055898');
 
 -- --------------------------------------------------------
 
@@ -245,7 +393,8 @@ CREATE TABLE `users_groups` (
 --
 
 INSERT INTO `users_groups` (`id`, `user_id`, `group_id`) VALUES
-(1, 1, 1);
+(1, 1, 1),
+(8, 8, 2);
 
 --
 -- Indexes for dumped tables
@@ -280,7 +429,8 @@ ALTER TABLE `login_attempts`
 --
 ALTER TABLE `menu_entity`
   ADD PRIMARY KEY (`entity_id`),
-  ADD KEY `category_id` (`category_id`);
+  ADD KEY `category_id` (`category_id`),
+  ADD KEY `tax_class` (`tax_class`);
 
 --
 -- Indexes for table `menu_entity_ingredients`
@@ -288,6 +438,42 @@ ALTER TABLE `menu_entity`
 ALTER TABLE `menu_entity_ingredients`
   ADD PRIMARY KEY (`ingredient_id`),
   ADD KEY `menu_id` (`menu_id`);
+
+--
+-- Indexes for table `menu_entity_price`
+--
+ALTER TABLE `menu_entity_price`
+  ADD PRIMARY KEY (`price_id`),
+  ADD KEY `menu_id` (`menu_id`),
+  ADD KEY `price_type` (`price_type`);
+
+--
+-- Indexes for table `menu_entity_price_type`
+--
+ALTER TABLE `menu_entity_price_type`
+  ADD PRIMARY KEY (`entity_id`);
+
+--
+-- Indexes for table `order_entity`
+--
+ALTER TABLE `order_entity`
+  ADD PRIMARY KEY (`entity_id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `table_id` (`table_id`);
+
+--
+-- Indexes for table `order_entity_items`
+--
+ALTER TABLE `order_entity_items`
+  ADD PRIMARY KEY (`item_id`),
+  ADD KEY `order_id` (`order_id`),
+  ADD KEY `menu_id` (`menu_id`);
+
+--
+-- Indexes for table `order_status`
+--
+ALTER TABLE `order_status`
+  ADD PRIMARY KEY (`status`);
 
 --
 -- Indexes for table `table_category`
@@ -301,6 +487,12 @@ ALTER TABLE `table_category`
 ALTER TABLE `table_details`
   ADD PRIMARY KEY (`id`),
   ADD KEY `table_cat_id` (`table_cat_id`);
+
+--
+-- Indexes for table `tax_entity`
+--
+ALTER TABLE `tax_entity`
+  ADD PRIMARY KEY (`entity_id`);
 
 --
 -- Indexes for table `users`
@@ -325,17 +517,17 @@ ALTER TABLE `users_groups`
 -- AUTO_INCREMENT for table `attributes`
 --
 ALTER TABLE `attributes`
-  MODIFY `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Attribute Id', AUTO_INCREMENT=4;
+  MODIFY `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Attribute Id', AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT for table `category_entity`
 --
 ALTER TABLE `category_entity`
-  MODIFY `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Category Id', AUTO_INCREMENT=3;
+  MODIFY `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Category Id', AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT for table `groups`
 --
 ALTER TABLE `groups`
-  MODIFY `id` mediumint(8) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` mediumint(8) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT for table `login_attempts`
 --
@@ -345,32 +537,57 @@ ALTER TABLE `login_attempts`
 -- AUTO_INCREMENT for table `menu_entity`
 --
 ALTER TABLE `menu_entity`
-  MODIFY `entity_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Menu Entity Id', AUTO_INCREMENT=3;
+  MODIFY `entity_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Menu Entity Id', AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT for table `menu_entity_ingredients`
 --
 ALTER TABLE `menu_entity_ingredients`
-  MODIFY `ingredient_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Ingredient ID', AUTO_INCREMENT=9;
+  MODIFY `ingredient_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Ingredient ID', AUTO_INCREMENT=11;
+--
+-- AUTO_INCREMENT for table `menu_entity_price`
+--
+ALTER TABLE `menu_entity_price`
+  MODIFY `price_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Price Id', AUTO_INCREMENT=7;
+--
+-- AUTO_INCREMENT for table `menu_entity_price_type`
+--
+ALTER TABLE `menu_entity_price_type`
+  MODIFY `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Price Type Id', AUTO_INCREMENT=3;
+--
+-- AUTO_INCREMENT for table `order_entity`
+--
+ALTER TABLE `order_entity`
+  MODIFY `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Order Id';
+--
+-- AUTO_INCREMENT for table `order_entity_items`
+--
+ALTER TABLE `order_entity_items`
+  MODIFY `item_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Item Id';
 --
 -- AUTO_INCREMENT for table `table_category`
 --
 ALTER TABLE `table_category`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT for table `table_details`
 --
 ALTER TABLE `table_details`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+--
+-- AUTO_INCREMENT for table `tax_entity`
+--
+ALTER TABLE `tax_entity`
+  MODIFY `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Tax Id', AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 --
 -- AUTO_INCREMENT for table `users_groups`
 --
 ALTER TABLE `users_groups`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 --
 -- Constraints for dumped tables
 --
@@ -386,6 +603,18 @@ ALTER TABLE `menu_entity`
 --
 ALTER TABLE `menu_entity_ingredients`
   ADD CONSTRAINT `menu_entity_ingredients_ibfk_1` FOREIGN KEY (`menu_id`) REFERENCES `menu_entity` (`entity_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `menu_entity_price`
+--
+ALTER TABLE `menu_entity_price`
+  ADD CONSTRAINT `menu_entity_price_ibfk_1` FOREIGN KEY (`menu_id`) REFERENCES `menu_entity` (`entity_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `order_entity_items`
+--
+ALTER TABLE `order_entity_items`
+  ADD CONSTRAINT `order_entity_items_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `order_entity` (`entity_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `table_details`

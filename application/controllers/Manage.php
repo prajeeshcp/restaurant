@@ -10,16 +10,20 @@ class Manage extends Cpanel_Controller
 		$this->load->library("pagination");
 		$this->load->helper('url');
 		$this->load->model('manage_model');
+		$this->load->model('order_model');
 		$this->data['message'] 			= $this->session->flashdata('message');
 		$this->data['message_type'] 	= $this->session->flashdata('message_type');
 	}
 	
 	public function index($page = NULL) {
+		$tableDtil						= $this->order_model->get_available_tables();
+		$this->data['table_dtil']		= $tableDtil;
 		if ($page) {
 			$this->render($page);
 		} else  {
 			$this->render('dashboard');
 		}
+		
 		}
 		
 	#manage menu attributes here 
@@ -452,12 +456,13 @@ class Manage extends Cpanel_Controller
 			}
 			$this->add_data(compact('get_data', 'categories', 'ingredients', 'price_list'));
 			$this->render('add-menu');
-			redirect('manage/manage_menu', 'refresh');
+			
 		} else {
 			$this->session->set_flashdata('message', "Oops! something went wrong. Try again later.");
 			$this->session->set_flashdata('message_type', 'danger');
 			redirect('manage/manage_menu', 'refresh');
 		}
+	
 	}
 
 	#get user details
