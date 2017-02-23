@@ -10,6 +10,7 @@
 		</li>
 		<?php } ?>
 		<li>
+
 			<a href="#" class="jarvismetro-tile big-cubes bg-color-greenLight" data-toggle="modal" data-target="#myModalChangePassword"> <span class="iconbox"> <i class="fa fa-key fa-4x"></i> <span>Change password</span> </span> </a>
 		</li>
 		<li>
@@ -90,7 +91,7 @@
 					<div class="col-md-6">
 						<div class="form-group">
 							<label for="category"> User Type</label>
-							<select class="form-control" id="userType" name="userType" id="userType">
+							<select class="form-control" id="userType" name="userType" >
 								<option value="" selected>Select A Type</option>
 								<option value="2">Cashier</option>
 								<option value="3">Waiter</option>
@@ -171,7 +172,7 @@
 				<button type="button" class="btn btn-default" data-dismiss="modal">
 					Cancel
 				</button>
-				<button type="button" class="btn btn-primary" id="editUser" >
+				<button type="button" class="btn btn-primary" id="editUserProfile" >
 					Edit
 				</button>
 			</div>
@@ -205,7 +206,7 @@
 				<div class="row">
 					<div class="col-md-6">
 						<div class="form-group">
-							<input type="text" class="form-control" placeholder="User Name" name="user_name" id="user_name" required />
+							<input type="text" class="form-control" placeholder="User Email" name="user_email" id="user_email" required />
 						</div>
 					</div>
 					<div class="col-md-6">

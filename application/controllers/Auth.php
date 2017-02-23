@@ -63,12 +63,12 @@ class Auth extends Cpanel_Controller
 			
 		
 		$this->load->library('form_validation');
-		$this->form_validation->set_rules('user_name', 'user name', 'required');
+		$this->form_validation->set_rules('user_email', 'user Email', 'required|valid_email');
 		$this->form_validation->set_rules('current_pass', 'current password', 'required');
 		$this->form_validation->set_rules('new_password', 'new password', 'required');
 		$this->form_validation->set_rules('con_password', 'confirm password', 'required');
 		if ($this->form_validation->run() == true) { 
-				if ($this->ion_auth->change_password($this->input->post('user_name'), $this->input->post('current_pass'), $this->input->post('new_password'))) {
+				if ($this->ion_auth->change_password($this->input->post('user_email'), $this->input->post('current_pass'), $this->input->post('new_password'))) {
 				// $this->session->set_flashdata('message', $this->ion_auth->messages());
 				// $this->session->set_flashdata('message_type', 'info');
 				// redirect('auth/logout', 'refresh');
@@ -125,7 +125,7 @@ class Auth extends Cpanel_Controller
 		if ($this->ion_auth->logged_in() && $this->ion_auth->is_admin()) { // Check whether the user is already logged-in and is admin 
 			
 		$this->load->library('form_validation');
-		$this->form_validation->set_rules('userName', 'user name', 'trim|required|min_length[5]|max_length[12]|is_unique[users.username]|alpha');
+		$this->form_validation->set_rules('userName', 'user name', 'trim|required|min_length[5]|max_length[15]|is_unique[users.username]|alpha');
 		//$this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[5]');
 		//$this->form_validation->set_rules('confPassword', 'Confirm password', 'trim|matches[password]');
 		$this->form_validation->set_rules('email', 'email address', 'trim|required|valid_email|is_unique[users.email]');
@@ -174,9 +174,11 @@ class Auth extends Cpanel_Controller
 					<td>'. stripslashes($userType).'</td>
 					<td>'. stripslashes($userName).'</td>
 		            <td>'. stripslashes($email).'</td>					
-					<td><a href="#" class="btn btn-warning btn-xs" onclick="edit_userDetails('.$user_id.')"><i class="fa fa-edit"></i> Edit</a></td>';
+					';
 					if($user_id != 1){
-						$userData.='<td id="td_id_'.$user_id.'" ><a href="#" class="btn btn-warning btn-xs btn_delete" onclick="deleteUser('.$user_id.')"><i class="fa fa-edit"></i> Delete</a></td>';
+						$userData.='
+						<td><a href="#" class="btn btn-warning btn-xs" onclick="edit_userDetails('.$user_id.')"><i class="fa fa-edit"></i> Edit</a></td>
+						<td id="td_id_'.$user_id.'" ><a href="#" class="btn btn-warning btn-xs btn_delete" onclick="deleteUser('.$user_id.')"><i class="fa fa-edit"></i> Delete</a></td>';
 					}
 				$userData.='</tr>';
 				$data 	= array('message' => $this->ion_auth->messages(),

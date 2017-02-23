@@ -1,12 +1,17 @@
 <?php $selected		= (isset($selected) ? $selected : 'dashboard');
 	$catelog		= FALSE;
-
-	if ($selected == "menuattribute" || $selected == "menucategory" || $selected == "tablecategory" || $selected == "tabledetails" || $selected == "allmenus") {
-		$system			= FALSE;
+	$system			= FALSE;
+	$table			= FALSE;
+	if ($selected == "menuattribute" || $selected == "menucategory" || $selected == "allmenus") {
 		$catelog		= TRUE;
 	} else if($selected == "system") {
 		$system		= TRUE;
+	} else if ($selected == "tablecategory" || $selected == "tabledetails") {
+		$table		= TRUE;
 	}
+ ?>
+ <?php 
+	$user = $this->ion_auth->user()->row();
  ?>
 <aside id="left-panel">
 
@@ -15,7 +20,7 @@
 				<span> <!-- User image size is adjusted inside CSS, it should stay as it --> 
 					<img src="<?=site_url('assets/')?>img/avatars/sunny.png" alt="me" class="online" /> 
 					<a href="javascript:void(0);" id="show-shortcut">
-						john.doe <i class="fa fa-angle-down"></i>
+						<?=$user->first_name." ".$user->last_name?> <i class="fa fa-angle-down"></i>
 					</a> 
 				</span>
 			</div>
@@ -34,7 +39,7 @@
 				-->
 
 				<ul>
-					<li class="">
+					<li class="<?=($selected == 'dashboard') ? 'active' : ''?>">
 						<a href="<?=site_url('manage')?>" title="Dashboard"><i class="fa fa-lg fa-fw fa-home"></i> <span class="menu-item-parent">Dashboard</span></a>
 					</li>
 					
@@ -52,14 +57,14 @@
 							</li>
 						</ul>
 					</li>
-					<li class="<?=($catelog) ? 'open' : ''?>">
+					<li class="<?=($table) ? 'open' : ''?>">
 						<a href="#"><i class="fa fa-lg fa-fw fa-table"></i> <span class="menu-item-parent">Tables</span></a>
-						<ul style=" <?=($catelog) ? 'display: block;' : ''?>">							
-							<li class="<?=($selected == 'tablecategory') ? 'active' : ''?>">
-								<a href="<?=site_url('manage/table_categories')?>">Table Category</a>
-							</li>
+						<ul style=" <?=($table) ? 'display: block;' : ''?>">	
 							<li class="<?=($selected == 'tabledetails') ? 'active' : ''?>">
 								<a href="<?=site_url('manage/table_details')?>">Manage Tables</a>
+							</li>
+                            <li class="<?=($selected == 'tablecategory') ? 'active' : ''?>">
+								<a href="<?=site_url('manage/table_categories')?>">Table Category</a>
 							</li>
 						</ul>
 					</li>

@@ -10,16 +10,20 @@ class Manage extends Cpanel_Controller
 		$this->load->library("pagination");
 		$this->load->helper('url');
 		$this->load->model('manage_model');
+		$this->load->model('order_model');
 		$this->data['message'] 			= $this->session->flashdata('message');
 		$this->data['message_type'] 	= $this->session->flashdata('message_type');
 	}
 	
 	public function index($page = NULL) {
+		$tableDtil						= $this->order_model->get_available_tables();
+		$this->data['table_dtil']		= $tableDtil;
 		if ($page) {
 			$this->render($page);
 		} else  {
 			$this->render('dashboard');
 		}
+		
 		}
 		
 	#manage menu attributes here 
@@ -452,12 +456,13 @@ class Manage extends Cpanel_Controller
 			}
 			$this->add_data(compact('get_data', 'categories', 'ingredients', 'price_list'));
 			$this->render('add-menu');
-			redirect('manage/manage_menu', 'refresh');
+			
 		} else {
 			$this->session->set_flashdata('message', "Oops! something went wrong. Try again later.");
 			$this->session->set_flashdata('message_type', 'danger');
 			redirect('manage/manage_menu', 'refresh');
 		}
+	
 	}
 
 	#get user details
@@ -475,9 +480,11 @@ class Manage extends Cpanel_Controller
 			<td>'. stripslashes($rows['user_type']).'</td>
 			<td>'. stripslashes($rows['username']).'</td>
             <td>'. stripslashes($rows['email']).'</td>					
-			<td><a href="#" class="btn btn-warning btn-xs" onclick="edit_userDetails('.$rows['id'].')""><i class="fa fa-edit"></i> Edit</a></td>';
+			';
 			if(($rows['id'] != 1) && ($rows['username'] != 'administrator')){
-				$userData.='<td id="td_id_'.$rows['id'].'" ><a href="#" class="btn btn-warning btn-xs btn_delete" onclick="deleteUser('.$rows['id'].')"><i class="fa fa-edit"></i> Delete</a></td>';
+				$userData.='
+				<td><a href="#" class="btn btn-warning btn-xs" onclick="edit_userDetails('.$rows['id'].')""><i class="fa fa-edit"></i> Edit</a></td>
+				<td id="td_id_'.$rows['id'].'" ><a href="#" class="btn btn-warning btn-xs btn_delete" onclick="deleteUser('.$rows['id'].')"><i class="fa fa-edit"></i> Delete</a></td>';
 			}
 		$userData.='</tr>';			
 		}		
@@ -487,10 +494,12 @@ class Manage extends Cpanel_Controller
 	}
 
 	#load edit user_details
-	public function edit_userDetails($userId=null){
+	public function loadEditUserDetails($userId=null){
 
 		
 		$get_data 	= $this->manage_model->get_user_details($userId);
+		$get_groups = _DB_data($this->tables['groups'], null, null, null, null);
+
 		
 		$userData="";
 		foreach ($get_data as $rows) {			
@@ -534,18 +543,7 @@ class Manage extends Cpanel_Controller
 						</div>
 					</div>
 				</div>
-				<div class="row">
-					<div class="col-md-6">
-						<div class="form-group">
-							<input type="password" class="form-control" placeholder="Password" name="editpassword" id="editpassword" value="'.$rows['password'].'" required readonly />
-						</div>
-					</div>
-					<div class="col-md-6">
-						<div class="form-group">
-							<input type="password" class="form-control" placeholder="Confirm Password" name="editconfPassword" id="editconfPassword" value="'.$rows['password'].'"  readonly required />
-						</div>
-					</div>
-				</div>
+				
 				<div class="row">
 					<div class="col-md-12">
 						<div class="form-group">
@@ -565,7 +563,7 @@ class Manage extends Cpanel_Controller
 								<option value="" selected>Select A Type</option>';
 
 								$c_selected= $w_selected= '';
-								(!empty($rows['user_type']) && $rows['user_type']=='cashier') ? $c_selected='selected="selected"' : $w_selected='selected="selected"';
+								(!empty($rows['user_type']) && $rows['user_type']==='cashier') ? $c_selected='selected="selected"' : $w_selected='selected="selected"';
 
 					$userData.='<option '.$c_selected.' value="2">Cashier</option>
 								<option '.$w_selected.' value="3">Waiter</option>
@@ -586,16 +584,16 @@ class Manage extends Cpanel_Controller
 
 	}
 
-	#load edit userprofile details oflogined user
-	public function editUserProfile(){
+	#load edit userprofile details of logined user
+	public function loadeditUserProfile(){
 
 		$userId = $this->ion_auth->get_user_id();		
 		$get_data 	= $this->manage_model->get_user_details($userId);		
-		$userData="";
+		$editUserData="";
 		foreach ($get_data as $rows) {			
 		
-		$userData.='
-				<div class="row" id="editProfilesuccessMessages" style="display:none">
+		$editUserData.='
+				<div class="row" id="editProfilesuccessMessage" style="display:none">
 					<div class="col-lg-12 col-sm-offset-12">
 		            	<div class="alert alert-danger" ></div>
 		          	</div>					
@@ -632,19 +630,7 @@ class Manage extends Cpanel_Controller
 							<input type="number" class="form-control" placeholder="Phone" name="editProfilephone" id="editProfilephone" value="'.$rows['phone'].'"   required />
 						</div>
 					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-6">
-						<div class="form-group">
-							<input type="password" class="form-control" placeholder="Password" name="editProfilepassword" id="editProfilepassword" value="'.$rows['password'].'" required readonly />
-						</div>
-					</div>
-					<div class="col-md-6">
-						<div class="form-group">
-							<input type="password" class="form-control" placeholder="Confirm Password" name="editProfileconfPassword" id="editProfileconfPassword" value="'.$rows['password'].'"  readonly required />
-						</div>
-					</div>
-				</div>
+				</div>				
 				<div class="row">
 					<div class="col-md-12">
 						<div class="form-group">
@@ -654,50 +640,28 @@ class Manage extends Cpanel_Controller
 							<textarea class="form-control" placeholder="Address" rows="5" id="editProfileaddress" name="editProfileaddress" required>'.$rows['company'].'</textarea>
 						</div>
 					</div>
-				</div>
+				</div>		
 				
-				<div class="row">
-					<div class="col-md-6">
-						<div class="form-group">
-							<label for="category"> User Type</label>
-							<select class="form-control" id="editProfileuserType" name="editProfileuserType" id="userType">
-								<option value="" selected>Select A Type</option>';
-
-								$c_selected= $w_selected= '';
-								(!empty($rows['user_type']) && $rows['user_type']=='cashier') ? $c_selected='selected="selected"' : $w_selected='selected="selected"';
-
-					$userData.='<option '.$c_selected.' value="2">Cashier</option>
-								<option '.$w_selected.' value="3">Waiter</option>
-							</select>
-						</div>
-					</div>
-					<div class="col-md-6">
-						<div class="form-group">
-							
-						</div>
-					</div>
-				</div>
 			';
 			}
-		$data = array('userData'=>$userData);
+		$data = array('editUserData'=>$editUserData);
 		print_r(json_encode($data));
-
-
 	}
 
-
 	#edit user_details
-	public function edit_user($Id=null){
-		if ($this->ion_auth->logged_in() && $this->ion_auth->is_admin()) { // Check whether the user is already logged-in and is admin 
+	public function edit_user($flag=null){
+		if ($this->ion_auth->logged_in()) { // Check whether the user is already logged-in 
 			
 		$this->load->library('form_validation');
-		$this->form_validation->set_rules('userName', 'user name', 'trim|required|min_length[5]|max_length[12]|alpha');		
+		$this->form_validation->set_rules('userName', 'user name', 'trim|required|min_length[5]|max_length[15]|alpha');		
 		$this->form_validation->set_rules('email', 'email address', 'trim|required|valid_email');
 		$this->form_validation->set_rules('phone', 'Phone Number', 'required|integer|min_length[10]|max_length[12]');
 		$this->form_validation->set_rules('firstName', 'First name', 'required');
 		$this->form_validation->set_rules('lastName', 'Last name', 'required');
 		$this->form_validation->set_rules('address', 'Address', 'required');
-		$this->form_validation->set_rules('userType', 'user type', 'required');
+		if(empty($flag)){
+			$this->form_validation->set_rules('userType', 'user type', 'required');
+		}		
 		if ($this->form_validation->run() == true) {
 			
 			$user_id 			= $this->input->post('user_id');
@@ -707,7 +671,10 @@ class Manage extends Cpanel_Controller
 			$email 				= $this->input->post('email');
 			$fisrtName			= $this->input->post('firstName');
 			$lastName			= $this->input->post('lastName');
-			$userGroup			= $this->input->post('userType');
+			if(empty($flag)){
+				$userGroup			= $this->input->post('userType');
+			}
+			
 			$phone 				= $this->input->post('phone');
 			$address 			= $this->input->post('address');
 			$additionalData 	= array(
@@ -716,18 +683,23 @@ class Manage extends Cpanel_Controller
 								'company'	=> $address,
 								'phone' 	=> $phone
 								);
-			$group 				= array($userGroup); // Sets user.
+			if(empty($flag)){
+				$group 				= array($userGroup); // Sets user.
 
-			if($userGroup == 2){
-				$userType = 'cashier';
-			} elseif($userGroup == 3){
-				$userType = 'waiter';
-			}
+				if($userGroup == 2){
+					$userType = 'cashier';
+				} elseif($userGroup == 3){
+					$userType = 'waiter';
+				}
+			}		
 
 			$userUpdate = _DB_update($this->tables['users'], array('first_name' => $fisrtName, 'last_name' => $lastName, 'username' => $userName, 'email' => $email,  'company' => $address, 'phone' => $phone), array('id' => $user_id));
-			$userUpdateGroup = _DB_update($this->tables['users_groups'], array('group_id' => $userGroup), array('id' => $user_id));
 
-			if ($userUpdate) {
+			if(empty($flag)){
+				$userUpdateGroup = _DB_update($this->tables['users_groups'], array('group_id' => $userGroup), array('id' => $user_id));
+			}			
+
+			if ($userUpdate && empty($flag)) {
 				$userData="";				
 				$userData .='<tr class="odd gradeX" >
 					<td>'. stripslashes($fisrtName).'</td>
@@ -744,6 +716,13 @@ class Manage extends Cpanel_Controller
 								'userData'  => $userData
 								);
 				print_r(json_encode($data));
+				
+			} else if($userUpdate && !empty($flag)){
+				$data 	= array('message' => 'Data updated successfully',
+								'message_type' => 'success'
+								);
+				print_r(json_encode($data));
+
 			} else {
 				$data 	= array('message' => 'error',
 								'message_type' => 'danger'
