@@ -498,6 +498,8 @@ class Manage extends Cpanel_Controller
 
 		
 		$get_data 	= $this->manage_model->get_user_details($userId);
+		$get_groups = _DB_data($this->tables['groups'], null, null, null, null);
+
 		
 		$userData="";
 		foreach ($get_data as $rows) {			
