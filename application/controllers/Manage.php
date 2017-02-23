@@ -17,6 +17,13 @@ class Manage extends Cpanel_Controller
 	
 	public function index($page = NULL) {
 		$tableDtil						= $this->order_model->get_available_tables();
+		$loggedUser 					= $this->ion_auth->user()->row();
+		foreach($tableDtil as $key => $table) {
+			$checkOrder					=  $this->order_model->check_table($table['id'], $loggedUser->id);
+			if (!empty($checkOrder)) {
+				unset($tableDtil[$key]);
+			}
+		}
 		$this->data['table_dtil']		= $tableDtil;
 		if ($page) {
 			$this->render($page);
@@ -866,6 +873,25 @@ class Manage extends Cpanel_Controller
 		$this->session->set_flashdata('message', "Oops! Something went wrong. Try again later.");
 		$this->session->set_flashdata('message_type', 'danger');
 		redirect('manage/system_config', 'refresh');
+		}
+	}
+	
+	#click table button for order and view page
+	function order_desk($tableId = NULL) {
+		$this->data['table_id']		= $tableId;
+		$loggedUser 				= $this->ion_auth->user()->row();
+		if ($tableId) {	
+			$checkOrder				= $this->order_model->check_table($tableId, $loggedUser->id);
+			if (!empty($checkOrder)) {
+				redirect('manage/index', 'refresh');
+			} else {
+				//check whether pending order is there or what
+				$this->render('order-desk');
+			}
+		} else {
+			$this->session->set_flashdata('message', "Oops! Something went wrong. Try again later.");
+			$this->session->set_flashdata('message_type', 'danger');
+			redirect('manage/index', 'refresh');
 		}
 	}
 }

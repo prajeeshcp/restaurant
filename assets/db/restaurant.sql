@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 21, 2017 at 09:59 PM
+-- Generation Time: Feb 23, 2017 at 08:15 PM
 -- Server version: 10.1.13-MariaDB
 -- PHP Version: 5.6.23
 
@@ -41,6 +41,50 @@ INSERT INTO `attributes` (`entity_id`, `attribute_name`, `status`) VALUES
 (2, 'Veg', 1),
 (3, 'Non Veg', 2),
 (4, 'New Attributes', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `bill_entity`
+--
+
+CREATE TABLE `bill_entity` (
+  `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity Id',
+  `status` varchar(20) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Status',
+  `order_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Order Id',
+  `user_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'User Id',
+  `increment_id` varchar(50) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Increment Id',
+  `grand_total` decimal(12,2) UNSIGNED NOT NULL DEFAULT '0.00' COMMENT 'Grand Total',
+  `subtotal` decimal(12,2) UNSIGNED NOT NULL DEFAULT '0.00' COMMENT 'Sub Total',
+  `tax_amount` decimal(12,2) UNSIGNED NOT NULL DEFAULT '0.00' COMMENT 'Tax Amount',
+  `total_paid` decimal(12,2) UNSIGNED NOT NULL DEFAULT '0.00' COMMENT 'Total Paid',
+  `discount_amount` decimal(12,2) UNSIGNED NOT NULL DEFAULT '0.00' COMMENT 'Discount Amount',
+  `delivery_charge` decimal(12,2) UNSIGNED NOT NULL DEFAULT '0.00' COMMENT 'Delivery Charge',
+  `total_qty-ordered` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Total Qty Ordered',
+  `created_at` datetime NOT NULL COMMENT 'Created At',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Updated At'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `bill_entity_items`
+--
+
+CREATE TABLE `bill_entity_items` (
+  `item_id` int(10) UNSIGNED NOT NULL COMMENT 'Item Id',
+  `bill_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Bill Id',
+  `menu_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Menu Id',
+  `order_type` varchar(20) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Order Type',
+  `name` varchar(100) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Name',
+  `qty_ordered` int(10) UNSIGNED NOT NULL COMMENT 'Qty Ordered',
+  `price` decimal(12,2) UNSIGNED NOT NULL DEFAULT '0.00' COMMENT 'Price',
+  `tax_percent` decimal(12,2) UNSIGNED NOT NULL DEFAULT '0.00' COMMENT 'Tax Percent',
+  `tax_amount` decimal(12,2) UNSIGNED NOT NULL DEFAULT '0.00' COMMENT 'Tax Amount',
+  `row_total` decimal(12,2) UNSIGNED NOT NULL DEFAULT '0.00' COMMENT 'Row Total',
+  `created_at` datetime NOT NULL COMMENT 'Created At',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Updated At'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -90,6 +134,40 @@ INSERT INTO `groups` (`id`, `name`, `description`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `kot_entity`
+--
+
+CREATE TABLE `kot_entity` (
+  `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity Id',
+  `status` varchar(20) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Status',
+  `table_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Table Id',
+  `order_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Order Id',
+  `increment_id` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Increment Id',
+  `qty_ordered` decimal(12,2) UNSIGNED NOT NULL DEFAULT '0.00' COMMENT 'QTY Ordered',
+  `created_at` datetime NOT NULL COMMENT 'Created At',
+  `Updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Updated At'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `kot_entity_items`
+--
+
+CREATE TABLE `kot_entity_items` (
+  `item_id` int(10) UNSIGNED NOT NULL COMMENT 'Item Id',
+  `kot_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'KOT ID',
+  `menu_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Menu Id',
+  `order_type` varchar(20) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Order Type',
+  `name` varchar(100) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Name',
+  `qty_ordered` decimal(12,2) UNSIGNED NOT NULL DEFAULT '0.00' COMMENT 'QTY Ordered',
+  `created_at` datetime NOT NULL COMMENT 'Created At',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Updated At'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `login_attempts`
 --
 
@@ -111,7 +189,7 @@ CREATE TABLE `menu_entity` (
   `category_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Category Id',
   `menu_name` varchar(200) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Manu Name',
   `tax_class` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Tax Class',
-  `created_at` datetime NOT NULL COMMENT 'Created At',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Ctrated At',
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Updated At',
   `status` tinyint(4) NOT NULL DEFAULT '1' COMMENT 'Status'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -211,6 +289,7 @@ CREATE TABLE `order_entity` (
   `status` varchar(20) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Order Status',
   `table_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Table Id',
   `user_id` int(10) UNSIGNED NOT NULL COMMENT 'User Id',
+  `increment_id` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Increment Id',
   `grand_total` decimal(12,2) UNSIGNED NOT NULL DEFAULT '0.00' COMMENT 'Grand Total',
   `subtotal` decimal(12,2) UNSIGNED NOT NULL DEFAULT '0.00' COMMENT 'Subtotal',
   `tax_amount` float(12,2) UNSIGNED NOT NULL DEFAULT '0.00' COMMENT 'Tax Amount',
@@ -234,7 +313,7 @@ CREATE TABLE `order_entity_items` (
   `is_kot` tinyint(3) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'i for created KOT',
   `menu_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Menu Item Id',
   `order_type` varchar(50) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'table' COMMENT 'Type of order like parcel',
-  `Name` varchar(250) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Name of Item',
+  `name` varchar(250) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Name of Item',
   `qty_ordered` decimal(12,2) UNSIGNED NOT NULL DEFAULT '0.00' COMMENT 'Qty',
   `price` decimal(12,2) UNSIGNED NOT NULL DEFAULT '0.00' COMMENT 'Price for single ',
   `tax_percent` decimal(12,2) UNSIGNED NOT NULL DEFAULT '0.00' COMMENT 'Tax Percent',
@@ -280,7 +359,7 @@ CREATE TABLE `table_category` (
   `id` int(10) NOT NULL,
   `name` varchar(75) NOT NULL,
   `status` int(11) NOT NULL,
-  `created_at` datetime NOT NULL COMMENT 'Created At',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -373,8 +452,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `ip_address`, `username`, `password`, `salt`, `email`, `activation_code`, `forgotten_password_code`, `forgotten_password_time`, `remember_code`, `created_on`, `last_login`, `active`, `first_name`, `last_name`, `company`, `phone`) VALUES
-(1, '127.0.0.1', 'administrator', '$2y$08$eFoSZ7WQx7o9Iq5cbDbDeOYyjYCs/FSztxBQUM/vJEJ6iNBCLD7gS', '', 'admin@admin.com', '', NULL, NULL, 'Vca45vzHyy8ABwPu5gQTPe', 1268889823, 1487699412, 1, 'Admin', 'istrator', 'ADMIN', '0'),
-(8, '', 'haridas', '$2y$08$eFoSZ7WQx7o9Iq5cbDbDeOYyjYCs/FSztxBQUM/vJEJ6iNBCLD7gS', NULL, 'haridas@gmail.com', NULL, NULL, NULL, 'UR8aOHsJO/XfVnbM/B2qpe', 1268889823, 1487702095, 1, 'Haridas K', 'Kurup', 'IT', '8904055898');
+(1, '127.0.0.1', 'administrator', '$2y$08$eFoSZ7WQx7o9Iq5cbDbDeOYyjYCs/FSztxBQUM/vJEJ6iNBCLD7gS', '', 'admin@admin.com', '', NULL, NULL, '9B3CyEPK1b0mcCKWB3NGW.', 1268889823, 1487872439, 1, 'Admin', 'istrator', 'ADMIN', '0'),
+(8, '', 'haridas', '$2y$08$eFoSZ7WQx7o9Iq5cbDbDeOYyjYCs/FSztxBQUM/vJEJ6iNBCLD7gS', NULL, 'haridas@gmail.com', NULL, NULL, NULL, 'QnXdVvuRLim8otCbzl4zr.', 1268889823, 1487872456, 1, 'Haridas K', 'Kurup', 'IT', '8904055898');
 
 -- --------------------------------------------------------
 
@@ -407,6 +486,22 @@ ALTER TABLE `attributes`
   ADD PRIMARY KEY (`entity_id`);
 
 --
+-- Indexes for table `bill_entity`
+--
+ALTER TABLE `bill_entity`
+  ADD PRIMARY KEY (`entity_id`),
+  ADD UNIQUE KEY `increment_id` (`increment_id`),
+  ADD KEY `order_id` (`order_id`);
+
+--
+-- Indexes for table `bill_entity_items`
+--
+ALTER TABLE `bill_entity_items`
+  ADD PRIMARY KEY (`item_id`),
+  ADD KEY `bill_id` (`bill_id`),
+  ADD KEY `menu_id` (`menu_id`);
+
+--
 -- Indexes for table `category_entity`
 --
 ALTER TABLE `category_entity`
@@ -417,6 +512,23 @@ ALTER TABLE `category_entity`
 --
 ALTER TABLE `groups`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `kot_entity`
+--
+ALTER TABLE `kot_entity`
+  ADD PRIMARY KEY (`entity_id`),
+  ADD UNIQUE KEY `increment_id` (`increment_id`),
+  ADD KEY `table_id` (`table_id`),
+  ADD KEY `order_id` (`order_id`);
+
+--
+-- Indexes for table `kot_entity_items`
+--
+ALTER TABLE `kot_entity_items`
+  ADD PRIMARY KEY (`item_id`),
+  ADD KEY `kot_id` (`kot_id`),
+  ADD KEY `menu_id` (`menu_id`);
 
 --
 -- Indexes for table `login_attempts`
@@ -458,6 +570,7 @@ ALTER TABLE `menu_entity_price_type`
 --
 ALTER TABLE `order_entity`
   ADD PRIMARY KEY (`entity_id`),
+  ADD UNIQUE KEY `increment_id` (`increment_id`),
   ADD KEY `user_id` (`user_id`),
   ADD KEY `table_id` (`table_id`);
 
@@ -519,6 +632,16 @@ ALTER TABLE `users_groups`
 ALTER TABLE `attributes`
   MODIFY `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Attribute Id', AUTO_INCREMENT=5;
 --
+-- AUTO_INCREMENT for table `bill_entity`
+--
+ALTER TABLE `bill_entity`
+  MODIFY `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id';
+--
+-- AUTO_INCREMENT for table `bill_entity_items`
+--
+ALTER TABLE `bill_entity_items`
+  MODIFY `item_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Item Id';
+--
 -- AUTO_INCREMENT for table `category_entity`
 --
 ALTER TABLE `category_entity`
@@ -528,6 +651,16 @@ ALTER TABLE `category_entity`
 --
 ALTER TABLE `groups`
   MODIFY `id` mediumint(8) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+--
+-- AUTO_INCREMENT for table `kot_entity`
+--
+ALTER TABLE `kot_entity`
+  MODIFY `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id';
+--
+-- AUTO_INCREMENT for table `kot_entity_items`
+--
+ALTER TABLE `kot_entity_items`
+  MODIFY `item_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Item Id';
 --
 -- AUTO_INCREMENT for table `login_attempts`
 --
@@ -591,6 +724,12 @@ ALTER TABLE `users_groups`
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `bill_entity`
+--
+ALTER TABLE `bill_entity`
+  ADD CONSTRAINT `bill_entity_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `order_entity` (`entity_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `menu_entity`
