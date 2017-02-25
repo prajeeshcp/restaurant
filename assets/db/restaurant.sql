@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 23, 2017 at 08:15 PM
+-- Generation Time: Feb 25, 2017 at 08:57 AM
 -- Server version: 10.1.13-MariaDB
 -- PHP Version: 5.6.23
 
@@ -38,8 +38,8 @@ CREATE TABLE `attributes` (
 
 INSERT INTO `attributes` (`entity_id`, `attribute_name`, `status`) VALUES
 (1, 'None', 1),
-(2, 'Veg', 1),
-(3, 'Non Veg', 2),
+(2, 'veg', 1),
+(3, 'non-veg', 2),
 (4, 'New Attributes', 1);
 
 -- --------------------------------------------------------
@@ -108,7 +108,7 @@ CREATE TABLE `category_entity` (
 INSERT INTO `category_entity` (`entity_id`, `attribute_id`, `entity_name`, `created_at`, `updated_at`, `status`) VALUES
 (1, 1, 'Default Category', '0000-00-00 00:00:00', '2017-02-15 12:04:36', 1),
 (2, 4, 'North Indian Thali', '2017-02-14 19:55:19', '2017-02-21 13:37:20', 1),
-(3, 1, 'Ice cream', '2017-02-21 19:07:34', '2017-02-21 18:07:34', 1);
+(3, 2, 'Ice cream', '2017-02-21 19:07:34', '2017-02-24 06:18:27', 1);
 
 -- --------------------------------------------------------
 
@@ -199,10 +199,10 @@ CREATE TABLE `menu_entity` (
 --
 
 INSERT INTO `menu_entity` (`entity_id`, `category_id`, `menu_name`, `tax_class`, `created_at`, `updated_at`, `status`) VALUES
-(1, 2, 'First Menu Edit', 1, '2017-02-15 15:30:55', '2017-02-19 06:15:13', 1),
-(2, 2, 'Second menu edit', 2, '2017-02-15 16:27:47', '2017-02-18 16:24:35', 2),
+(1, 1, 'First Menu Edit', 1, '2017-02-15 15:30:55', '2017-02-24 06:22:40', 1),
+(2, 2, 'Second menu edit', 2, '2017-02-15 16:27:47', '2017-02-24 16:06:15', 1),
 (3, 2, 'New menu', 1, '2017-02-19 05:56:12', '2017-02-19 06:15:23', 1),
-(4, 1, 'First Menu', 0, '2017-02-21 13:37:56', '2017-02-21 13:39:59', 2);
+(4, 3, 'First Menu', 0, '2017-02-21 13:37:56', '2017-02-24 16:02:50', 1);
 
 -- --------------------------------------------------------
 
@@ -255,8 +255,10 @@ INSERT INTO `menu_entity_price` (`price_id`, `menu_id`, `price_type`, `price_amo
 (2, 3, 2, 200),
 (3, 1, 1, 10),
 (4, 1, 2, 5),
-(5, 4, 1, 0),
-(6, 4, 2, 0);
+(5, 4, 1, 150),
+(6, 4, 2, 0),
+(7, 2, 1, 500),
+(8, 2, 2, 300);
 
 -- --------------------------------------------------------
 
@@ -301,6 +303,14 @@ CREATE TABLE `order_entity` (
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+--
+-- Dumping data for table `order_entity`
+--
+
+INSERT INTO `order_entity` (`entity_id`, `status`, `table_id`, `user_id`, `increment_id`, `grand_total`, `subtotal`, `tax_amount`, `total_paid`, `discount_amount`, `delivery_charge`, `total_qty_ordered`, `created_at`, `updated_at`) VALUES
+(1, 'pending', 3, 8, '10001', '0.00', '0.00', 0.00, '0.00', '0.00', '0.00', 0, '2017-02-24 20:41:51', '2017-02-24 15:11:51'),
+(2, 'pending', 3, 8, '10002', '0.00', '0.00', 0.00, '0.00', '0.00', '0.00', 0, '2017-02-24 21:35:07', '2017-02-24 16:05:07');
+
 -- --------------------------------------------------------
 
 --
@@ -313,6 +323,7 @@ CREATE TABLE `order_entity_items` (
   `is_kot` tinyint(3) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'i for created KOT',
   `menu_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Menu Item Id',
   `order_type` varchar(50) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'table' COMMENT 'Type of order like parcel',
+  `price_type` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Price Type',
   `name` varchar(250) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Name of Item',
   `qty_ordered` decimal(12,2) UNSIGNED NOT NULL DEFAULT '0.00' COMMENT 'Qty',
   `price` decimal(12,2) UNSIGNED NOT NULL DEFAULT '0.00' COMMENT 'Price for single ',
@@ -453,7 +464,7 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `ip_address`, `username`, `password`, `salt`, `email`, `activation_code`, `forgotten_password_code`, `forgotten_password_time`, `remember_code`, `created_on`, `last_login`, `active`, `first_name`, `last_name`, `company`, `phone`) VALUES
 (1, '127.0.0.1', 'administrator', '$2y$08$eFoSZ7WQx7o9Iq5cbDbDeOYyjYCs/FSztxBQUM/vJEJ6iNBCLD7gS', '', 'admin@admin.com', '', NULL, NULL, '9B3CyEPK1b0mcCKWB3NGW.', 1268889823, 1487872439, 1, 'Admin', 'istrator', 'ADMIN', '0'),
-(8, '', 'haridas', '$2y$08$eFoSZ7WQx7o9Iq5cbDbDeOYyjYCs/FSztxBQUM/vJEJ6iNBCLD7gS', NULL, 'haridas@gmail.com', NULL, NULL, NULL, 'QnXdVvuRLim8otCbzl4zr.', 1268889823, 1487872456, 1, 'Haridas K', 'Kurup', 'IT', '8904055898');
+(8, '', 'haridas', '$2y$08$eFoSZ7WQx7o9Iq5cbDbDeOYyjYCs/FSztxBQUM/vJEJ6iNBCLD7gS', NULL, 'haridas@gmail.com', NULL, NULL, NULL, 'Vk6b3pEZeBK.3Oy2ez.M6e', 1268889823, 1487959540, 1, 'Haridas K', 'Kurup', 'IT', '8904055898');
 
 -- --------------------------------------------------------
 
@@ -505,7 +516,8 @@ ALTER TABLE `bill_entity_items`
 -- Indexes for table `category_entity`
 --
 ALTER TABLE `category_entity`
-  ADD PRIMARY KEY (`entity_id`);
+  ADD PRIMARY KEY (`entity_id`),
+  ADD KEY `attribute_id` (`attribute_id`);
 
 --
 -- Indexes for table `groups`
@@ -680,7 +692,7 @@ ALTER TABLE `menu_entity_ingredients`
 -- AUTO_INCREMENT for table `menu_entity_price`
 --
 ALTER TABLE `menu_entity_price`
-  MODIFY `price_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Price Id', AUTO_INCREMENT=7;
+  MODIFY `price_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Price Id', AUTO_INCREMENT=9;
 --
 -- AUTO_INCREMENT for table `menu_entity_price_type`
 --
@@ -690,7 +702,7 @@ ALTER TABLE `menu_entity_price_type`
 -- AUTO_INCREMENT for table `order_entity`
 --
 ALTER TABLE `order_entity`
-  MODIFY `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Order Id';
+  MODIFY `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Order Id', AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT for table `order_entity_items`
 --
@@ -730,6 +742,12 @@ ALTER TABLE `users_groups`
 --
 ALTER TABLE `bill_entity`
   ADD CONSTRAINT `bill_entity_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `order_entity` (`entity_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `category_entity`
+--
+ALTER TABLE `category_entity`
+  ADD CONSTRAINT `category_entity_ibfk_1` FOREIGN KEY (`attribute_id`) REFERENCES `attributes` (`entity_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `menu_entity`
