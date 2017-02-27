@@ -42,7 +42,7 @@
 					<li class="<?=($selected == 'dashboard') ? 'active' : ''?>">
 						<a href="<?=site_url('manage')?>" title="Dashboard"><i class="fa fa-lg fa-fw fa-home"></i> <span class="menu-item-parent">Dashboard</span></a>
 					</li>
-					
+					<?php if ($this->ion_auth->logged_in() && $this->ion_auth->is_admin()) {?>
 					<li class="<?=($catelog) ? 'open' : ''?>">
 						<a href="#"><i class="fa fa-lg fa-fw fa-list-alt"></i> <span class="menu-item-parent">Catalog</span></a>
 						<ul style=" <?=($catelog) ? 'display: block;' : ''?>">
@@ -71,6 +71,7 @@
 					<li class="<?=($system) ? 'active' : ''?>">
 						<a href="<?=site_url('manage/system_config')?>"><i class="fa fa-lg fa-fw fa-cog"></i> <span class="menu-item-parent">System</span></a>
 					</li>
+					<?php } ?>
 				</ul>
 			</nav>
 			<span class="minifyme"> <i class="fa fa-arrow-circle-left hit"></i> </span>

@@ -559,15 +559,22 @@ class Manage extends Cpanel_Controller
 					<div class="col-md-6">
 						<div class="form-group">
 							<label for="category"> User Type</label>
-							<select class="form-control" id="edituserType" name="edituserType" id="userType">
-								<option value="" selected>Select A Type</option>';
+							<select class="form-control" id="edituserType" name="edituserType" >
+								';
 
-								$c_selected= $w_selected= '';
-								(!empty($rows['user_type']) && $rows['user_type']==='cashier') ? $c_selected='selected="selected"' : $w_selected='selected="selected"';
+								$options = '<option value="0">Select A Type</option>';
 
-					$userData.='<option '.$c_selected.' value="2">Cashier</option>
-								<option '.$w_selected.' value="3">Waiter</option>
-							</select>
+				             	foreach($get_groups as $group_row) {
+				             	  if($group_row['id'] != 1){
+				             	  (!empty($rows['user_type']) && $rows['user_type']===$group_row['name']) ? $selected=' selected="selected" ' : $selected='';			            
+				             	  	$options.= '<option '.$selected. ' value="' . $group_row["id"] . '">' . $group_row["name"] . '</option>';
+				             	  }	
+				                  
+				             	 }
+				              	$closeSelect = '</select>';
+
+					$userData.=$options.$closeSelect;
+					$userData.='</select>
 						</div>
 					</div>
 					<div class="col-md-6">
