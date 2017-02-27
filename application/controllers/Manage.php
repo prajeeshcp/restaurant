@@ -966,7 +966,7 @@ class Manage extends Cpanel_Controller
 			$menuDtil				= _DB_get_record($this->tables['menu_entity'], array('entity_id' => $menu_id));
 			$MenuName				= $menuDtil['menu_name']." (".$typeDtil['type_name'].")";
 			
-			$checkMenu				= _DB_get_record($this->tables['order_entity_items'], array(' 	order_id' => $order_id, 'is_kot' => 0, 'menu_id' => $menu_id, 'price_type' => $price_type));
+			$checkMenu				= _DB_get_record($this->tables['order_entity_items'], array('order_id' => $order_id, 'is_kot' => 0, 'menu_id' => $menu_id, 'price_type' => $price_type));	
 			
 			if (empty($checkMenu)) {
 				$qty				= 1;
@@ -975,8 +975,8 @@ class Manage extends Cpanel_Controller
 				if ($insertMenu) {
 					$insertKOT		= _DB_insert($this->tables['kot_entity_items'], array('kot_id' => $kot_id, 'is_kot' => 0, 'menu_id' => $menu_id, 'order_type' => $order_type, 'price_type' => $price_type, 'name' => $MenuName, 'qty_ordered' => $qty, 'created_at' => $dateTime, 'updated_at' => $dateTime));
 					$this->data['order_id']		= $order_id;
-					//$this->data['kot_details']	= $this->order_model->kot_details($kot_id);
-					//$this->render('ajax/kot_details');
+					$this->data['kot_details']	= $this->order_model->kot_details($kot_id);
+					$this->render('ajax/kot_details');
 				}
 			} else {
 				$qty				= $checkMenu['qty_ordered']+1;

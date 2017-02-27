@@ -155,7 +155,7 @@ overflow-y: scroll;">
                             </div>
 		                </div>
 		                <div class="panel-footer text-align-center">
-		                    <a href="javascript:void(0);" class="btn btn-warning btn-lg disabled" role="button">PRINT KOT</a></div>
+		                    <a href="javascript:void(0);" class="btn btn-warning btn-lg kot-button disabled" role="button">PRINT KOT</a></div>
 		            </div>
 		        </div>	
 		    			    	
@@ -399,6 +399,7 @@ overflow-y: scroll;">
 						cache : false, // (warning: this will cause a timestamp and will call the request twice)
 						beforeSend : function() {
 			// cog placed
+			
 			$('#create-new').addClass('disabled');
 			$('#content').css({opacity : '0.5'});
 				// scroll up
@@ -406,10 +407,10 @@ overflow-y: scroll;">
 					scrollTop : 0
 				}, "fast");
 		},
-						success : function(data) { 
-							$('#kot-details').append(data);
+						success : function(data) {
+							$('#kot-details').html(data);
 							$('#create-new').removeClass('disabled');
-							$('.permision-btn').removeClass('disabled');
+							$('.kot-button').removeClass('disabled');
 							$('#content').css({opacity : '1'});
 						},
 						error : function(xhr, ajaxOptions, thrownError) {
