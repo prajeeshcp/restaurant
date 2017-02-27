@@ -323,7 +323,7 @@
 </section>
 <!-- end widget grid -->
 
-<?php } else if ($this->ion_auth->in_group(2)) { ?>
+<?php } else if ($this->ion_auth->in_group(3)) { ?>
 <section class="">
 	<!-- row -->
 	<div class="row">
@@ -336,7 +336,7 @@
 							foreach ($table_dtil as $table) {
 						?>
 							<div class="col-sm-3 col-md-2" style="padding-bottom:15px;">
-                            	<a href="javascript:void(0);" class="btn btn-success btn-lg">Table-<?=$table['table_number']?></a>
+                            	<a href="<?=site_url('manage/order_desk/'.$table['id'])?>" class="btn btn-success btn-lg">Table-<?=$table['table_number']?></a>
                             </div>
                             <?php } } else { ?>
                             <div class="col-sm-12 col-md-12" style="padding-bottom:15px;">
