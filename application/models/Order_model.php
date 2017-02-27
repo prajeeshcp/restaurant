@@ -64,4 +64,13 @@ class Order_model extends CI_Model {
 		}
 	}
 	
+	function kot_details($kot_id = NULL) {
+		if ($kot_id) {
+		return $this->db->select('kot.*, item.table_id, item.menu_id, item.order_type, item.price_type, item.name, item.qty_ordered, item.created_at')
+				 ->from('kot_entity kot')
+				 ->join('kot_entity_items item', 'kot.entity_id = item.kot_id', 'left')
+				 ->where('kot.entity_id', $kot_id)
+				 ->get()->result_array();
+		}
+	}
 }
