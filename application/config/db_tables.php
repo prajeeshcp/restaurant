@@ -17,4 +17,10 @@ $config['tables']['tax_entity']    				= 'tax_entity';
 $config['tables']['menu_entity_price']    		= 'menu_entity_price';
 $config['tables']['order_entity']    			= 'order_entity';
 $config['tables']['order_entity_items']    		= 'order_entity_items';
+$config['tables']['kot_entity']    				= 'kot_entity';
+$config['tables']['kot_entity_items']    		= 'kot_entity_items';
+$config['tables']['bill_entity']    			= 'bill_entity';
+$config['tables']['bill_entity_items']    		= 'bill_entity_items';
+$config['tables']['order_status']				= 'order_status';
+
 

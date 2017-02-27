@@ -143,89 +143,14 @@ overflow-y: scroll;">
 		                    <h3 class="panel-title">
 		                        Order List</h3>
 		                </div>
-		                <div class="panel-body no-padding">
+		                <div class="panel-body no-padding" >
 		                    <div class="the-price">
-		                        <h1>
-		                            10003<span class="subscript"> KOT No</span></h1>
+		                        <h1><span class="subscript">KOT No</span></h1>
 		                    </div>
                             <div class="custom-scroll" style="max-height: 270px;overflow-x: hidden;
 overflow-y: scroll;">
-		                    <table class="table">
-		                        <tr>
-		                            <td width="55%">
-		                               <strong> Beel Poori </strong>
-		                            </td>
-                                    <td><button type="button" class="btn btn-sm btn-info btn-prev">
-									10</button></td>
-                                    <td><div class="actions">
-								<button type="button" class="btn btn-sm btn-warning btn-prev">
-									<i class="fa fa-minus-circle"></i></button>
-								<button type="button" class="btn btn-sm btn-success btn-next" data-last="Finish"><i class="fa fa-plus-circle"></i>
-								</button>
-                                <button type="button" class="btn btn-sm btn-danger btn-prev">
-									<i class="fa  fa-trash-o"></i></button>
-							</div></td>
-		                        </tr>
-                                <tr class="active">
-		                            <td width="55%">
-		                               <strong> Sav Poori </strong>
-		                            </td>
-                                    <td><button type="button" class="btn btn-sm btn-info btn-prev">
-									15</button></td>
-                                    <td><div class="actions">
-								<button type="button" class="btn btn-sm btn-warning btn-prev">
-									<i class="fa fa-minus-circle"></i></button>
-								<button type="button" class="btn btn-sm btn-success btn-next" data-last="Finish"><i class="fa fa-plus-circle"></i>
-								</button>
-                                <button type="button" class="btn btn-sm btn-danger btn-prev">
-									<i class="fa  fa-trash-o"></i></button>
-							</div></td>
-		                        </tr>
-                                <tr>
-		                            <td width="55%">
-		                               <strong> Masala Poori </strong>
-		                            </td>
-                                    <td><button type="button" class="btn btn-sm btn-info btn-prev">
-									15</button></td>
-                                    <td><div class="actions">
-								<button type="button" class="btn btn-sm btn-warning btn-prev">
-									<i class="fa fa-minus-circle"></i></button>
-								<button type="button" class="btn btn-sm btn-success btn-next" data-last="Finish"><i class="fa fa-plus-circle"></i>
-								</button>
-                                <button type="button" class="btn btn-sm btn-danger btn-prev">
-									<i class="fa  fa-trash-o"></i></button>
-							</div></td>
-		                        </tr>
-                                <tr class="active">
-		                            <td width="55%">
-		                               <strong> Pani Poori </strong>
-		                            </td>
-                                    <td><button type="button" class="btn btn-sm btn-info btn-prev">
-									15</button></td>
-                                    <td><div class="actions">
-								<button type="button" class="btn btn-sm btn-warning btn-prev">
-									<i class="fa fa-minus-circle"></i></button>
-								<button type="button" class="btn btn-sm btn-success btn-next" data-last="Finish"><i class="fa fa-plus-circle"></i>
-								</button>
-                                <button type="button" class="btn btn-sm btn-danger btn-prev">
-									<i class="fa  fa-trash-o"></i></button>
-							</div></td>
-		                        </tr>
-                                <tr>
-		                            <td width="55%">
-		                               <strong> Vada </strong>
-		                            </td>
-                                    <td><button type="button" class="btn btn-sm btn-info btn-prev">
-									15</button></td>
-                                    <td><div class="actions">
-								<button type="button" class="btn btn-sm btn-warning btn-prev">
-									<i class="fa fa-minus-circle"></i></button>
-								<button type="button" class="btn btn-sm btn-success btn-next" data-last="Finish"><i class="fa fa-plus-circle"></i>
-								</button>
-                                <button type="button" class="btn btn-sm btn-danger btn-prev">
-									<i class="fa  fa-trash-o"></i></button>
-							</div></td>
-		                        </tr>
+		                    <table class="table" id="kot-details">
+		                         
 		                    </table>
                             </div>
 		                </div>
@@ -462,9 +387,10 @@ overflow-y: scroll;">
 </script>
 <script type="text/javascript" language="javascript">
 	function confirm_menu(menu_id, price_type) {
-			var orderId			= $('#order-id').val(); 
-			if (orderId) {
-			var dataString    	= "order_id="+orderId+'&menu_id='+menu_id+'&price_type='+price_type;
+			var orderId			= $('#order-id').val();
+			var kotId			= $('#kot-id').val(); 
+			if (orderId && kotId) {
+			var dataString    	= "order_id="+orderId+'&menu_id='+menu_id+'&price_type='+price_type+'&kot_id='+kotId;
 					$.ajax({ 
 						type : "POST",
 						url : "<?=site_url()?>manage/confirm_menu",
@@ -481,7 +407,7 @@ overflow-y: scroll;">
 				}, "fast");
 		},
 						success : function(data) { 
-							//$('#order-details').html(data);
+							$('#kot-details').append(data);
 							$('#create-new').removeClass('disabled');
 							$('.permision-btn').removeClass('disabled');
 							$('#content').css({opacity : '1'});
