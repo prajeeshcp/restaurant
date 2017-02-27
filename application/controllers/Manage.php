@@ -182,7 +182,7 @@ class Manage extends Cpanel_Controller
 	#list table categories
 	function table_categories() {
 		//$allCategories				= $this->manage_model->get_table_categories();
-		$allCategories					= _DB_data($this->tables['table_category'], null, null, null, null);
+		$allCategories					= _DB_data($this->tables['table_category'], null, null, null, array('id','desc'));
 
 		$this->data['categories']	= $allCategories;
 		$this->render('manage-table-categories');
