@@ -155,7 +155,7 @@ overflow-y: scroll;">
                             </div>
 		                </div>
 		                <div class="panel-footer text-align-center">
-		                    <a href="javascript:void(0);" class="btn btn-warning btn-lg kot-button disabled" role="button">PRINT KOT</a></div>
+		                    <a href="javascript:void(0);" class="btn btn-warning btn-lg kot-button disabled" role="button" onclick="return print_kot();">PRINT KOT</a></div>
 		            </div>
 		        </div>	
 		    			    	
@@ -191,7 +191,7 @@ overflow-y: scroll;">
                                     <th>Status</th>
                                     <th>Action</th>
                                 </tr>
-                                <?php if (!empty($processing_odr)) { 
+                                <?php print_r($processing_odr); if (!empty($processing_odr)) { 
 									foreach ($processing_odr as $key => $processing) {
 										$tableDtl		= _DB_get_record($this->tables['table_details'], array('id' => $processing['table_id']));
 								?>
@@ -201,7 +201,7 @@ overflow-y: scroll;">
 		                            </td>
                                     <td><?=$tableDtl['table_number']?></td>
                                      <td><span class="label bg-color-<?=($processing['status'] == 'pending') ? 'red' : 'orange'?>"><?=ucfirst($processing['status'])?></span></td>
-                                    <td><a href="javascript:void(0);" class="btn btn-primary"><i class="fa fa-shopping-cart"></i> GO NOW</a></td>
+                                    <td><a href="javascript:void(0);" class="btn btn-primary" onclick="return manage_pending_order(<?= $processing['entity_id']?>,<?= $processing['order_id']?>);"><i class="fa fa-shopping-cart"></i> GO NOW</a></td>
 		                        </tr>
                                 <?php } } ?>
 		                    </tbody></table>
@@ -355,70 +355,153 @@ overflow-y: scroll;">
 </script> 
 <script type="text/javascript" language="javascript">
 	function create_new_order() {
-			var tableId			= $('#table-id').val(); 
-			var dataString    	= "table_id="+tableId;
-					$.ajax({ 
-						type : "POST",
-						url : "<?=site_url()?>manage/create_order",
-						data : dataString,
-						dataType : 'html',
-						cache : false, // (warning: this will cause a timestamp and will call the request twice)
-						beforeSend : function() {
+		var tableId			= $('#table-id').val(); 
+		var dataString    	= "table_id="+tableId;
+		$.ajax({ 
+			type : "POST",
+			url : "<?=site_url()?>manage/create_order",
+			data : dataString,
+			dataType : 'html',
+			cache : false, // (warning: this will cause a timestamp and will call the request twice)
+			beforeSend : function() {
 			// cog placed
-			$('#create-new').addClass('disabled');
-			$('#content').css({opacity : '0.5'});
-				// scroll up
+				$('#create-new').addClass('disabled');
+				$('#content').css({opacity : '0.5'});
+					// scroll up
 				$("html, body").animate({
 					scrollTop : 0
 				}, "fast");
-		},
-						success : function(data) { 
-							$('#order-details').html(data);
-							$('#create-new').removeClass('disabled');
-							$('.permision-btn').removeClass('disabled');
-							$('#content').css({opacity : '1'});
-						},
-						error : function(xhr, ajaxOptions, thrownError) {
-							container.html('<h4 style="margin-top:10px; display:block; text-align:left"><i class="fa fa-warning txt-color-orangeDark"></i> Error 404! Page not found.</h4> <br>Or you are running this page from your hard drive. Please make sure for all ajax calls your page needs to be hosted in a server');
-						},
-						async : false
-					});
+			},
+			success : function(data) { 
+				$('#order-details').html(data);
+				$('#create-new').removeClass('disabled');
+				$('.permision-btn').removeClass('disabled');
+				$('#content').css({opacity : '1'});
+			},
+			error : function(xhr, ajaxOptions, thrownError) {
+				container.html('<h4 style="margin-top:10px; display:block; text-align:left"><i class="fa fa-warning txt-color-orangeDark"></i> Error 404! Page not found.</h4> <br>Or you are running this page from your hard drive. Please make sure for all ajax calls your page needs to be hosted in a server');
+			},
+			async : false
+		});
 	}
 </script>
 <script type="text/javascript" language="javascript">
-	function confirm_menu(menu_id, price_type) {
-			var orderId			= $('#order-id').val();
-			var kotId			= $('#kot-id').val(); 
-			if (orderId && kotId) {
-			var dataString    	= "order_id="+orderId+'&menu_id='+menu_id+'&price_type='+price_type+'&kot_id='+kotId;
-					$.ajax({ 
-						type : "POST",
-						url : "<?=site_url()?>manage/confirm_menu",
-						data : dataString,
-						dataType : 'html',
-						cache : false, // (warning: this will cause a timestamp and will call the request twice)
-						beforeSend : function() {
+	function confirm_menu(menu_id = null, price_type = null, orderId=null,kotId=null,flag=null) {		
+		if(orderId == null){ var orderId			= $('#order-id').val(); }
+		if(kotId == null){ var kotId				= $('#kot-id').val(); } 
+		if(flag == null){ var flag				= 0; }		
+		if (orderId && kotId) {
+			var dataString    	= "order_id="+orderId+'&menu_id='+menu_id+'&price_type='+price_type+'&kot_id='+kotId+'&flag='+flag;
+			$.ajax({ 
+				type : "POST",
+				url : "<?=site_url()?>manage/confirm_menu",
+				data : dataString,
+				dataType : 'html',
+				cache : false, // (warning: this will cause a timestamp and will call the request twice)
+				beforeSend : function() {
 			// cog placed
 			
-			$('#create-new').addClass('disabled');
-			$('#content').css({opacity : '0.5'});
-				// scroll up
-				$("html, body").animate({
-					scrollTop : 0
-				}, "fast");
-		},
-						success : function(data) {
-							$('#kot-details').html(data);
-							$('#create-new').removeClass('disabled');
-							$('.kot-button').removeClass('disabled');
-							$('#content').css({opacity : '1'});
-						},
-						error : function(xhr, ajaxOptions, thrownError) {
-							container.html('<h4 style="margin-top:10px; display:block; text-align:left"><i class="fa fa-warning txt-color-orangeDark"></i> Error 404! Page not found.</h4> <br>Or you are running this page from your hard drive. Please make sure for all ajax calls your page needs to be hosted in a server');
-						},
-						async : false
-					});
+					$('#create-new').addClass('disabled');
+					$('#content').css({opacity : '0.5'});
+						// scroll up
+						$("html, body").animate({
+							scrollTop : 0
+						}, "fast");
+				},
+				success : function(data) {
+					
+					if(data === "null"){
+						//alert(data);
+						$('#kot-details').html("");						
+						$('.kot-button').addClass('disabled');
+					} else {
+						$('#kot-details').html();
+						$('#kot-details').html(data);
+						$('#create-new').removeClass('disabled');
+						$('.kot-button').removeClass('disabled');	
+					}
+					$('#content').css({opacity : '1'});
+					
+				},
+				error : function(xhr, ajaxOptions, thrownError) {
+					container.html('<h4 style="margin-top:10px; display:block; text-align:left"><i class="fa fa-warning txt-color-orangeDark"></i> Error 404! Page not found.</h4> <br>Or you are running this page from your hard drive. Please make sure for all ajax calls your page needs to be hosted in a server');
+				},
+				async : false
+			});
+		}
 	}
+</script>
+<script type="text/javascript" language="javascript">
+	function print_kot() {
+		var orderId			= $('#order-id').val();
+		var kotId			= $('#kot-id').val(); 		
+		if (orderId && kotId) {
+			var dataString    	= "order_id="+orderId+'&kot_id='+kotId;
+			$.ajax({ 
+				type : "POST",
+				url : "<?=site_url()?>manage/print_kot",
+				data : dataString,
+				dataType : 'html',
+				cache : false, // (warning: this will cause a timestamp and will call the request twice)
+				beforeSend : function() {
+			// cog placed
+			
+					$('#create-new').addClass('disabled');
+					$('#content').css({opacity : '0.5'});
+						// scroll up
+						$("html, body").animate({
+							scrollTop : 0
+						}, "fast");
+				},
+				success : function(data) {
+					$('#kot-details').html(data);
+					$('#create-new').removeClass('disabled');
+					$('.kot-button').removeClass('disabled');
+					$('#content').css({opacity : '1'});
+				},
+				error : function(xhr, ajaxOptions, thrownError) {
+					container.html('<h4 style="margin-top:10px; display:block; text-align:left"><i class="fa fa-warning txt-color-orangeDark"></i> Error 404! Page not found.</h4> <br>Or you are running this page from your hard drive. Please make sure for all ajax calls your page needs to be hosted in a server');
+				},
+				async : false
+			});
+		}
+	}
+</script>
+
+<script type="text/javascript" language="javascript">
+	function manage_pending_order(kotId = null,orderId=null) {
+		// var orderId			= $('#order-id').val();
+		// var kotId			= $('#kot-id').val(); 		
+		if (kotId) {
+			var dataString    	= "order_id="+orderId+'&kot_id='+kotId;
+			$.ajax({ 
+				type : "POST",
+				url : "<?=site_url()?>manage/manage_pending_order",
+				data : dataString,
+				dataType : 'html',
+				cache : false, // (warning: this will cause a timestamp and will call the request twice)
+				beforeSend : function() {
+			// cog placed
+			
+					$('#create-new').addClass('disabled');
+					$('#content').css({opacity : '0.5'});
+						// scroll up
+						$("html, body").animate({
+							scrollTop : 0
+						}, "fast");
+				},
+				success : function(data) {
+					$('#kot-details').html(data);
+					$('#create-new').removeClass('disabled');
+					$('.kot-button').removeClass('disabled');
+					$('#content').css({opacity : '1'});
+				},
+				error : function(xhr, ajaxOptions, thrownError) {
+					container.html('<h4 style="margin-top:10px; display:block; text-align:left"><i class="fa fa-warning txt-color-orangeDark"></i> Error 404! Page not found.</h4> <br>Or you are running this page from your hard drive. Please make sure for all ajax calls your page needs to be hosted in a server');
+				},
+				async : false
+			});
+		}
 	}
 </script>
 <?php $this->load->view('includes/footer'); ?>
