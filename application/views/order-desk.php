@@ -191,7 +191,7 @@ overflow-y: scroll;">
                                     <th>Status</th>
                                     <th>Action</th>
                                 </tr>
-                                <?php print_r($processing_odr); if (!empty($processing_odr)) { 
+                                <?php if (!empty($processing_odr)) { 
 									foreach ($processing_odr as $key => $processing) {
 										$tableDtl		= _DB_get_record($this->tables['table_details'], array('id' => $processing['table_id']));
 								?>
@@ -458,6 +458,13 @@ overflow-y: scroll;">
 					$('#create-new').removeClass('disabled');
 					$('.kot-button').removeClass('disabled');
 					$('#content').css({opacity : '1'});
+					var newWin = window.open('','print-window');
+					newWin.document.open();
+					newWin.document.write('<html><body onload="window.print()">'+data+'</body></html>');
+					newWin.document.close();
+					setTimeout(function(){
+						newWin.close();
+					},10); 
 				},
 				error : function(xhr, ajaxOptions, thrownError) {
 					container.html('<h4 style="margin-top:10px; display:block; text-align:left"><i class="fa fa-warning txt-color-orangeDark"></i> Error 404! Page not found.</h4> <br>Or you are running this page from your hard drive. Please make sure for all ajax calls your page needs to be hosted in a server');

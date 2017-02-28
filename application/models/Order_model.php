@@ -40,6 +40,16 @@ class Order_model extends CI_Model {
 		->get()->result_array();
 		
 	}
+
+	#get all the pending and processing order of logged user
+	function processing_odr_cashier($userId	= NULL) {
+		return $this->db->select('odr.*, item.*')
+		->from('order_entity odr')
+		->join('order_entity_items item', 'odr.entity_id = item.order_id', 'left')
+		->where("odr.status", 'processing')
+		->get()->result_array();
+		
+	}
 	
 	#get all the active menus
 	function get_active_menus(){

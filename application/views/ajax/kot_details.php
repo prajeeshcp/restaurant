@@ -1,4 +1,5 @@
 <?php 
+
 if (!empty($kot_details)) {
 	foreach ($kot_details as $kot) {
  ?>
@@ -23,3 +24,35 @@ if (!empty($kot_details)) {
 </tr>
 <?php } }
  ?>
+
+<table id="print_kot_table" style="display:none">
+<tr>
+    <td>KOT:</td><td><?=$kot_details[0]["kot_id"]?></td>
+    
+    <td>TABLE:</td><td><?=$kot_details[0]["table_id"]?></td>
+    
+    <td>ORDER TYPE:</td><td><?=$kot_details[0]["order_id"]?></td>
+</tr>
+<tr>
+    <th>Food Item</th>
+    <th>Quatity</th>
+</tr>
+
+<?php 
+if (!empty($kot_details)) {
+    foreach ($kot_details as $kot) {
+ ?>
+
+<tr>
+    <td width="100%">   
+        <strong> <?=strip_tags($kot['name']);?> </strong>     
+    </td>
+    <td>
+        <?=number_format($kot['qty_ordered']);?>
+            
+    </td>
+    
+<?php } }
+ ?>
+
+</table>
