@@ -2,8 +2,8 @@
         
          #printout_bill {
             text-align: center;
-            width:100%;
-            height:100%;
+            /*width:100%;
+            height:100%;*/
           }
           table {
             margin: 0 auto; /* or margin: 0 auto 0 auto */
@@ -28,7 +28,7 @@
                 <td></td>
                 <td></td>
                 <td></td>
-                <td>Date : <?=date('YYYY-MM-DD')?></td>
+                <td>Date : <?=date('Y-m-d')?></td>
             </tr>
             <tr>
                 <td>Order No : <?=$bill_details[0]["entity_id"]?></td> 
@@ -102,7 +102,7 @@
                 <td></td>
                 <td></td>
                 <td>Final Total</td>
-                <td><?=$bill_details[0]["total_paid"]?></td>
+                <td><?=$bill_details[0]["grand_total"]?></td>
             </tr>
             
 

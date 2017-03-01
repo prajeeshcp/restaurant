@@ -378,14 +378,14 @@
 									?>
 	                                <tr class="<?=($key%2 == 0) ? 'active' : ''?>">
 			                            <td>
-			                               <?=$processing['increment_id']?>
+			                               <?=$processing['entity_id']?>
 			                            </td>
 	                                    <td><?=$tableDtl['table_number']?></td>
 	                                     <td><span class="label bg-color-<?=($processing['status'] == 'pending') ? 'red' : 'orange'?>"><?=ucfirst($processing['status'])?></span></td>
 	                                     <td>
 			                               <?=$processing['grand_total']?>
 			                            </td>
-	                                    <td id="processing_order_<?= $processing['order_id']?>"><a href="javascript:void(0);" class="btn btn-primary" onclick="return print_bill_cashier(<?= $processing['order_id']?>);"><i class="fa fa-shopping-cart"></i> Print Bill</a></td>
+	                                    <td id="processing_order_<?= $processing['entity_id']?>"><a href="javascript:void(0);" class="btn btn-primary" onclick="return print_bill_cashier(<?=$processing['entity_id']?>);"><i class="fa fa-shopping-cart"></i> Print Bill</a></td>
 			                        </tr>
 	                                <?php } } ?>
 			                    </tbody></table>

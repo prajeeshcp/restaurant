@@ -25,7 +25,7 @@ if (!empty($kot_details)) {
 <?php } }
  ?>
 
-<div id="print_kot_div" style="display:none">
+<!-- <div id="print_kot_div" style="display:none">
     
         <tr style="text-align:center">
             <td width="40%">KOT:<?=$kot_details[0]["kot_id"]?></td>
@@ -60,5 +60,5 @@ if (!empty($kot_details)) {
 
     
     
-</div>
+</div> -->
 

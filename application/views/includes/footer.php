@@ -255,11 +255,11 @@
 					// 	}, "fast");
 				},
 				success : function(data) {
-					// $('#kot-details').html(data);
+					$('#print_bil_div').html(data);
 					// $('#create-new').removeClass('disabled');
 					// $('.kot-button').removeClass('disabled');
 					// $('#content').css({opacity : '1'});
-					var divContents = $("#print_kot_div").html();
+					var divContents = $("#print_bil_div").html();
 					var newWin = window.open('','print-window');
 					newWin.document.open();
 					newWin.document.write('<html><body onload="window.print()"><table>'+divContents+'</table></body></html>');

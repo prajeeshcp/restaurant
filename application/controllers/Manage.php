@@ -1009,7 +1009,7 @@ class Manage extends Cpanel_Controller
 
 		$checkMenu				= _DB_data($this->tables['order_entity_items'], array('order_id' => $order_id ));
 		$grand_total="";
-		$total_qty_ordered=""
+		$total_qty_ordered="";
 			foreach ($checkMenu as $total) {
 				$grand_total			+= $total['row_total'];
 				$total_qty_ordered		+= $total['total_qty_ordered'];
@@ -1036,8 +1036,8 @@ class Manage extends Cpanel_Controller
 		$dateTime					= date('Y-m-d H:i:s');
 		$order_id					= $this->input->post('order_id', true);
 		$updateOrderEntity		= _DB_update($this->tables['order_entity'], array('status' => 'closed', 'updated_at' => $dateTime), array('entity_id' => $order_id));
-		$this->data['order_id']		= $orderID;
-		$this->data['bill_details']	= $this->order_model->bill_details($orderID);
+		$this->data['order_id']		= $order_id;
+		$this->data['bill_details']	= $this->order_model->bill_details($order_id);
 		$this->render('ajax/print_bill');
 
 

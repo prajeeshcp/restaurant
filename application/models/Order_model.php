@@ -43,11 +43,9 @@ class Order_model extends CI_Model {
 
 	#get all the pending and processing order of logged user
 	function processing_odr_cashier($userId	= NULL) {
-		return $this->db->select('odr.*, item.*')
-		->from('order_entity odr')
-		->join('order_entity_items item', 'odr.entity_id = item.order_id', 'left')
-		->where("odr.status", 'processing')
-		->where("item.is_kot", 1)
+		return $this->db->select('*')
+		->from('order_entity')		
+		->where("status", 'processing')		
 		->get()->result_array();
 		
 	}
@@ -88,7 +86,7 @@ class Order_model extends CI_Model {
 	function bill_details($order_id = NULL) {
 		if ($order_id) {	
 
-		return $this->db->select('ord.*, ord_ent.*,kot.entity_id as kot_id',)
+		return $this->db->select('ord.*, ord_ent.*,kot.entity_id as kot_id')
 				 ->from('order_entity ord')
 				 ->join('order_entity_items ord_ent', 'ord.entity_id = ord_ent.order_id')
 				 ->join('kot_entity kot', 'kot.order_id = ord.entity_id')
