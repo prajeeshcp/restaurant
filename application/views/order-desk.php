@@ -458,9 +458,10 @@ overflow-y: scroll;">
 					$('#create-new').removeClass('disabled');
 					$('.kot-button').removeClass('disabled');
 					$('#content').css({opacity : '1'});
+					var divContents = $("#print_kot_div").html();
 					var newWin = window.open('','print-window');
 					newWin.document.open();
-					newWin.document.write('<html><body onload="window.print()">'+data+'</body></html>');
+					newWin.document.write('<html><body onload="window.print()"><table>'+divContents+'</table></body></html>');
 					newWin.document.close();
 					setTimeout(function(){
 						newWin.close();

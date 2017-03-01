@@ -233,6 +233,56 @@
 		});
 	});
 
+	function print_bill_cashier(orderId=null) {
+		// var orderId			= $('#order-id').val();
+		// var kotId			= $('#kot-id').val(); 		
+		if (orderId) {
+			var dataString    	= "order_id="+orderId;
+			$.ajax({ 
+				type : "POST",
+				url : "<?=site_url()?>manage/print_bill_cashier",
+				data : dataString,
+				dataType : 'html',
+				cache : false, // (warning: this will cause a timestamp and will call the request twice)
+				beforeSend : function() {
+			// cog placed
+			
+					// $('#create-new').addClass('disabled');
+					// $('#content').css({opacity : '0.5'});
+					// 	// scroll up
+					// 	$("html, body").animate({
+					// 		scrollTop : 0
+					// 	}, "fast");
+				},
+				success : function(data) {
+					// $('#kot-details').html(data);
+					// $('#create-new').removeClass('disabled');
+					// $('.kot-button').removeClass('disabled');
+					// $('#content').css({opacity : '1'});
+					var divContents = $("#print_kot_div").html();
+					var newWin = window.open('','print-window');
+					newWin.document.open();
+					newWin.document.write('<html><body onload="window.print()"><table>'+divContents+'</table></body></html>');
+					newWin.document.close();
+					setTimeout(function(){
+						newWin.close();
+					},10); 
+					$('#processing_order_'+orderId).closest('tr').remove();
+					if(data.success == true){ // if true (1)
+					    setTimeout(function(){// wait for 2 secs(2)
+					        location.reload(); // then reload the page.(3)
+					    }, 2000); 
+					}
+
+				},
+				error : function(xhr, ajaxOptions, thrownError) {
+					container.html('<h4 style="margin-top:10px; display:block; text-align:left"><i class="fa fa-warning txt-color-orangeDark"></i> Error 404! Page not found.</h4> <br>Or you are running this page from your hard drive. Please make sure for all ajax calls your page needs to be hosted in a server');
+				},
+				async : false
+			});
+		}
+	}
+
 
 
 

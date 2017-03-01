@@ -47,6 +47,7 @@ class Order_model extends CI_Model {
 		->from('order_entity odr')
 		->join('order_entity_items item', 'odr.entity_id = item.order_id', 'left')
 		->where("odr.status", 'processing')
+		->where("item.is_kot", 1)
 		->get()->result_array();
 		
 	}
@@ -80,6 +81,18 @@ class Order_model extends CI_Model {
 				 ->from('kot_entity kot')
 				 ->join('kot_entity_items item', 'kot.entity_id = item.kot_id', 'left')
 				 ->where('kot.entity_id', $kot_id)
+				 ->get()->result_array();
+		}
+	}
+
+	function bill_details($order_id = NULL) {
+		if ($order_id) {	
+
+		return $this->db->select('ord.*, ord_ent.*,kot.entity_id as kot_id',)
+				 ->from('order_entity ord')
+				 ->join('order_entity_items ord_ent', 'ord.entity_id = ord_ent.order_id')
+				 ->join('kot_entity kot', 'kot.order_id = ord.entity_id')
+				 ->where('ord.entity_id', $order_id)
 				 ->get()->result_array();
 		}
 	}

@@ -385,7 +385,7 @@
 	                                     <td>
 			                               <?=$processing['grand_total']?>
 			                            </td>
-	                                    <td><a href="javascript:void(0);" class="btn btn-primary" onclick="return manage_pending_order(<?= $processing['entity_id']?>,<?= $processing['order_id']?>);"><i class="fa fa-shopping-cart"></i> Print Bill</a></td>
+	                                    <td id="processing_order_<?= $processing['order_id']?>"><a href="javascript:void(0);" class="btn btn-primary" onclick="return print_bill_cashier(<?= $processing['order_id']?>);"><i class="fa fa-shopping-cart"></i> Print Bill</a></td>
 			                        </tr>
 	                                <?php } } ?>
 			                    </tbody></table>
@@ -396,6 +396,9 @@
     			</div>
                        
             </div>
+		</div>
+		<div id="print_bil_div" style="display:none">
+			
 		</div>
         </article>
     </div>
