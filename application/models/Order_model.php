@@ -29,14 +29,25 @@ class Order_model extends CI_Model {
 	}
 	
 	#get all the pending and processing order of logged user
-	function processing_orders($userId	= NULL, $table = NULL) {
-		return $this->db->select('odr.*, item.*')
-		->from('order_entity odr')
-		->join('order_entity_items item', 'odr.entity_id = item.order_id', 'left')
-		->where('odr.user_id', $userId)
-		->where('odr.table_id', $table)
-		->where("odr.status", 'pending')
-		->or_where("odr.status", 'processing')
+	// function processing_orders($userId	= NULL, $table = NULL) {
+	// 	return $this->db->select('odr.*, item.*')
+	// 	->from('order_entity odr')
+	// 	->join('order_entity_items item', 'odr.entity_id = item.order_id', 'left')
+	// 	->where('odr.user_id', $userId)
+	// 	->where('odr.table_id', $table)
+	// 	->where("odr.status", 'pending')
+	// 	->or_where("odr.status", 'processing')
+	// 	->get()->result_array();
+		
+	// }
+
+	function processing_orders($userId	= NULL,$table = NULL) {
+		return $this->db->select('*')
+		->from('order_entity')
+		->where("table_id", $table)
+		->where('user_id', $userId)		
+		->where("status", 'pending')
+		->or_where("status", 'processing')		
 		->get()->result_array();
 		
 	}

@@ -194,6 +194,7 @@ overflow-y: scroll;">
                                 <?php if (!empty($processing_odr)) { 
 									foreach ($processing_odr as $key => $processing) {
 										$tableDtl		= _DB_get_record($this->tables['table_details'], array('id' => $processing['table_id']));
+										$kotDtl		= _DB_get_record($this->tables['kot_entity'], array('order_id' => $processing['entity_id']));
 								?>
                                 <tr class="<?=($key%2 == 0) ? 'active' : ''?>">
 		                            <td>
@@ -201,7 +202,7 @@ overflow-y: scroll;">
 		                            </td>
                                     <td><?=$tableDtl['table_number']?></td>
                                      <td><span class="label bg-color-<?=($processing['status'] == 'pending') ? 'red' : 'orange'?>"><?=ucfirst($processing['status'])?></span></td>
-                                    <td><a href="javascript:void(0);" class="btn btn-primary" onclick="return manage_pending_order(<?= $processing['entity_id']?>,<?= $processing['order_id']?>);"><i class="fa fa-shopping-cart"></i> GO NOW</a></td>
+                                    <td><a href="javascript:void(0);" class="btn btn-primary" onclick="return manage_pending_order(<?= $processing['entity_id']?>,<?= $kotDtl['entity_id']?>);"><i class="fa fa-shopping-cart"></i> GO NOW</a></td>
 		                        </tr>
                                 <?php } } ?>
 		                    </tbody></table>
@@ -461,11 +462,29 @@ overflow-y: scroll;">
 					var divContents = $("#print_kot_div").html();
 					var newWin = window.open('','print-window');
 					newWin.document.open();
-					newWin.document.write('<html><body onload="window.print()"><table>'+divContents+'</table></body></html>');
+					newWin.document.write('<html><body onload="window.print()"><table>'+data+'</table></body></html>');
 					newWin.document.close();
 					setTimeout(function(){
 						newWin.close();
 					},10); 
+					// var contents = data;
+		   //          var frame1 = document.createElement('iframe');
+		   //          frame1.name = "frame1";
+		   //          frame1.style.position = "absolute";
+		   //          frame1.style.top = "-1000000px";
+		   //          document.body.appendChild(frame1);
+		   //          var frameDoc = frame1.contentWindow ? frame1.contentWindow : frame1.contentDocument.document ? frame1.contentDocument.document : frame1.contentDocument;
+		   //          frameDoc.document.open();
+		   //          frameDoc.document.write('<html><head><title>DIV Contents</title>');
+		   //          frameDoc.document.write('</head><body><table style="margin: 0 auto; text-align: left; padding: 15px;">');
+		   //          frameDoc.document.write(contents);
+		   //          frameDoc.document.write('<table></body></html>');
+		   //          frameDoc.document.close();
+		   //          setTimeout(function () {
+		   //              window.frames["frame1"].focus();
+		   //              window.frames["frame1"].print();
+		   //              document.body.removeChild(frame1);
+		   //          }, 500);
 				},
 				error : function(xhr, ajaxOptions, thrownError) {
 					container.html('<h4 style="margin-top:10px; display:block; text-align:left"><i class="fa fa-warning txt-color-orangeDark"></i> Error 404! Page not found.</h4> <br>Or you are running this page from your hard drive. Please make sure for all ajax calls your page needs to be hosted in a server');
@@ -477,7 +496,7 @@ overflow-y: scroll;">
 </script>
 
 <script type="text/javascript" language="javascript">
-	function manage_pending_order(kotId = null,orderId=null) {
+	function manage_pending_order(orderId=null,kotId = null) {
 		// var orderId			= $('#order-id').val();
 		// var kotId			= $('#kot-id').val(); 		
 		if (kotId) {
@@ -490,7 +509,7 @@ overflow-y: scroll;">
 				cache : false, // (warning: this will cause a timestamp and will call the request twice)
 				beforeSend : function() {
 			// cog placed
-			
+					$('#dialog_simple').dialog('close');
 					$('#create-new').addClass('disabled');
 					$('#content').css({opacity : '0.5'});
 						// scroll up
@@ -499,6 +518,7 @@ overflow-y: scroll;">
 						}, "fast");
 				},
 				success : function(data) {
+					
 					$('#kot-details').html(data);
 					$('#create-new').removeClass('disabled');
 					$('.kot-button').removeClass('disabled');

@@ -1012,7 +1012,7 @@ class Manage extends Cpanel_Controller
 		$total_qty_ordered="";
 			foreach ($checkMenu as $total) {
 				$grand_total			+= $total['row_total'];
-				$total_qty_ordered		+= $total['total_qty_ordered'];
+				$total_qty_ordered		+= $total['qty_ordered'];
 
 			}
 			
@@ -1027,7 +1027,7 @@ class Manage extends Cpanel_Controller
 		if ($updateOrder && $updateOrderEntity && $updateKOT ) {
 			$this->data['order_id']		= $order_id;
 			$this->data['kot_details']	= $this->order_model->kot_details($kot_id);
-			$this->render('ajax/kot_details');
+			$this->render('ajax/print_kot');
 		}
 
 	}
@@ -1041,6 +1041,37 @@ class Manage extends Cpanel_Controller
 		$this->render('ajax/print_bill');
 
 
+
+	}
+
+	function manage_pending_order(){
+
+		$dateTime					= date('Y-m-d H:i:s');
+		$order_id					= $this->input->post('order_id', true);		
+		$kot_id						= $this->input->post('kot_id', true); 
+
+		// $checkMenu				= _DB_data($this->tables['order_entity_items'], array('order_id' => $order_id ));
+		// $grand_total="";
+		// $total_qty_ordered="";
+		// 	foreach ($checkMenu as $total) {
+		// 		$grand_total			+= $total['row_total'];
+		// 		$total_qty_ordered		+= $total['total_qty_ordered'];
+
+		// 	}
+			
+		// $updateOrder			= _DB_update($this->tables['order_entity_items'], array('is_kot' => 1, 'updated_at' => $dateTime), array('order_id' => $order_id));
+
+		// $updateOrderEntity		= _DB_update($this->tables['order_entity'], array('status' => 'processing', 'grand_total' => $grand_total,'total_qty_ordered' => $total_qty_ordered, 'updated_at' => $dateTime), array('entity_id' => $order_id));
+		
+		// $updateKOT		= _DB_update($this->tables['kot_entity_items'], array('is_kot' => 1, 'updated_at' => $dateTime), array('kot_id' => $kot_id));
+
+
+		
+		// if ($updateOrder && $updateOrderEntity && $updateKOT ) {
+			$this->data['order_id']		= $order_id;
+			$this->data['kot_details']	= $this->order_model->kot_details($kot_id);
+			$this->render('ajax/kot_details');
+		// }
 
 	}
 }
