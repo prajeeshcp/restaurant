@@ -104,7 +104,7 @@ overflow-y: scroll;">
 											foreach ($menu_category as $menuCat) {
 										 ?>
                                     <tr class="active">
-                                        <td colspan="<?=(!empty($price_cat_dtil)) ? count($price_cat_dtil)+1 : 2;?>"><strong class="text-danger fast animated"><b><?=($menuCat['entity_id'] == 1)? 'MENU ITEMS' : stripslashes(strtoupper($menuCat['entity_name']))?></b></strong></td>
+                                        <td colspan="<?=(!empty($price_cat_dtil)) ? count($price_cat_dtil)+1 : 2;?>"><strong class="text-danger fast animated"><b><?=($menuCat['entity_id'] == 1)? 'MENU ITEMS WITH NO MENU NAME' : stripslashes(strtoupper($menuCat['entity_name']))?></b></strong></td>
                                     </tr>
                                     <?php if (!empty($menu_details)) foreach ($menu_details as $menudtil) {
 										if ($menudtil['category_id'] == $menuCat['entity_id']) {
@@ -403,6 +403,7 @@ overflow-y: scroll;">
 			// cog placed
 			
 					$('#create-new').addClass('disabled');
+					$('.kot-button').removeClass('disabled');
 					$('#content').css({opacity : '0.5'});
 						// scroll up
 						$("html, body").animate({
@@ -457,7 +458,7 @@ overflow-y: scroll;">
 				success : function(data) {
 					$('#kot-details').html(data);
 					$('#create-new').removeClass('disabled');
-					$('.kot-button').removeClass('disabled');
+					$('.kot-button').addClass('disabled');
 					$('#content').css({opacity : '1'});
 					var divContents = $("#print_kot_div").html();
 					var newWin = window.open('','print-window');
