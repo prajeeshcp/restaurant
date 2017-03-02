@@ -892,9 +892,10 @@ class Manage extends Cpanel_Controller
 	}
 	
 	#while click on table button for order and view(Load) order page
-	function order_desk($tableId = NULL) {
+	function order_desk($tableId = NULL,$orderType=NULL) {
 		$loggedUser 				= $this->ion_auth->user()->row();
 		$this->data['table_id']		= $tableId;
+		$this->data['order_type']	= $orderType;
 		if ($tableId) {	
 			$checkOrder				= $this->order_model->check_table($tableId, $loggedUser->id);
 			if (!empty($checkOrder)) {

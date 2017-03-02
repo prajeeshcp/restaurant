@@ -83,6 +83,9 @@
 		                    <h3 class="panel-title">Menu and Price</h3>
 		                </div>
                         <input type="hidden" value="<?=$table_id?>" id="table-id" />
+                        <?php if(!empty($order_type)) {?>
+                        	<input type="hidden" value="<?=$order_type?>" id="order-type" />
+                        	<?php } ?>
 		                <div class="panel-body no-padding">
 		                    <div class="the-price" id='order-details'>
 		                        <h1>#<span class="subscript">ORDER NO</span></h1>
@@ -390,12 +393,13 @@ overflow-y: scroll;">
 	function confirm_menu(menu_id = null, price_type = null, orderId=null,kotId=null,flag=null) {		
 		if(orderId == null){ var orderId			= $('#order-id').val(); }
 		if(kotId == null){ var kotId				= $('#kot-id').val(); } 
-		if(flag == null){ var flag				= 0; }		
+		if(flag == null){ var flag				= 0; }	
+		var order_type = $('#order-type').val();			
 		if (orderId && kotId) {
 			var dataString    	= "order_id="+orderId+'&menu_id='+menu_id+'&price_type='+price_type+'&kot_id='+kotId+'&flag='+flag;
 			$.ajax({ 
 				type : "POST",
-				url : "<?=site_url()?>manage/confirm_menu",
+				url : "<?=site_url()?>manage/confirm_menu/"+order_type,
 				data : dataString,
 				dataType : 'html',
 				cache : false, // (warning: this will cause a timestamp and will call the request twice)

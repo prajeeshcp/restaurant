@@ -353,6 +353,9 @@
 	<!-- row -->
 	<div class="row">
 		<article class="col-sm-12">
+			<div> 
+				<a class="btn btn-primary btn-lg pull-right" href="<?=site_url('manage/order_desk/1/parsel')?>" >PARCEL ORDER</a> 
+			</div>		
         	<div class="widget-body">
 				<h1>TABLE ORDER</h1>
 				<div class="row">
