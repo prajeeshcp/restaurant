@@ -958,6 +958,7 @@ class Manage extends Cpanel_Controller
 		$menu_id					= $this->input->post('menu_id', true);
 		$price_type					= $this->input->post('price_type', true);
 		$kot_id						= $this->input->post('kot_id', true); 
+		$flag						= $this->input->post('flag', true); 
 
 		if ($orderType) {
 			$order_type 			= $orderType;
@@ -985,7 +986,13 @@ class Manage extends Cpanel_Controller
 					$this->render('ajax/kot_details');
 				}
 			} else {
-				$qty				= $checkMenu['qty_ordered']+1;
+				if($flag==0){
+					$qty				= $checkMenu['qty_ordered']+1;
+
+				}else if($flag==1){
+					$qty				= $checkMenu['qty_ordered']-1;
+
+				}				
 				$row_total			= $qty*$getPrice['price_amount'];
 				$updateMenu			= _DB_update($this->tables['order_entity_items'], array('qty_ordered' => $qty, 'row_total' => $row_total, 'updated_at' => $dateTime), array('item_id' => $checkMenu['item_id']));
 				$checkKOT			= _DB_get_record($this->tables['kot_entity_items'],  array('kot_id' => $kot_id, 'is_kot' => 0, 'menu_id' => $menu_id, 'price_type' => $price_type));
