@@ -136,7 +136,7 @@ overflow-y: scroll;">
                             </div>
 		                </div>
 		                <div class="panel-footer text-align-center">
-		                    <a href="javascript:void(0);" class="btn btn-success btn-lg disabled permision-btn" role="button">PRINT BILL</a></div>
+		                    <a href="javascript:void(0);" onclick="return compleate_order();" class="btn btn-success btn-lg disabled permision-btn" role="button">Compleate Order</a></div>
 		            </div>
 		        </div>
 		        <div class="col-xs-12 col-sm-6 col-md-5">
@@ -148,7 +148,7 @@ overflow-y: scroll;">
 		                </div>
 		                <div class="panel-body no-padding" >
 		                    <div class="the-price">
-		                        <h1><span class="subscript">KOT No</span></h1>
+		                        <h1><span class="subscript" id="kot-dtil">KOT No</span></h1>
 		                    </div>
                             <div class="custom-scroll" style="max-height: 270px;overflow-x: hidden;
 overflow-y: scroll;">
@@ -378,6 +378,7 @@ overflow-y: scroll;">
 			},
 			success : function(data) { 
 				$('#order-details').html(data);
+				get_kot_details();
 				$('#create-new').removeClass('disabled');
 				$('.permision-btn').removeClass('disabled');
 				$('#content').css({opacity : '1'});
@@ -387,6 +388,28 @@ overflow-y: scroll;">
 			},
 			async : false
 		});
+	}
+	function get_kot_details() { 
+		var kotId			= $('#kot-id').val();
+		var dataString    	= "kot_id="+kotId;
+		$.ajax({ 
+			type : "POST",
+			url : "<?=site_url()?>manage/get_kot_details",
+			data : dataString,
+			dataType : 'html',
+			cache : false, // (warning: this will cause a timestamp and will call the request twice)
+			beforeSend : function() {},
+			success : function(data) { 
+				$('#kot-dtil').html("KOT No "+data);
+				
+			},
+			error : function(xhr, ajaxOptions, thrownError) {
+				container.html('<h4 style="margin-top:10px; display:block; text-align:left"><i class="fa fa-warning txt-color-orangeDark"></i> Error 404! Page not found.</h4> <br>Or you are running this page from your hard drive. Please make sure for all ajax calls your page needs to be hosted in a server');
+			},
+			async : false
+		});
+		
+		
 	}
 </script>
 <script type="text/javascript" language="javascript">
@@ -460,36 +483,41 @@ overflow-y: scroll;">
 						}, "fast");
 				},
 				success : function(data) {
-					$('#kot-details').html(data);
+					//$('#kot-details').html(data);
 					$('#create-new').removeClass('disabled');
 					$('.kot-button').addClass('disabled');
 					$('#content').css({opacity : '1'});
-					var divContents = $("#print_kot_div").html();
-					var newWin = window.open('','print-window');
-					newWin.document.open();
-					newWin.document.write('<html><body onload="window.print()"><table>'+data+'</table></body></html>');
-					newWin.document.close();
-					setTimeout(function(){
-						newWin.close();
-					},10); 
-					// var contents = data;
-		   //          var frame1 = document.createElement('iframe');
-		   //          frame1.name = "frame1";
-		   //          frame1.style.position = "absolute";
-		   //          frame1.style.top = "-1000000px";
-		   //          document.body.appendChild(frame1);
-		   //          var frameDoc = frame1.contentWindow ? frame1.contentWindow : frame1.contentDocument.document ? frame1.contentDocument.document : frame1.contentDocument;
-		   //          frameDoc.document.open();
-		   //          frameDoc.document.write('<html><head><title>DIV Contents</title>');
-		   //          frameDoc.document.write('</head><body><table style="margin: 0 auto; text-align: left; padding: 15px;">');
-		   //          frameDoc.document.write(contents);
-		   //          frameDoc.document.write('<table></body></html>');
-		   //          frameDoc.document.close();
-		   //          setTimeout(function () {
-		   //              window.frames["frame1"].focus();
-		   //              window.frames["frame1"].print();
-		   //              document.body.removeChild(frame1);
-		   //          }, 500);
+					 var myWindow=window.open('','','width=500,height=500');
+						myWindow.document.write(data);
+						myWindow.document.close();
+						myWindow.focus();
+						myWindow.print();
+						myWindow.close();
+						var kotId			= $('#kot-id').val(); 	
+						refresh_kot(kotId);
+				},
+				error : function(xhr, ajaxOptions, thrownError) {
+					container.html('<h4 style="margin-top:10px; display:block; text-align:left"><i class="fa fa-warning txt-color-orangeDark"></i> Error 404! Page not found.</h4> <br>Or you are running this page from your hard drive. Please make sure for all ajax calls your page needs to be hosted in a server');
+				},
+				async : false
+			});
+		}
+	}
+	
+	function refresh_kot(kotId){
+		if (kotId) {
+			var dataString    	= 'kot_id='+kotId;
+			$.ajax({ 
+				type : "POST",
+				url : "<?=site_url()?>manage/refresh_kot",
+				data : dataString,
+				dataType : 'html',
+				cache : false, // (warning: this will cause a timestamp and will call the request twice)
+				beforeSend : function() {},
+				success : function(data) {
+					if (data) {
+					$('#kot-details').html(data);
+					}
 				},
 				error : function(xhr, ajaxOptions, thrownError) {
 					container.html('<h4 style="margin-top:10px; display:block; text-align:left"><i class="fa fa-warning txt-color-orangeDark"></i> Error 404! Page not found.</h4> <br>Or you are running this page from your hard drive. Please make sure for all ajax calls your page needs to be hosted in a server');
@@ -535,6 +563,36 @@ overflow-y: scroll;">
 				async : false
 			});
 		}
+	}
+</script>
+<script type="text/javascript" language="javascript">
+	function compleate_order() {
+	 var orderId		= $('#order-id').val();
+	 var dataString    	= "order_id="+orderId;
+			$.ajax({ 
+				type : "POST",
+				url : "<?=site_url()?>manage/compleate_order",
+				data : dataString,
+				dataType : 'html',
+				cache : false, // (warning: this will cause a timestamp and will call the request twice)
+				beforeSend : function() {
+			// cog placed
+					$('#dialog_simple').dialog('close');
+					$('#create-new').addClass('disabled');
+					$('#content').css({opacity : '0.5'});
+						// scroll up
+						$("html, body").animate({
+							scrollTop : 0
+						}, "fast");
+				},
+				success : function(data) {
+					//$('#kot-details').html(data);
+				},
+				error : function(xhr, ajaxOptions, thrownError) {
+					container.html('<h4 style="margin-top:10px; display:block; text-align:left"><i class="fa fa-warning txt-color-orangeDark"></i> Error 404! Page not found.</h4> <br>Or you are running this page from your hard drive. Please make sure for all ajax calls your page needs to be hosted in a server');
+				},
+				async : false
+			});
 	}
 </script>
 <?php $this->load->view('includes/footer'); ?>

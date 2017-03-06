@@ -3,7 +3,7 @@
 if (!empty($kot_details)) {
 	foreach ($kot_details as $kot) {
  ?>
-<tr style="<?=($kot['is_kot'] == 0) ? 'background-color:darkkhaki' : 'background-color:darkolivegreen'?>">
+<tr style=" <?=($kot['is_kot'] == 0) ? 'background-color:darkkhaki' : 'background-color:darkolivegreen'?>">
     <td width="55%">   
     	<strong> <?=strip_tags($kot['name']);?> </strong>     
     </td>

@@ -952,6 +952,15 @@ class Manage extends Cpanel_Controller
 		}
 	}
 	
+	#get kot details by id
+	function get_kot_details() {
+		$kotId			= $this->input->post('kot_id', true);
+		if ($kotId) {
+			$kotDetails	= _DB_get_record($this->tables['kot_entity'], array('entity_id' => $kotId));
+			echo $kotDetails['increment_id'];
+		}
+	}
+	
 	#to confirm menu from customer
 	function confirm_menu($orderType = NULL) {
 		$dateTime					= date('Y-m-d H:i:s');
@@ -959,7 +968,7 @@ class Manage extends Cpanel_Controller
 		$menu_id					= $this->input->post('menu_id', true);
 		$price_type					= $this->input->post('price_type', true);
 		$kot_id						= $this->input->post('kot_id', true); 
-		$kot_flag						= $this->input->post('flag', true); 
+		$kot_flag					= $this->input->post('flag', true); 
 
 		if ($orderType) {
 			$order_type 			= $orderType;
@@ -972,13 +981,25 @@ class Manage extends Cpanel_Controller
 			$typeDtil				=  _DB_get_record($this->tables['menu_entity_price_type'], array('entity_id' => $price_type));
 			
 			$menuDtil				= _DB_get_record($this->tables['menu_entity'], array('entity_id' => $menu_id));
+			#if tax class is enabled
+			if ($menuDtil['tax_class'] > 0) {
+				$getTax				= _DB_get_record($this->tables['tax_entity'], array('entity_id' => $menuDtil['tax_class']));
+				$taxPercent			= $getTax['tax_rate'];
+				$price				= ($getPrice['price_amount']*100)/(100+$taxPercent);
+				$taxAmount			= $getPrice['price_amount']-$price;
+			} else {
+				$taxPercent			= 0;
+				$price				= $getPrice['price_amount'];
+				$taxAmount			= 0;
+				
+			}
 			$MenuName				= $menuDtil['menu_name']." (".$typeDtil['type_name'].")";
 			
 			$checkMenu				= _DB_get_record($this->tables['order_entity_items'], array('order_id' => $order_id, 'is_kot' => 0, 'menu_id' => $menu_id, 'price_type' => $price_type));	
 			if (empty($checkMenu) && $kot_flag != 2 ){
 				$qty				= 1;
 				$row_total			= $qty*$getPrice['price_amount'];
-				$insertMenu			= _DB_insert($this->tables['order_entity_items'], array('order_id' => $order_id, 'is_kot' => 0, 'menu_id' => $menu_id, 'order_type' => $order_type, 'price_type' => $price_type, 'name' => $MenuName, 'qty_ordered' => $qty, 'price' => $getPrice['price_amount'], 'row_total' => $row_total, 'created_at' => $dateTime, 'updated_at' => $dateTime));
+				$insertMenu			= _DB_insert($this->tables['order_entity_items'], array('order_id' => $order_id, 'is_kot' => 0, 'menu_id' => $menu_id, 'order_type' => $order_type, 'price_type' => $price_type, 'name' => $MenuName, 'qty_ordered' => $qty, 'price' => $price, 'tax_percent' => $taxPercent, 'tax_amount' => $taxAmount,  'row_total' => $row_total, 'created_at' => $dateTime, 'updated_at' => $dateTime));
 				if ($insertMenu) {
 					$insertKOT		= _DB_insert($this->tables['kot_entity_items'], array('kot_id' => $kot_id, 'is_kot' => 0, 'menu_id' => $menu_id, 'order_type' => $order_type, 'price_type' => $price_type, 'name' => $MenuName, 'qty_ordered' => $qty, 'created_at' => $dateTime, 'updated_at' => $dateTime));
 					$this->data['order_id']		= $order_id;
@@ -1031,33 +1052,46 @@ class Manage extends Cpanel_Controller
 		$dateTime					= date('Y-m-d H:i:s');
 		$order_id					= $this->input->post('order_id', true);		
 		$kot_id						= $this->input->post('kot_id', true); 
-
-		$checkMenu				= _DB_data($this->tables['order_entity_items'], array('order_id' => $order_id ));
-		$grand_total=0;
-		$total_qty_ordered=0;
-			foreach ($checkMenu as $total) {
-				$grand_total			+= $total['row_total'];
-				$total_qty_ordered		+= $total['qty_ordered'];
-
-			}
-
-		$this->data['kot_details']	= $this->order_model->kot_details($kot_id,1);			
-		$updateOrder			= _DB_update($this->tables['order_entity_items'], array('is_kot' => 1, 'updated_at' => $dateTime), array('order_id' => $order_id));
-
-		$updateOrderEntity		= _DB_update($this->tables['order_entity'], array('status' => 'processing', 'grand_total' => $grand_total,'total_qty_ordered' => $total_qty_ordered, 'updated_at' => $dateTime), array('entity_id' => $order_id));
+	if ($order_id && $kot_id) {
+		$updateTotal				= $this->order_model->sum_of_order($order_id);
+		$kotTotal					= $this->order_model->sum_of_kot($kot_id);
+		$updateOrderEntity			= _DB_update($this->tables['order_entity'], array('status' => 'processing', 'grand_total' => $updateTotal->row_total,'total_qty_ordered' => $updateTotal->qty_ordered, 'tax_amount' => $updateTotal->tax_amount, 'updated_at' => $dateTime), array('entity_id' => $order_id));
+		$updateKOTEntity			= _DB_update($this->tables['kot_entity'], array('qty_ordered' => $kotTotal->qty_ordered, 'Updated_at' => $dateTime), array('entity_id' => $kot_id));
 		
-		$updateKOT		= _DB_update($this->tables['kot_entity_items'], array('is_kot' => 1, 'updated_at' => $dateTime), array('kot_id' => $kot_id));
+		$this->data['kot_details']	= $this->order_model->kot_details($kot_id,1);
+					
+		$updateOrder				= _DB_update($this->tables['order_entity_items'], array('is_kot' => 1, 'updated_at' => $dateTime), array('order_id' => $order_id));
+
+		$updateKOT					= _DB_update($this->tables['kot_entity_items'], array('is_kot' => 1, 'updated_at' => $dateTime), array('kot_id' => $kot_id));
 
 
 		
 		if ($updateOrder && $updateOrderEntity && $updateKOT ) {
-			$this->data['order_id']		= $order_id;
+			$this->data['order_id']	= $order_id;
 			//$this->data['kot_details']	= $this->order_model->kot_details($kot_id);
 			$this->render('ajax/print_kot');
 		}
-
+	}
 	}
 
+	#function to get refresh kot section
+	function refresh_kot() {
+		$kotId							= $this->input->post('kot_id', true);
+		if ($kotId) {
+			$this->data['kot_details']	= $this->order_model->kot_details($kotId);
+			$this->render('ajax/kot_details');
+		}
+	}
+	
+	#function for compleate order before close from waiter
+	function compleate_order() {
+		$orderId						= $this->input->post('order_id', true);
+		if ($orderId) {
+			$this->data['order_detail']	= _DB_get_record($this->tables['order_entity'], array('entity_id' => $orderId));
+			$this->data['order_item']	= _DB_data($this->tables['order_entity_items'], array('order_id' => $orderId, 'is_kot' => 1));
+		}
+	}
+	
 	function print_bill_cashier(){
 		$dateTime					= date('Y-m-d H:i:s');
 		$order_id					= $this->input->post('order_id', true);
