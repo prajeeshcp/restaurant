@@ -21,7 +21,7 @@ class Order_model extends CI_Model {
 	function check_table($tableId = NULL, $userId = NULL) {
 		 return $this->db->select("odr.entity_id as check_order_id")
 		->from("order_entity odr")
-		->where("odr.table_id",$tableId)
+		->where("odr.table_id", $tableId)
 		->where("odr.user_id !=", $userId)
 		->where("odr.status", 'pending')
 		->or_where("odr.status", 'processing')
@@ -38,7 +38,6 @@ class Order_model extends CI_Model {
 		->where("odr.status", 'pending')
 		->or_where("odr.status", 'processing')
 		->get()->result_array();
-		
 	}
 	
 	#get all the active menus
