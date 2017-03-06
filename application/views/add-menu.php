@@ -236,7 +236,7 @@
             <label class="select">
                 <select name="tax_class">
                 	<option value="">SELECT TAX CLASS</option>
-                	<?php if (!empty($tax_class)) : foreach ($tax_class as $tax) { ?>
+                	<?php if (!empty($tax_class) && !empty($get_data)) : foreach ($tax_class as $tax) { ?>
                 	<option value="<?=$tax['entity_id']?>" <?=($get_data['tax_class'] == $tax['entity_id']) ? 'selected' : ''?>><?=stripslashes($tax['tax_class'])?></option>
                     <?php } endif; ?>
                 </select>

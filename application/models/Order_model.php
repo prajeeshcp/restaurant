@@ -24,19 +24,39 @@ class Order_model extends CI_Model {
 		->where("odr.table_id", $tableId)
 		->where("odr.user_id !=", $userId)
 		->where("odr.status", 'pending')
-		->or_where("odr.status", 'processing')
+		->where("odr.status", 'processing')
 		->get()->row();
 	}
 	
 	#get all the pending and processing order of logged user
-	function processing_orders($userId	= NULL, $table = NULL) {
-		return $this->db->select('odr.*, item.*')
-		->from('order_entity odr')
-		->join('order_entity_items item', 'odr.entity_id = item.order_id', 'left')
-		->where('odr.user_id', $userId)
-		->where('odr.table_id', $table)
-		->where("odr.status", 'pending')
-		->or_where("odr.status", 'processing')
+	// function processing_orders($userId	= NULL, $table = NULL) {
+	// 	return $this->db->select('odr.*, item.*')
+	// 	->from('order_entity odr')
+	// 	->join('order_entity_items item', 'odr.entity_id = item.order_id', 'left')
+	// 	->where('odr.user_id', $userId)
+	// 	->where('odr.table_id', $table)
+	// 	->where("odr.status", 'pending')
+	// 	->or_where("odr.status", 'processing')
+	// 	->get()->result_array();
+		
+	// }
+
+	function processing_orders($userId	= NULL,$table = NULL) {
+		return $this->db->select('*')
+		->from('order_entity')
+		->where("table_id", $table)
+		->where('user_id', $userId)		
+		->where("status", 'pending')
+		->or_where("status", 'processing')		
+		->get()->result_array();
+		
+	}
+
+	#get all the pending and processing order of logged user
+	function processing_odr_cashier($userId	= NULL) {
+		return $this->db->select('*')
+		->from('order_entity')		
+		->where("status", 'processing')		
 		->get()->result_array();
 	}
 	
@@ -63,12 +83,31 @@ class Order_model extends CI_Model {
 		}
 	}
 	
-	function kot_details($kot_id = NULL) {
-		if ($kot_id) {
-		return $this->db->select('kot.*, item.table_id, item.menu_id, item.order_type, item.price_type, item.name, item.qty_ordered, item.created_at')
+	function kot_details($kot_id = NULL,$flag=NULL) {
+		if ($kot_id && empty($flag)) {
+		return $this->db->select('kot.*, item.item_id,item.kot_id, item.menu_id, item.order_type, item.is_kot, item.price_type, item.name, item.qty_ordered, item.created_at')
 				 ->from('kot_entity kot')
 				 ->join('kot_entity_items item', 'kot.entity_id = item.kot_id', 'left')
 				 ->where('kot.entity_id', $kot_id)
+				 ->get()->result_array();
+		} else {
+			return $this->db->select('kot.*, item.item_id,item.kot_id, item.menu_id, item.order_type, item.is_kot, item.price_type, item.name, item.qty_ordered, item.created_at')
+				 ->from('kot_entity kot')
+				 ->join('kot_entity_items item', 'kot.entity_id = item.kot_id', 'left')
+				 ->where('kot.entity_id', $kot_id)
+				 ->where('item.is_kot',0)
+				 ->get()->result_array();
+		}
+	}
+
+	function bill_details($order_id = NULL) {
+		if ($order_id) {	
+
+		return $this->db->select('ord.*, ord_ent.*,kot.entity_id as kot_id')
+				 ->from('order_entity ord')
+				 ->join('order_entity_items ord_ent', 'ord.entity_id = ord_ent.order_id')
+				 ->join('kot_entity kot', 'kot.order_id = ord.entity_id')
+				 ->where('ord.entity_id', $order_id)
 				 ->get()->result_array();
 		}
 	}

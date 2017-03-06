@@ -1,0 +1,13 @@
+change base url in === application/config/config.php
+
+ie $config['base_url'] = 'http://localhost/prajeesh/restaurant/';
+
+if you are running on server then 
+
+$config['base_url'] = 'http://Server-IP/prajeesh/restaurant/';
+
+
+
+change database details  in  ===application/config/database.php
+
+
