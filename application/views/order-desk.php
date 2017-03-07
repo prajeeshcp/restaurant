@@ -83,6 +83,9 @@
 		                    <h3 class="panel-title">Menu and Price</h3>
 		                </div>
                         <input type="hidden" value="<?=$table_id?>" id="table-id" />
+                        <?php if(!empty($order_type)) {?>
+                        	<input type="hidden" value="<?=$order_type?>" id="order-type" />
+                        	<?php } ?>
 		                <div class="panel-body no-padding">
 		                    <div class="the-price" id='order-details'>
 		                        <h1>#<span class="subscript">ORDER NO</span></h1>
@@ -104,7 +107,7 @@ overflow-y: scroll;">
 											foreach ($menu_category as $menuCat) {
 										 ?>
                                     <tr class="active">
-                                        <td colspan="<?=(!empty($price_cat_dtil)) ? count($price_cat_dtil)+1 : 2;?>"><strong class="text-danger fast animated"><b><?=($menuCat['entity_id'] == 1)? 'MENU ITEMS' : stripslashes(strtoupper($menuCat['entity_name']))?></b></strong></td>
+                                        <td colspan="<?=(!empty($price_cat_dtil)) ? count($price_cat_dtil)+1 : 2;?>"><strong class="text-danger fast animated"><b><?=($menuCat['entity_id'] == 1)? 'MENU ITEMS WITH NO MENU NAME' : stripslashes(strtoupper($menuCat['entity_name']))?></b></strong></td>
                                     </tr>
                                     <?php if (!empty($menu_details)) foreach ($menu_details as $menudtil) {
 										if ($menudtil['category_id'] == $menuCat['entity_id']) {
@@ -133,7 +136,7 @@ overflow-y: scroll;">
                             </div>
 		                </div>
 		                <div class="panel-footer text-align-center">
-		                    <a href="javascript:void(0);" class="btn btn-success btn-lg disabled permision-btn" role="button">PRINT BILL</a></div>
+		                    <a href="javascript:void(0);" onclick="return compleate_order();" class="btn btn-success btn-lg disabled permision-btn" role="button">Compleate Order</a></div>
 		            </div>
 		        </div>
 		        <div class="col-xs-12 col-sm-6 col-md-5">
@@ -143,94 +146,19 @@ overflow-y: scroll;">
 		                    <h3 class="panel-title">
 		                        Order List</h3>
 		                </div>
-		                <div class="panel-body no-padding">
+		                <div class="panel-body no-padding" >
 		                    <div class="the-price">
-		                        <h1>
-		                            10003<span class="subscript"> KOT No</span></h1>
+		                        <h1><span class="subscript" id="kot-dtil">KOT No</span></h1>
 		                    </div>
                             <div class="custom-scroll" style="max-height: 270px;overflow-x: hidden;
 overflow-y: scroll;">
-		                    <table class="table">
-		                        <tr>
-		                            <td width="55%">
-		                               <strong> Beel Poori </strong>
-		                            </td>
-                                    <td><button type="button" class="btn btn-sm btn-info btn-prev">
-									10</button></td>
-                                    <td><div class="actions">
-								<button type="button" class="btn btn-sm btn-warning btn-prev">
-									<i class="fa fa-minus-circle"></i></button>
-								<button type="button" class="btn btn-sm btn-success btn-next" data-last="Finish"><i class="fa fa-plus-circle"></i>
-								</button>
-                                <button type="button" class="btn btn-sm btn-danger btn-prev">
-									<i class="fa  fa-trash-o"></i></button>
-							</div></td>
-		                        </tr>
-                                <tr class="active">
-		                            <td width="55%">
-		                               <strong> Sav Poori </strong>
-		                            </td>
-                                    <td><button type="button" class="btn btn-sm btn-info btn-prev">
-									15</button></td>
-                                    <td><div class="actions">
-								<button type="button" class="btn btn-sm btn-warning btn-prev">
-									<i class="fa fa-minus-circle"></i></button>
-								<button type="button" class="btn btn-sm btn-success btn-next" data-last="Finish"><i class="fa fa-plus-circle"></i>
-								</button>
-                                <button type="button" class="btn btn-sm btn-danger btn-prev">
-									<i class="fa  fa-trash-o"></i></button>
-							</div></td>
-		                        </tr>
-                                <tr>
-		                            <td width="55%">
-		                               <strong> Masala Poori </strong>
-		                            </td>
-                                    <td><button type="button" class="btn btn-sm btn-info btn-prev">
-									15</button></td>
-                                    <td><div class="actions">
-								<button type="button" class="btn btn-sm btn-warning btn-prev">
-									<i class="fa fa-minus-circle"></i></button>
-								<button type="button" class="btn btn-sm btn-success btn-next" data-last="Finish"><i class="fa fa-plus-circle"></i>
-								</button>
-                                <button type="button" class="btn btn-sm btn-danger btn-prev">
-									<i class="fa  fa-trash-o"></i></button>
-							</div></td>
-		                        </tr>
-                                <tr class="active">
-		                            <td width="55%">
-		                               <strong> Pani Poori </strong>
-		                            </td>
-                                    <td><button type="button" class="btn btn-sm btn-info btn-prev">
-									15</button></td>
-                                    <td><div class="actions">
-								<button type="button" class="btn btn-sm btn-warning btn-prev">
-									<i class="fa fa-minus-circle"></i></button>
-								<button type="button" class="btn btn-sm btn-success btn-next" data-last="Finish"><i class="fa fa-plus-circle"></i>
-								</button>
-                                <button type="button" class="btn btn-sm btn-danger btn-prev">
-									<i class="fa  fa-trash-o"></i></button>
-							</div></td>
-		                        </tr>
-                                <tr>
-		                            <td width="55%">
-		                               <strong> Vada </strong>
-		                            </td>
-                                    <td><button type="button" class="btn btn-sm btn-info btn-prev">
-									15</button></td>
-                                    <td><div class="actions">
-								<button type="button" class="btn btn-sm btn-warning btn-prev">
-									<i class="fa fa-minus-circle"></i></button>
-								<button type="button" class="btn btn-sm btn-success btn-next" data-last="Finish"><i class="fa fa-plus-circle"></i>
-								</button>
-                                <button type="button" class="btn btn-sm btn-danger btn-prev">
-									<i class="fa  fa-trash-o"></i></button>
-							</div></td>
-		                        </tr>
+		                    <table class="table" id="kot-details">
+		                         
 		                    </table>
                             </div>
 		                </div>
 		                <div class="panel-footer text-align-center">
-		                    <a href="javascript:void(0);" class="btn btn-warning btn-lg disabled" role="button">PRINT KOT</a></div>
+		                    <a href="javascript:void(0);" class="btn btn-warning btn-lg kot-button disabled" role="button" onclick="return print_kot();">PRINT KOT</a></div>
 		            </div>
 		        </div>	
 		    			    	
@@ -269,6 +197,7 @@ overflow-y: scroll;">
                                 <?php if (!empty($processing_odr)) { 
 									foreach ($processing_odr as $key => $processing) {
 										$tableDtl		= _DB_get_record($this->tables['table_details'], array('id' => $processing['table_id']));
+										$kotDtl		= _DB_get_record($this->tables['kot_entity'], array('order_id' => $processing['entity_id']));
 								?>
                                 <tr class="<?=($key%2 == 0) ? 'active' : ''?>">
 		                            <td>
@@ -276,7 +205,7 @@ overflow-y: scroll;">
 		                            </td>
                                     <td><?=$tableDtl['table_number']?></td>
                                      <td><span class="label bg-color-<?=($processing['status'] == 'pending') ? 'red' : 'orange'?>"><?=ucfirst($processing['status'])?></span></td>
-                                    <td><a href="javascript:void(0);" class="btn btn-primary"><i class="fa fa-shopping-cart"></i> GO NOW</a></td>
+                                    <td><a href="javascript:void(0);" class="btn btn-primary" onclick="return manage_pending_order(<?= $processing['entity_id']?>,<?= $kotDtl['entity_id']?>);"><i class="fa fa-shopping-cart"></i> GO NOW</a></td>
 		                        </tr>
                                 <?php } } ?>
 		                    </tbody></table>
@@ -430,68 +359,240 @@ overflow-y: scroll;">
 </script> 
 <script type="text/javascript" language="javascript">
 	function create_new_order() {
-			var tableId			= $('#table-id').val(); 
-			var dataString    	= "table_id="+tableId;
-					$.ajax({ 
-						type : "POST",
-						url : "<?=site_url()?>manage/create_order",
-						data : dataString,
-						dataType : 'html',
-						cache : false, // (warning: this will cause a timestamp and will call the request twice)
-						beforeSend : function() {
+		var tableId			= $('#table-id').val(); 
+		var dataString    	= "table_id="+tableId;
+		$.ajax({ 
+			type : "POST",
+			url : "<?=site_url()?>manage/create_order",
+			data : dataString,
+			dataType : 'html',
+			cache : false, // (warning: this will cause a timestamp and will call the request twice)
+			beforeSend : function() {
 			// cog placed
-			$('#create-new').addClass('disabled');
-			$('#content').css({opacity : '0.5'});
-				// scroll up
+				$('#create-new').addClass('disabled');
+				$('#content').css({opacity : '0.5'});
+					// scroll up
 				$("html, body").animate({
 					scrollTop : 0
 				}, "fast");
-		},
-						success : function(data) { 
-							$('#order-details').html(data);
-							$('#create-new').removeClass('disabled');
-							$('.permision-btn').removeClass('disabled');
-							$('#content').css({opacity : '1'});
-						},
-						error : function(xhr, ajaxOptions, thrownError) {
-							container.html('<h4 style="margin-top:10px; display:block; text-align:left"><i class="fa fa-warning txt-color-orangeDark"></i> Error 404! Page not found.</h4> <br>Or you are running this page from your hard drive. Please make sure for all ajax calls your page needs to be hosted in a server');
-						},
-						async : false
-					});
+			},
+			success : function(data) { 
+				$('#order-details').html(data);
+				get_kot_details();
+				$('#create-new').removeClass('disabled');
+				$('.permision-btn').removeClass('disabled');
+				$('#content').css({opacity : '1'});
+			},
+			error : function(xhr, ajaxOptions, thrownError) {
+				container.html('<h4 style="margin-top:10px; display:block; text-align:left"><i class="fa fa-warning txt-color-orangeDark"></i> Error 404! Page not found.</h4> <br>Or you are running this page from your hard drive. Please make sure for all ajax calls your page needs to be hosted in a server');
+			},
+			async : false
+		});
+	}
+	function get_kot_details() { 
+		var kotId			= $('#kot-id').val();
+		var dataString    	= "kot_id="+kotId;
+		$.ajax({ 
+			type : "POST",
+			url : "<?=site_url()?>manage/get_kot_details",
+			data : dataString,
+			dataType : 'html',
+			cache : false, // (warning: this will cause a timestamp and will call the request twice)
+			beforeSend : function() {},
+			success : function(data) { 
+				$('#kot-dtil').html("KOT No "+data);
+				
+			},
+			error : function(xhr, ajaxOptions, thrownError) {
+				container.html('<h4 style="margin-top:10px; display:block; text-align:left"><i class="fa fa-warning txt-color-orangeDark"></i> Error 404! Page not found.</h4> <br>Or you are running this page from your hard drive. Please make sure for all ajax calls your page needs to be hosted in a server');
+			},
+			async : false
+		});
+		
+		
 	}
 </script>
 <script type="text/javascript" language="javascript">
-	function confirm_menu(menu_id, price_type) {
-			var orderId			= $('#order-id').val(); 
-			if (orderId) {
-			var dataString    	= "order_id="+orderId+'&menu_id='+menu_id+'&price_type='+price_type;
-					$.ajax({ 
-						type : "POST",
-						url : "<?=site_url()?>manage/confirm_menu",
-						data : dataString,
-						dataType : 'html',
-						cache : false, // (warning: this will cause a timestamp and will call the request twice)
-						beforeSend : function() {
+	function confirm_menu(menu_id = null, price_type = null, orderId=null,kotId=null,flag=null) {		
+		if(orderId == null){ var orderId			= $('#order-id').val(); }
+		if(kotId == null){ var kotId				= $('#kot-id').val(); } 
+		if(flag == null){ var flag				= 0; }	
+		var order_type = $('#order-type').val();			
+		if (orderId && kotId) {
+			var dataString    	= "order_id="+orderId+'&menu_id='+menu_id+'&price_type='+price_type+'&kot_id='+kotId+'&flag='+flag;
+			$.ajax({ 
+				type : "POST",
+				url : "<?=site_url()?>manage/confirm_menu/"+order_type,
+				data : dataString,
+				dataType : 'html',
+				cache : false, // (warning: this will cause a timestamp and will call the request twice)
+				beforeSend : function() {
 			// cog placed
-			$('#create-new').addClass('disabled');
-			$('#content').css({opacity : '0.5'});
-				// scroll up
-				$("html, body").animate({
-					scrollTop : 0
-				}, "fast");
-		},
-						success : function(data) { 
-							//$('#order-details').html(data);
-							$('#create-new').removeClass('disabled');
-							$('.permision-btn').removeClass('disabled');
-							$('#content').css({opacity : '1'});
-						},
-						error : function(xhr, ajaxOptions, thrownError) {
-							container.html('<h4 style="margin-top:10px; display:block; text-align:left"><i class="fa fa-warning txt-color-orangeDark"></i> Error 404! Page not found.</h4> <br>Or you are running this page from your hard drive. Please make sure for all ajax calls your page needs to be hosted in a server');
-						},
-						async : false
-					});
+			
+					$('#create-new').addClass('disabled');
+					$('.kot-button').removeClass('disabled');
+					$('#content').css({opacity : '0.5'});
+						// scroll up
+						$("html, body").animate({
+							scrollTop : 0
+						}, "fast");
+				},
+				success : function(data) {
+					
+					if(data === "null"){
+						//alert(data);
+						$('#kot-details').html("");						
+						$('.kot-button').addClass('disabled');
+					} else {
+						$('#kot-details').html();
+						$('#kot-details').html(data);
+						$('#create-new').removeClass('disabled');
+						$('.kot-button').removeClass('disabled');	
+					}
+					$('#content').css({opacity : '1'});
+					
+				},
+				error : function(xhr, ajaxOptions, thrownError) {
+					container.html('<h4 style="margin-top:10px; display:block; text-align:left"><i class="fa fa-warning txt-color-orangeDark"></i> Error 404! Page not found.</h4> <br>Or you are running this page from your hard drive. Please make sure for all ajax calls your page needs to be hosted in a server');
+				},
+				async : false
+			});
+		}
 	}
+</script>
+<script type="text/javascript" language="javascript">
+	function print_kot() {
+		var orderId			= $('#order-id').val();
+		var kotId			= $('#kot-id').val(); 		
+		if (orderId && kotId) {
+			var dataString    	= "order_id="+orderId+'&kot_id='+kotId;
+			$.ajax({ 
+				type : "POST",
+				url : "<?=site_url()?>manage/print_kot",
+				data : dataString,
+				dataType : 'html',
+				cache : false, // (warning: this will cause a timestamp and will call the request twice)
+				beforeSend : function() {
+			// cog placed
+			
+					$('#create-new').addClass('disabled');
+					$('#content').css({opacity : '0.5'});
+						// scroll up
+						$("html, body").animate({
+							scrollTop : 0
+						}, "fast");
+				},
+				success : function(data) {
+					//$('#kot-details').html(data);
+					$('#create-new').removeClass('disabled');
+					$('.kot-button').addClass('disabled');
+					$('#content').css({opacity : '1'});
+					 var myWindow=window.open('','','width=500,height=500');
+						myWindow.document.write(data);
+						myWindow.document.close();
+						myWindow.focus();
+						myWindow.print();
+						myWindow.close();
+						var kotId			= $('#kot-id').val(); 	
+						refresh_kot(kotId);
+				},
+				error : function(xhr, ajaxOptions, thrownError) {
+					container.html('<h4 style="margin-top:10px; display:block; text-align:left"><i class="fa fa-warning txt-color-orangeDark"></i> Error 404! Page not found.</h4> <br>Or you are running this page from your hard drive. Please make sure for all ajax calls your page needs to be hosted in a server');
+				},
+				async : false
+			});
+		}
+	}
+	
+	function refresh_kot(kotId){
+		if (kotId) {
+			var dataString    	= 'kot_id='+kotId;
+			$.ajax({ 
+				type : "POST",
+				url : "<?=site_url()?>manage/refresh_kot",
+				data : dataString,
+				dataType : 'html',
+				cache : false, // (warning: this will cause a timestamp and will call the request twice)
+				beforeSend : function() {},
+				success : function(data) {
+					if (data) {
+					$('#kot-details').html(data);
+					}
+				},
+				error : function(xhr, ajaxOptions, thrownError) {
+					container.html('<h4 style="margin-top:10px; display:block; text-align:left"><i class="fa fa-warning txt-color-orangeDark"></i> Error 404! Page not found.</h4> <br>Or you are running this page from your hard drive. Please make sure for all ajax calls your page needs to be hosted in a server');
+				},
+				async : false
+			});
+		}
+	}
+</script>
+
+<script type="text/javascript" language="javascript">
+	function manage_pending_order(orderId=null,kotId = null) {
+		// var orderId			= $('#order-id').val();
+		// var kotId			= $('#kot-id').val(); 		
+		if (kotId) {
+			var dataString    	= "order_id="+orderId+'&kot_id='+kotId;
+			$.ajax({ 
+				type : "POST",
+				url : "<?=site_url()?>manage/manage_pending_order",
+				data : dataString,
+				dataType : 'html',
+				cache : false, // (warning: this will cause a timestamp and will call the request twice)
+				beforeSend : function() {
+			// cog placed
+					$('#dialog_simple').dialog('close');
+					$('#create-new').addClass('disabled');
+					$('#content').css({opacity : '0.5'});
+						// scroll up
+						$("html, body").animate({
+							scrollTop : 0
+						}, "fast");
+				},
+				success : function(data) {
+					
+					$('#kot-details').html(data);
+					$('#create-new').removeClass('disabled');
+					$('.kot-button').removeClass('disabled');
+					$('#content').css({opacity : '1'});
+				},
+				error : function(xhr, ajaxOptions, thrownError) {
+					container.html('<h4 style="margin-top:10px; display:block; text-align:left"><i class="fa fa-warning txt-color-orangeDark"></i> Error 404! Page not found.</h4> <br>Or you are running this page from your hard drive. Please make sure for all ajax calls your page needs to be hosted in a server');
+				},
+				async : false
+			});
+		}
+	}
+</script>
+<script type="text/javascript" language="javascript">
+	function compleate_order() {
+	 var orderId		= $('#order-id').val();
+	 var dataString    	= "order_id="+orderId;
+			$.ajax({ 
+				type : "POST",
+				url : "<?=site_url()?>manage/compleate_order",
+				data : dataString,
+				dataType : 'html',
+				cache : false, // (warning: this will cause a timestamp and will call the request twice)
+				beforeSend : function() {
+			// cog placed
+					$('#dialog_simple').dialog('close');
+					$('#create-new').addClass('disabled');
+					$('#content').css({opacity : '0.5'});
+						// scroll up
+						$("html, body").animate({
+							scrollTop : 0
+						}, "fast");
+				},
+				success : function(data) {
+					//$('#kot-details').html(data);
+				},
+				error : function(xhr, ajaxOptions, thrownError) {
+					container.html('<h4 style="margin-top:10px; display:block; text-align:left"><i class="fa fa-warning txt-color-orangeDark"></i> Error 404! Page not found.</h4> <br>Or you are running this page from your hard drive. Please make sure for all ajax calls your page needs to be hosted in a server');
+				},
+				async : false
+			});
 	}
 </script>
 <?php $this->load->view('includes/footer'); ?>

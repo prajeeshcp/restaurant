@@ -323,7 +323,7 @@
 </section>
 <!-- end widget grid -->
 
-<?php } else if ($this->ion_auth->in_group(2)) { ?>
+<?php } else if ($this->ion_auth->in_group(3)) { ?>
 <section class="">
 	<!-- row -->
 	<div class="row">
@@ -348,8 +348,66 @@
         </article>
     </div>
  </section>
+<?php } else if ($this->ion_auth->in_group(2)) { ?>
+<section class="">
+	<!-- row -->
+	<div class="row">
+		<article class="col-sm-12">
+			<div> 
+				<a class="btn btn-primary btn-lg pull-right" href="<?=site_url('manage/order_desk/1/parsel')?>" >PARCEL ORDER</a> 
+			</div>		
+        	<div class="widget-body">
+				<h1>TABLE ORDER</h1>
+				<div class="row">
+					<div class="col-xs-12 col-sm-12 col-md-12">
+			            <div class="panel panel-greenLight">
+			                <div class="panel-heading">
+			                    <h3 class="panel-title">
+			                        Pending/Processing</h3>
+			                </div>
+			                <div class="panel-body no-padding">
+			                    <table class="table">
+			                        <tbody>
+	                                <tr>
+	                                	<th>Order No</th>
+	                                    <th>Table No</th>
+	                                    <th>Status</th>
+	                                    <th>Grand Total</th>
+	                                    <th>Action</th>
+	                                </tr>
+	                                <?php if (!empty($processing_odr_cashier)) { 
+										foreach ($processing_odr_cashier as $key => $processing) {
+											$tableDtl		= _DB_get_record($this->tables['table_details'], array('id' => $processing['table_id']));
+									?>
+	                                <tr class="<?=($key%2 == 0) ? 'active' : ''?>">
+			                            <td>
+			                               <?=$processing['entity_id']?>
+			                            </td>
+	                                    <td><?=$tableDtl['table_number']?></td>
+	                                     <td><span class="label bg-color-<?=($processing['status'] == 'pending') ? 'red' : 'orange'?>"><?=ucfirst($processing['status'])?></span></td>
+	                                     <td>
+			                               <?=$processing['grand_total']?>
+			                            </td>
+	                                    <td id="processing_order_<?= $processing['entity_id']?>"><a href="javascript:void(0);" class="btn btn-primary" onclick="return print_bill_cashier(<?=$processing['entity_id']?>);"><i class="fa fa-shopping-cart"></i> Print Bill</a></td>
+			                        </tr>
+	                                <?php } } ?>
+			                    </tbody></table>
+			                </div>
+			                
+			            </div>
+			        </div>
+    			</div>
+                       
+            </div>
+		</div>
+		<div id="print_bil_div" style="display:none">
+			
+		</div>
+        </article>
+    </div>
+ </section>
 <?php } ?>
-			</div>
+</div>
 			<!-- END MAIN CONTENT -->
 
 		</div>

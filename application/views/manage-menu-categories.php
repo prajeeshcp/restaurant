@@ -129,6 +129,7 @@
 							<tbody>
                             <?php if (!empty($categories)) { 
 									foreach ($categories as $key => $category) {
+										if($category['entity_id'] != 1){
 							?>
 								<tr class="odd gradeX">
 									<td><?=$key+1?></td>
@@ -137,7 +138,7 @@
 									<td><a href="javascript:void(0);" class="btn btn-<?=($category['status'] == 1) ? 'success' : 'warning'?> btn-xs"><?=($category['status'] == 1) ? 'Enabled' : 'Disabled'?></a></td>		
 									<td><a href="<?=site_url('manage/edit_category/'.$category['entity_id'])?>" class="btn btn-warning btn-xs"><i class="fa fa-edit"></i> Edit</a></td>
 								</tr>
-                                <?php  } } ?>
+                                <?php  } } } ?>
 							</tbody>
 						</table>
 					</div>

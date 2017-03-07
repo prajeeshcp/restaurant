@@ -16,15 +16,21 @@ class Manage extends Cpanel_Controller
 	}
 	
 	public function index($page = NULL) {
-		$tableDtil						= $this->order_model->get_available_tables();
-		$loggedUser 					= $this->ion_auth->user()->row();
-		foreach($tableDtil as $key => $table) {
-			$checkOrder					=  $this->order_model->check_table($table['id'], $loggedUser->id);
-			if (!empty($checkOrder)) {
-				unset($tableDtil[$key]);
+		if($this->ion_auth->in_group(2)){
+			$this->data['processing_odr_cashier']	= $this->order_model->processing_odr_cashier();
+		}elseif ($this->ion_auth->in_group(3)) {
+			$tableDtil						= $this->order_model->get_available_tables();
+			$loggedUser 					= $this->ion_auth->user()->row();
+			foreach($tableDtil as $key => $table) {
+				$checkOrder					=  $this->order_model->check_table($table['id'], $loggedUser->id);
+				if (!empty($checkOrder)) {
+					unset($tableDtil[$key]);
+				}
 			}
+			$this->data['table_dtil']		= $tableDtil;
 		}
-		$this->data['table_dtil']		= $tableDtil;
+
+		
 		if ($page) {
 			$this->render($page);
 		} else  {
@@ -189,7 +195,7 @@ class Manage extends Cpanel_Controller
 	#list table categories
 	function table_categories() {
 		//$allCategories				= $this->manage_model->get_table_categories();
-		$allCategories					= _DB_data($this->tables['table_category'], null, null, null, null);
+		$allCategories					= _DB_data($this->tables['table_category'], null, null, null, array('id','desc'));
 
 		$this->data['categories']	= $allCategories;
 		$this->render('manage-table-categories');
@@ -505,6 +511,8 @@ class Manage extends Cpanel_Controller
 
 		
 		$get_data 	= $this->manage_model->get_user_details($userId);
+		$get_groups = _DB_data($this->tables['groups'], null, null, null, null);
+
 		
 		$userData="";
 		foreach ($get_data as $rows) {			
@@ -564,15 +572,22 @@ class Manage extends Cpanel_Controller
 					<div class="col-md-6">
 						<div class="form-group">
 							<label for="category"> User Type</label>
-							<select class="form-control" id="edituserType" name="edituserType" id="userType">
-								<option value="" selected>Select A Type</option>';
+							<select class="form-control" id="edituserType" name="edituserType" >
+								';
 
-								$c_selected= $w_selected= '';
-								(!empty($rows['user_type']) && $rows['user_type']==='cashier') ? $c_selected='selected="selected"' : $w_selected='selected="selected"';
+								$options = '<option value="0">Select A Type</option>';
 
-					$userData.='<option '.$c_selected.' value="2">Cashier</option>
-								<option '.$w_selected.' value="3">Waiter</option>
-							</select>
+				             	foreach($get_groups as $group_row) {
+				             	  if($group_row['id'] != 1){
+				             	  (!empty($rows['user_type']) && $rows['user_type']===$group_row['name']) ? $selected=' selected="selected" ' : $selected='';			            
+				             	  	$options.= '<option '.$selected. ' value="' . $group_row["id"] . '">' . $group_row["name"] . '</option>';
+				             	  }	
+				                  
+				             	 }
+				              	$closeSelect = '</select>';
+
+					$userData.=$options.$closeSelect;
+					$userData.='</select>
 						</div>
 					</div>
 					<div class="col-md-6">
@@ -877,9 +892,10 @@ class Manage extends Cpanel_Controller
 	}
 	
 	#while click on table button for order and view(Load) order page
-	function order_desk($tableId = NULL) {
-		$this->data['table_id']		= $tableId;
+	function order_desk($tableId = NULL,$orderType=NULL) {
 		$loggedUser 				= $this->ion_auth->user()->row();
+		$this->data['table_id']		= $tableId;
+		$this->data['order_type']	= $orderType;
 		if ($tableId) {	
 			$checkOrder				= $this->order_model->check_table($tableId, $loggedUser->id);
 			if (!empty($checkOrder)) {
@@ -913,38 +929,209 @@ class Manage extends Cpanel_Controller
 			 	$incrementId		= 10001;
 			 }
 			 $status				= 'pending';
-			$insertOrder			= _DB_insert($this->tables['order_entity'], array('status' => $status, 'table_id' => $tableID, 'user_id' => $loggedUser->id, 'increment_id' => $incrementId, ' 	created_at' => $dateTime, 'updated_at' => $dateTime));
+			 $insertOrder			= _DB_insert($this->tables['order_entity'], array('status' => $status, 'table_id' => $tableID, 'user_id' => $loggedUser->id, 'increment_id' => $incrementId, ' 	created_at' => $dateTime, 'updated_at' => $dateTime));
 			if ($insertOrder) {
 				$lastOrder			= _DB_insert_id();
-				echo '<h1><span class="subscript">ORDER NO</span> "'.$incrementId.'"</h1> <input type="hidden" id="order-id" value="'.$lastOrder.'">';
+				$getMaxKotId		= $this->order_model->max_increment_id('kot_entity');
+				if ($getMaxKotId->increment_id) {
+			 	$kotIncrementId		= $getMaxKotId->increment_id+1;
+			 } else {
+			 	$kotIncrementId		= 10001;
+			 }
+			
+				$createKot			= _DB_insert($this->tables['kot_entity'], array('status' => $status, 'table_id' => $tableID, 'order_id' => $lastOrder, 'increment_id' => $kotIncrementId, 'created_at' => $dateTime, 'updated_at' => $dateTime));
+				if ($createKot) {
+					$lastKotId		= _DB_insert_id();
+				} else {
+					$lastKotId		= 0;
+				}
+				echo '<h1><span class="subscript">ORDER NO</span> "'.$incrementId.'"</h1> <input type="hidden" id="order-id" value="'.$lastOrder.'"><input type="hidden" id="kot-id" value="'.$lastKotId.'">';
 			} else {
 				echo "Sorry! Something went wrong. Try again later";
 			}
 		}
-		
+	}
+	
+	#get kot details by id
+	function get_kot_details() {
+		$kotId			= $this->input->post('kot_id', true);
+		if ($kotId) {
+			$kotDetails	= _DB_get_record($this->tables['kot_entity'], array('entity_id' => $kotId));
+			echo $kotDetails['increment_id'];
+		}
 	}
 	
 	#to confirm menu from customer
-	function confirm_menu() {
+	function confirm_menu($orderType = NULL) {
 		$dateTime					= date('Y-m-d H:i:s');
 		$order_id					= $this->input->post('order_id', true);
 		$menu_id					= $this->input->post('menu_id', true);
 		$price_type					= $this->input->post('price_type', true);
+		$kot_id						= $this->input->post('kot_id', true); 
+		$kot_flag					= $this->input->post('flag', true); 
+
+		if ($orderType) {
+			$order_type 			= $orderType;
+		} else {
+			$order_type 			= 'table';
+		}
 		if ($order_id && $menu_id && $price_type) {
 			$getPrice				= _DB_get_record($this->tables['menu_entity_price'], array('menu_id' => $menu_id, 'price_type' => $price_type));
 			
 			$typeDtil				=  _DB_get_record($this->tables['menu_entity_price_type'], array('entity_id' => $price_type));
 			
 			$menuDtil				= _DB_get_record($this->tables['menu_entity'], array('entity_id' => $menu_id));
+			#if tax class is enabled
+			if ($menuDtil['tax_class'] > 0) {
+				$getTax				= _DB_get_record($this->tables['tax_entity'], array('entity_id' => $menuDtil['tax_class']));
+				$taxPercent			= $getTax['tax_rate'];
+				$price				= ($getPrice['price_amount']*100)/(100+$taxPercent);
+				$taxAmount			= $getPrice['price_amount']-$price;
+			} else {
+				$taxPercent			= 0;
+				$price				= $getPrice['price_amount'];
+				$taxAmount			= 0;
+				
+			}
 			$MenuName				= $menuDtil['menu_name']." (".$typeDtil['type_name'].")";
 			
-			$checkMenu				= _DB_get_record($this->tables['order_entity_items'], array(' 	order_id' => $order_id, 'is_kot' => 0, 'menu_id' => $menu_id, 'price_type' => $price_type));
-			if (empty($checkMenu)) {
+			$checkMenu				= _DB_get_record($this->tables['order_entity_items'], array('order_id' => $order_id, 'is_kot' => 0, 'menu_id' => $menu_id, 'price_type' => $price_type));	
+			if (empty($checkMenu) && $kot_flag != 2 ){
 				$qty				= 1;
 				$row_total			= $qty*$getPrice['price_amount'];
-				$insertMenu			= _DB_insert($this->tables['order_entity_items'], array('order_id' => $order_id, 'is_kot' => 0, 'menu_id' => $menu_id, 'order_type' => 'table', 'price_type' => $price_type, 'name' => $MenuName, 'qty_ordered' => $qty, 'price' => $getPrice['price_amount'], 'row_total' => $row_total, 'created_at' => $dateTime, 'updated_at' => $dateTime));
-			}
+				$insertMenu			= _DB_insert($this->tables['order_entity_items'], array('order_id' => $order_id, 'is_kot' => 0, 'menu_id' => $menu_id, 'order_type' => $order_type, 'price_type' => $price_type, 'name' => $MenuName, 'qty_ordered' => $qty, 'price' => $price, 'tax_percent' => $taxPercent, 'tax_amount' => $taxAmount,  'row_total' => $row_total, 'created_at' => $dateTime, 'updated_at' => $dateTime));
+				if ($insertMenu) {
+					$insertKOT		= _DB_insert($this->tables['kot_entity_items'], array('kot_id' => $kot_id, 'is_kot' => 0, 'menu_id' => $menu_id, 'order_type' => $order_type, 'price_type' => $price_type, 'name' => $MenuName, 'qty_ordered' => $qty, 'created_at' => $dateTime, 'updated_at' => $dateTime));
+					$this->data['order_id']		= $order_id;
+					$this->data['kot_details']	= $this->order_model->kot_details($kot_id);
+					$this->render('ajax/kot_details');
+				}
+			} else if(!empty($checkMenu) && $kot_flag != 2) {
+				if($kot_flag==1){
+					$qty				= $checkMenu['qty_ordered']-1;
+
+				}else{
+					$qty				= $checkMenu['qty_ordered']+1;
+
+				}				
+				$row_total			= $qty*$getPrice['price_amount'];
+				$updateMenu			= _DB_update($this->tables['order_entity_items'], array('qty_ordered' => $qty, 'row_total' => $row_total, 'updated_at' => $dateTime), array('item_id' => $checkMenu['item_id']));
+				$checkKOT			= _DB_get_record($this->tables['kot_entity_items'],  array('kot_id' => $kot_id, 'is_kot' => 0, 'menu_id' => $menu_id, 'price_type' => $price_type));
+				if (!empty($checkKOT)) {
+					$updateKOT		= _DB_update($this->tables['kot_entity_items'], array('qty_ordered' => $qty, 'updated_at' => $dateTime), array('item_id' => $checkKOT['item_id']));
+				}
+				if ($updateMenu) {
+					$this->data['order_id']		= $order_id;
+					$this->data['kot_details']	= $this->order_model->kot_details($kot_id);
+					$this->render('ajax/kot_details');
+				}
+			} else if(!empty($checkMenu) && $kot_flag == 2){
+
+				$deleteMenu			= _DB_delete($this->tables['order_entity_items'], array('item_id' => $checkMenu['item_id']));
+				$checkKOT			= _DB_get_record($this->tables['kot_entity_items'],  array('kot_id' => $kot_id, 'is_kot' => 0, 'menu_id' => $menu_id, 'price_type' => $price_type));
+				if (!empty($checkKOT)) {
+					$deleteKOT		= _DB_delete($this->tables['kot_entity_items'], array('item_id' => $checkKOT['item_id']));
+				}
+				if ($deleteMenu) {
+					$this->data['order_id']		= $order_id;
+					$this->data['kot_details']	= $this->order_model->kot_details($kot_id);					
+					if(empty($this->data['kot_details'][0]['kot_id'])){
+						echo "null";
+
+					} else {
+						$this->render('ajax/kot_details');
+					}
+					
+				}
+ 			}
 			
 		}
+	}
+	function print_kot($orderType = NULL){
+
+		$dateTime					= date('Y-m-d H:i:s');
+		$order_id					= $this->input->post('order_id', true);		
+		$kot_id						= $this->input->post('kot_id', true); 
+	if ($order_id && $kot_id) {
+		$updateTotal				= $this->order_model->sum_of_order($order_id);
+		$kotTotal					= $this->order_model->sum_of_kot($kot_id);
+		$updateOrderEntity			= _DB_update($this->tables['order_entity'], array('status' => 'processing', 'grand_total' => $updateTotal->row_total,'total_qty_ordered' => $updateTotal->qty_ordered, 'tax_amount' => $updateTotal->tax_amount, 'updated_at' => $dateTime), array('entity_id' => $order_id));
+		$updateKOTEntity			= _DB_update($this->tables['kot_entity'], array('qty_ordered' => $kotTotal->qty_ordered, 'Updated_at' => $dateTime), array('entity_id' => $kot_id));
+		
+		$this->data['kot_details']	= $this->order_model->kot_details($kot_id,1);
+					
+		$updateOrder				= _DB_update($this->tables['order_entity_items'], array('is_kot' => 1, 'updated_at' => $dateTime), array('order_id' => $order_id));
+
+		$updateKOT					= _DB_update($this->tables['kot_entity_items'], array('is_kot' => 1, 'updated_at' => $dateTime), array('kot_id' => $kot_id));
+
+
+		
+		if ($updateOrder && $updateOrderEntity && $updateKOT ) {
+			$this->data['order_id']	= $order_id;
+			//$this->data['kot_details']	= $this->order_model->kot_details($kot_id);
+			$this->render('ajax/print_kot');
+		}
+	}
+	}
+
+	#function to get refresh kot section
+	function refresh_kot() {
+		$kotId							= $this->input->post('kot_id', true);
+		if ($kotId) {
+			$this->data['kot_details']	= $this->order_model->kot_details($kotId);
+			$this->render('ajax/kot_details');
+		}
+	}
+	
+	#function for compleate order before close from waiter
+	function compleate_order() {
+		$orderId						= $this->input->post('order_id', true);
+		if ($orderId) {
+			$this->data['order_detail']	= _DB_get_record($this->tables['order_entity'], array('entity_id' => $orderId));
+			$this->data['order_item']	= _DB_data($this->tables['order_entity_items'], array('order_id' => $orderId, 'is_kot' => 1));
+		}
+	}
+	
+	function print_bill_cashier(){
+		$dateTime					= date('Y-m-d H:i:s');
+		$order_id					= $this->input->post('order_id', true);
+		$updateOrderEntity		= _DB_update($this->tables['order_entity'], array('status' => 'closed', 'updated_at' => $dateTime), array('entity_id' => $order_id));
+		$this->data['order_id']		= $order_id;
+		$this->data['bill_details']	= $this->order_model->bill_details($order_id);
+		$this->render('ajax/print_bill');
+
+
+
+	}
+
+	function manage_pending_order(){
+
+		$dateTime					= date('Y-m-d H:i:s');
+		$order_id					= $this->input->post('order_id', true);		
+		$kot_id						= $this->input->post('kot_id', true); 
+
+		// $checkMenu				= _DB_data($this->tables['order_entity_items'], array('order_id' => $order_id ));
+		// $grand_total="";
+		// $total_qty_ordered="";
+		// 	foreach ($checkMenu as $total) {
+		// 		$grand_total			+= $total['row_total'];
+		// 		$total_qty_ordered		+= $total['total_qty_ordered'];
+
+		// 	}
+			
+		// $updateOrder			= _DB_update($this->tables['order_entity_items'], array('is_kot' => 1, 'updated_at' => $dateTime), array('order_id' => $order_id));
+
+		// $updateOrderEntity		= _DB_update($this->tables['order_entity'], array('status' => 'processing', 'grand_total' => $grand_total,'total_qty_ordered' => $total_qty_ordered, 'updated_at' => $dateTime), array('entity_id' => $order_id));
+		
+		// $updateKOT		= _DB_update($this->tables['kot_entity_items'], array('is_kot' => 1, 'updated_at' => $dateTime), array('kot_id' => $kot_id));
+
+
+		
+		// if ($updateOrder && $updateOrderEntity && $updateKOT ) {
+			$this->data['order_id']		= $order_id;
+			$this->data['kot_details']	= $this->order_model->kot_details($kot_id);
+			$this->render('ajax/kot_details');
+		// }
+
 	}
 }
