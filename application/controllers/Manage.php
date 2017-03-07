@@ -1047,8 +1047,9 @@ class Manage extends Cpanel_Controller
 			
 		}
 	}
-	function print_kot($orderType = NULL){
-
+	
+	#print KOT and Change the order and kot status
+	function print_kot($orderType = NULL) {
 		$dateTime					= date('Y-m-d H:i:s');
 		$order_id					= $this->input->post('order_id', true);		
 		$kot_id						= $this->input->post('kot_id', true); 
@@ -1056,7 +1057,7 @@ class Manage extends Cpanel_Controller
 		$updateTotal				= $this->order_model->sum_of_order($order_id);
 		$kotTotal					= $this->order_model->sum_of_kot($kot_id);
 		$updateOrderEntity			= _DB_update($this->tables['order_entity'], array('status' => 'processing', 'grand_total' => $updateTotal->row_total,'total_qty_ordered' => $updateTotal->qty_ordered, 'tax_amount' => $updateTotal->tax_amount, 'updated_at' => $dateTime), array('entity_id' => $order_id));
-		$updateKOTEntity			= _DB_update($this->tables['kot_entity'], array('qty_ordered' => $kotTotal->qty_ordered, 'Updated_at' => $dateTime), array('entity_id' => $kot_id));
+		$updateKOTEntity			= _DB_update($this->tables['kot_entity'], array('status' => 'processing', 'qty_ordered' => $kotTotal->qty_ordered, 'Updated_at' => $dateTime), array('entity_id' => $kot_id));
 		
 		$this->data['kot_details']	= $this->order_model->kot_details($kot_id,1);
 					
@@ -1087,51 +1088,91 @@ class Manage extends Cpanel_Controller
 	function compleate_order() {
 		$orderId						= $this->input->post('order_id', true);
 		if ($orderId) {
+			_DB_delete($this->tables['order_entity_items'], array('order_id' => $orderId, 'is_kot' => 0));
+			$getKot						= _DB_get_record($this->tables['kot_entity'], array('order_id' => $orderId));
+			_DB_delete($this->tables['kot_entity_items'], array('kot_id' => $getKot['entity_id'], 'is_kot' => 0));
 			$this->data['order_detail']	= _DB_get_record($this->tables['order_entity'], array('entity_id' => $orderId));
-			$this->data['order_item']	= _DB_data($this->tables['order_entity_items'], array('order_id' => $orderId, 'is_kot' => 1));
+			$this->data['order_item']	= _DB_data($this->tables['order_entity_items'], array('order_id' => $orderId, 'is_kot' => 1));	
+			$this->render('ajax/bill-confirm');
 		}
 	}
 	
 	function print_bill_cashier(){
-		$dateTime					= date('Y-m-d H:i:s');
-		$order_id					= $this->input->post('order_id', true);
-		$updateOrderEntity		= _DB_update($this->tables['order_entity'], array('status' => 'closed', 'updated_at' => $dateTime), array('entity_id' => $order_id));
-		$this->data['order_id']		= $order_id;
-		$this->data['bill_details']	= $this->order_model->bill_details($order_id);
+		$dateTime						= date('Y-m-d H:i:s');
+		$order_id						= $this->input->post('order_id', true);
+		$updateOrderEntity				= _DB_update($this->tables['order_entity'], array('status' => 'closed', 'updated_at' => $dateTime), array('entity_id' => $order_id));
+		$this->data['order_id']			= $order_id;
+		$this->data['bill_details']		= $this->order_model->bill_details($order_id);
 		$this->render('ajax/print_bill');
 
 
 
 	}
+	
+	#manage processing and pending orders
+	function manage_pending_order($orderId = NULL){
+	if ($orderId) {
+		$loggedUser 				= $this->ion_auth->user()->row();
+		$getOrder					= _DB_get_record($this->tables['order_entity'], array('entity_id' => $orderId));
+		$tableId					= $getOrder['table_id'];
+		$orderType					= '';
+		$this->data['table_id']		= $tableId;
+		$this->data['order_type']	= $orderType;
+		$this->data['order_id']		= $orderId;
+		$this->data['get_order']	= _DB_get_record($this->tables['order_entity'], array('entity_id' => $orderId));
+		$this->data['order_items']	= _DB_data($this->tables['order_entity_items'], array('order_id' => $orderId), null, null, null );
+		$this->data['get_kot']		= $kotDtil	= _DB_get_record($this->tables['kot_entity'], array('order_id' => $orderId));
+		$this->data['kot_details']	= _DB_data($this->tables['kot_entity_items'], array('kot_id' => $kotDtil['entity_id']), null, null, null );
+		if ($tableId) {	
+			$checkOrder				= $this->order_model->check_table($tableId, $loggedUser->id);
+			if (!empty($checkOrder)) {
+				redirect('manage/index', 'refresh');
+			} else {
+				//check whether pending order is there or what
+				$this->data['table_detail']		= _DB_get_record($this->tables['table_details'], array('id' => $tableId));
+				$this->data['processing_odr']	= $this->order_model->processing_orders($loggedUser->id, $tableId);
+				$this->data['menu_category']	= _DB_data($this->tables['category_entity'], array('status' => 1));
+				$this->data['menu_details']		= $this->order_model->get_active_menus();
+				$this->data['price_cat_dtil']	= _DB_data($this->tables['menu_entity_price_type'], array('status' => 1));
+				$this->render('order-desk');
+			}
+		} else {
+			$this->session->set_flashdata('message', "Oops! Something went wrong. Try again later.");
+			$this->session->set_flashdata('message_type', 'danger');
+			redirect('manage/index', 'refresh');
+		}
+	
+		
+	} else {
+		$this->session->set_flashdata('message', "Oops! Something went wrong. Try again later.");
+		$this->session->set_flashdata('message_type', 'danger');
+		redirect('manage/index', 'refresh');
+	}
 
-	function manage_pending_order(){
-
+	}
+	
+	#compleate an order 
+	function close_order($orderId	= NULL) {
 		$dateTime					= date('Y-m-d H:i:s');
-		$order_id					= $this->input->post('order_id', true);		
-		$kot_id						= $this->input->post('kot_id', true); 
-
-		// $checkMenu				= _DB_data($this->tables['order_entity_items'], array('order_id' => $order_id ));
-		// $grand_total="";
-		// $total_qty_ordered="";
-		// 	foreach ($checkMenu as $total) {
-		// 		$grand_total			+= $total['row_total'];
-		// 		$total_qty_ordered		+= $total['total_qty_ordered'];
-
-		// 	}
-			
-		// $updateOrder			= _DB_update($this->tables['order_entity_items'], array('is_kot' => 1, 'updated_at' => $dateTime), array('order_id' => $order_id));
-
-		// $updateOrderEntity		= _DB_update($this->tables['order_entity'], array('status' => 'processing', 'grand_total' => $grand_total,'total_qty_ordered' => $total_qty_ordered, 'updated_at' => $dateTime), array('entity_id' => $order_id));
-		
-		// $updateKOT		= _DB_update($this->tables['kot_entity_items'], array('is_kot' => 1, 'updated_at' => $dateTime), array('kot_id' => $kot_id));
-
-
-		
-		// if ($updateOrder && $updateOrderEntity && $updateKOT ) {
-			$this->data['order_id']		= $order_id;
-			$this->data['kot_details']	= $this->order_model->kot_details($kot_id);
-			$this->render('ajax/kot_details');
-		// }
-
+		if ($orderId) {
+			$getOrder				= _DB_get_record($this->tables['order_entity'], array('entity_id' => $orderId, 'is_bill' => 0));
+			$getOrderItem			= _DB_data($this->tables['order_entity_items'], array('order_id' => $orderId, 'is_kot' => 1));	
+			if (!empty($getOrder) && !empty($getOrderItem)) { 
+				$updateOrder		= _DB_update($this->tables['order_entity'], array('status' => 'complete' , 'is_bill' => 1, 'updated_at' => $dateTime), array('entity_id' => $orderId));
+				$updateKot			= _DB_update($this->tables['kot_entity'], array('status' => 'complete', 'Updated_at' => $dateTime), array('order_id' => $orderId));
+				if ($updateOrder && $updateKot) {
+					$this->session->set_flashdata('message', "ORDER ".$getOrder['increment_id']." has been compleated");
+					$this->session->set_flashdata('message_type', 'success');
+				} else {
+					$this->session->set_flashdata('message', "Oops! Something went wrong. Try again later.");
+					$this->session->set_flashdata('message_type', 'danger');
+				}
+				redirect('manage/index', 'refresh');
+			} else {
+				$this->session->set_flashdata('message', "Oops! Something went wrong. Try again later.");
+				$this->session->set_flashdata('message_type', 'danger');
+				redirect('manage/index', 'refresh');
+			}
+		}
 	}
 }

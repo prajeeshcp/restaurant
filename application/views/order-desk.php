@@ -1,4 +1,5 @@
-<?php $this->load->view('includes/header'); ?>
+<?php $this->load->view('includes/header');?>
+
 		<!-- END HEADER -->
 
 		<!-- Left panel : Navigation area -->
@@ -88,7 +89,11 @@
                         	<?php } ?>
 		                <div class="panel-body no-padding">
 		                    <div class="the-price" id='order-details'>
+                            <?php if (!empty($order_id)) { ?>
+                            <h1><span class="subscript">ORDER NO</span> "<?=(!empty($get_order)) ? $get_order['increment_id'] : ''?>"</h1> <input type="hidden" value="<?=$order_id?>" id="order-id"><input type="hidden" value="<?=(!empty($get_kot)) ? $get_kot['entity_id'] : ''?>" id="kot-id">
+                            <?php } else { ?>
 		                        <h1>#<span class="subscript">ORDER NO</span></h1>
+                                <?php } ?>
 		                    </div>
                             <div class="custom-scroll" style="max-height: 270px;overflow-x: hidden;
 overflow-y: scroll;"> 
@@ -122,9 +127,9 @@ overflow-y: scroll;">
 											 ?>
                                         <td>
                                         <?php if ($getPrice['price_amount']) : ?>
-                                        <button class="btn btn-primary disabled permision-btn" onclick="return confirm_menu(<?=$menudtil['entity_id']?>, <?=$pricecat['entity_id']?>)"><i class="fa fa-inr"></i>&nbsp;<?=$getPrice['price_amount']?></button> <?php endif; ?></td>
+                                        <button class="btn btn-primary <?=(empty($order_id)) ? 'disabled' : ''?> permision-btn" onclick="return confirm_menu(<?=$menudtil['entity_id']?>, <?=$pricecat['entity_id']?>)"><i class="fa fa-inr"></i>&nbsp;<?=$getPrice['price_amount']?></button> <?php endif; ?></td>
                                         <?php } } else { ?>
-                                        <td><button class="btn disabled btn-primary permision-btn">Not Mention</button></td>
+                                        <td><button class="btn <?=(empty($order_id)) ? 'disabled' : ''?> btn-primary permision-btn">Not Mention</button></td>
                                         <?php } ?>
                                     </tr>
                                     <?php } } } } else { ?>
@@ -136,7 +141,7 @@ overflow-y: scroll;">
                             </div>
 		                </div>
 		                <div class="panel-footer text-align-center">
-		                    <a href="javascript:void(0);" onclick="return compleate_order();" class="btn btn-success btn-lg disabled permision-btn" role="button">Compleate Order</a></div>
+		                    <a href="javascript:void(0);" onclick="return compleate_order();" class="btn btn-success btn-lg <?=(empty($order_id)) ? 'disabled' : ''?> permision-btn" role="button">Compleate Order</a></div>
 		            </div>
 		        </div>
 		        <div class="col-xs-12 col-sm-6 col-md-5">
@@ -148,17 +153,42 @@ overflow-y: scroll;">
 		                </div>
 		                <div class="panel-body no-padding" >
 		                    <div class="the-price">
-		                        <h1><span class="subscript" id="kot-dtil">KOT No</span></h1>
+		                        <h1><span class="subscript" id="kot-dtil">KOT No <?=(!empty($get_kot)) ? $get_kot['increment_id'] : ''?></span></h1>
 		                    </div>
                             <div class="custom-scroll" style="max-height: 270px;overflow-x: hidden;
 overflow-y: scroll;">
 		                    <table class="table" id="kot-details">
-		                         
+		                         <?php 
+
+if (!empty($kot_details)) {
+	foreach ($kot_details as $kot) {
+ ?>
+<tr style=" <?=($kot['is_kot'] == 0) ? 'background-color:darkkhaki' : 'background-color:darkolivegreen'?>">
+    <td width="55%">   
+    	<strong> <?=strip_tags($kot['name']);?> </strong>     
+    </td>
+    <td><button type="button" class="btn btn-sm btn-info btn-prev"><?=number_format($kot['qty_ordered'], 2);?></button></td>
+    <td><div class="actions">
+    <?php if($kot['qty_ordered'] == 1){?>
+<button type="button" class="btn btn-sm btn-warning btn-prev disabled" onclick="return confirm_menu(<?=$kot['menu_id']?>, <?=$kot['price_type']?>,<?=$order_id?>, <?=$kot['kot_id']?>,1)">
+    <i class="fa fa-minus-circle"></i></button>
+    <?php } else { ?>
+    	<button type="button" class="btn btn-sm btn-warning btn-prev" onclick="return confirm_menu(<?=$kot['menu_id']?>, <?=$kot['price_type']?>,<?=$order_id?>, <?=$kot['kot_id']?>,1)">
+    <i class="fa fa-minus-circle"></i></button>
+    <?php } ?>
+<button type="button" class="btn btn-sm btn-success btn-next"  data-last="Finish" onclick="return confirm_menu(<?=$kot['menu_id']?>, <?=$kot['price_type']?>,<?=$order_id?>, <?=$kot['kot_id']?>)"><i class="fa fa-plus-circle"></i>
+</button>
+<button type="button" class="btn btn-sm btn-danger btn-prev" onclick="return confirm_menu(<?=$kot['menu_id']?>, <?=$kot['price_type']?>,<?=$order_id?>, <?=$kot['kot_id']?>,2)">
+    <i class="fa  fa-trash-o"></i></button>
+</div></td>
+</tr>
+<?php } }
+ ?>
 		                    </table>
                             </div>
 		                </div>
 		                <div class="panel-footer text-align-center">
-		                    <a href="javascript:void(0);" class="btn btn-warning btn-lg kot-button disabled" role="button" onclick="return print_kot();">PRINT KOT</a></div>
+		                    <a href="javascript:void(0);" class="btn btn-warning btn-lg kot-button <?=(empty($order_id)) ? 'disabled' : ''?>" role="button" onclick="return print_kot();">PRINT KOT</a></div>
 		            </div>
 		        </div>	
 		    			    	
@@ -205,7 +235,7 @@ overflow-y: scroll;">
 		                            </td>
                                     <td><?=$tableDtl['table_number']?></td>
                                      <td><span class="label bg-color-<?=($processing['status'] == 'pending') ? 'red' : 'orange'?>"><?=ucfirst($processing['status'])?></span></td>
-                                    <td><a href="javascript:void(0);" class="btn btn-primary" onclick="return manage_pending_order(<?= $processing['entity_id']?>,<?= $kotDtl['entity_id']?>);"><i class="fa fa-shopping-cart"></i> GO NOW</a></td>
+                                    <td><a href="<?=site_url('manage/manage_pending_order/'.$processing['entity_id'])?>" class="btn btn-primary" ><i class="fa fa-shopping-cart"></i> GO NOW</a></td>
 		                        </tr>
                                 <?php } } ?>
 		                    </tbody></table>
@@ -229,6 +259,26 @@ overflow-y: scroll;">
 		</div>
 		<!-- END MAIN PANEL -->
 
+<!-- confirm order model -->
+<div id="order-modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">ORDER STATEMENT</h4>
+      </div>
+      <div class="modal-body" id="bill-confirm">
+       
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
 		<!-- SHORTCUT AREA : With large tiles (activated via clicking user name tag)
 		Note: These tiles are completely responsive,
 		you can add as many as you like
@@ -527,9 +577,42 @@ overflow-y: scroll;">
 		}
 	}
 </script>
-
 <script type="text/javascript" language="javascript">
-	function manage_pending_order(orderId=null,kotId = null) {
+	function compleate_order() {
+	 var orderId		= $('#order-id').val();
+	 var dataString    	= "order_id="+orderId;
+			$.ajax({ 
+				type : "POST",
+				url : "<?=site_url()?>manage/compleate_order",
+				data : dataString,
+				dataType : 'html',
+				cache : false, // (warning: this will cause a timestamp and will call the request twice)
+				beforeSend : function() {
+			// cog placed
+					$('#dialog_simple').dialog('close');
+					$('#create-new').addClass('disabled');
+					$('#content').css({opacity : '0.5'});
+						// scroll up
+						$("html, body").animate({
+							scrollTop : 0
+						}, "fast");
+				},
+				success : function(data) {
+					$('#bill-confirm').html(data);
+					$("#order-modal").modal();
+					$('#create-new').removeClass('disabled');
+					$('.kot-button').removeClass('disabled');
+					$('#content').css({opacity : '1'});
+				},
+				error : function(xhr, ajaxOptions, thrownError) {
+					container.html('<h4 style="margin-top:10px; display:block; text-align:left"><i class="fa fa-warning txt-color-orangeDark"></i> Error 404! Page not found.</h4> <br>Or you are running this page from your hard drive. Please make sure for all ajax calls your page needs to be hosted in a server');
+				},
+				async : false
+			});
+	}
+</script>
+<script type="text/javascript" language="javascript">
+	function manage_pending_order(orderId = null,kotId = null) {
 		// var orderId			= $('#order-id').val();
 		// var kotId			= $('#kot-id').val(); 		
 		if (kotId) {
@@ -554,7 +637,7 @@ overflow-y: scroll;">
 					
 					$('#kot-details').html(data);
 					$('#create-new').removeClass('disabled');
-					$('.kot-button').removeClass('disabled');
+					$('.permision-btn').removeClass('disabled');
 					$('#content').css({opacity : '1'});
 				},
 				error : function(xhr, ajaxOptions, thrownError) {
@@ -563,36 +646,6 @@ overflow-y: scroll;">
 				async : false
 			});
 		}
-	}
-</script>
-<script type="text/javascript" language="javascript">
-	function compleate_order() {
-	 var orderId		= $('#order-id').val();
-	 var dataString    	= "order_id="+orderId;
-			$.ajax({ 
-				type : "POST",
-				url : "<?=site_url()?>manage/compleate_order",
-				data : dataString,
-				dataType : 'html',
-				cache : false, // (warning: this will cause a timestamp and will call the request twice)
-				beforeSend : function() {
-			// cog placed
-					$('#dialog_simple').dialog('close');
-					$('#create-new').addClass('disabled');
-					$('#content').css({opacity : '0.5'});
-						// scroll up
-						$("html, body").animate({
-							scrollTop : 0
-						}, "fast");
-				},
-				success : function(data) {
-					//$('#kot-details').html(data);
-				},
-				error : function(xhr, ajaxOptions, thrownError) {
-					container.html('<h4 style="margin-top:10px; display:block; text-align:left"><i class="fa fa-warning txt-color-orangeDark"></i> Error 404! Page not found.</h4> <br>Or you are running this page from your hard drive. Please make sure for all ajax calls your page needs to be hosted in a server');
-				},
-				async : false
-			});
 	}
 </script>
 <?php $this->load->view('includes/footer'); ?>
