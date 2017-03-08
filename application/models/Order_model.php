@@ -56,7 +56,7 @@ class Order_model extends CI_Model {
 	function processing_odr_cashier($userId	= NULL) {
 		return $this->db->select('*')
 		->from('order_entity')		
-		->where("status", 'processing')		
+		->where("is_bill", 1)		
 		->get()->result_array();
 	}
 	

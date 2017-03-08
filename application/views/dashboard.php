@@ -353,17 +353,24 @@
 	<!-- row -->
 	<div class="row">
 		<article class="col-sm-12">
-			<div> 
-				<a class="btn btn-primary btn-lg pull-right" href="<?=site_url('manage/order_desk/1/parsel')?>" >PARCEL ORDER</a> 
-			</div>		
+			<!--<div>
+             
+				<a class="btn btn-danger btn-lg pull-right" href="<?=site_url('manage/order_desk/1/parsel')?>" >PARCEL ORDER</a> 
+			</div>-->	
+            	
         	<div class="widget-body">
 				<h1>TABLE ORDER</h1>
+                <div class="widget-body">
+						
+						<a class="btn btn-danger btn-lg" href="<?=site_url('manage/order_desk/1/parsel')?>">PARCEL ORDER</a>&nbsp;<a class="btn btn-primary btn-lg" href="javascript:void(0);">PREVIOUS BILLS</a>
+						<hr class="simple">
+                        </div>
 				<div class="row">
 					<div class="col-xs-12 col-sm-12 col-md-12">
 			            <div class="panel panel-greenLight">
 			                <div class="panel-heading">
 			                    <h3 class="panel-title">
-			                        Pending/Processing</h3>
+			                        Compleated Orderes</h3>
 			                </div>
 			                <div class="panel-body no-padding">
 			                    <table class="table">
@@ -381,14 +388,14 @@
 									?>
 	                                <tr class="<?=($key%2 == 0) ? 'active' : ''?>">
 			                            <td>
-			                               <?=$processing['entity_id']?>
+			                               <?=$processing['increment_id']?>
 			                            </td>
 	                                    <td><?=$tableDtl['table_number']?></td>
-	                                     <td><span class="label bg-color-<?=($processing['status'] == 'pending') ? 'red' : 'orange'?>"><?=ucfirst($processing['status'])?></span></td>
+	                                     <td><span class="label bg-color-<?=($processing['status'] == 'pending') ? 'red' : 'green'?>"><?=ucfirst($processing['status'])?></span></td>
 	                                     <td>
 			                               <?=$processing['grand_total']?>
 			                            </td>
-	                                    <td id="processing_order_<?= $processing['entity_id']?>"><a href="javascript:void(0);" class="btn btn-primary" onclick="return print_bill_cashier(<?=$processing['entity_id']?>);"><i class="fa fa-shopping-cart"></i> Print Bill</a></td>
+	                                    <td id="processing_order_<?= $processing['entity_id']?>"><a href="<?=site_url('manage/create_bill/'.$processing['entity_id'])?>" class="btn btn-warning" ><i class="fa fa-shopping-cart"></i> Create Bill</a></td>
 			                        </tr>
 	                                <?php } } ?>
 			                    </tbody></table>

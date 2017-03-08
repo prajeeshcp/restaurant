@@ -16,13 +16,13 @@ class Manage extends Cpanel_Controller
 	}
 	
 	public function index($page = NULL) {
-		if($this->ion_auth->in_group(2)){
+		if ($this->ion_auth->in_group(2)) {
 			$this->data['processing_odr_cashier']	= $this->order_model->processing_odr_cashier();
-		}elseif ($this->ion_auth->in_group(3)) {
+		} else if ($this->ion_auth->in_group(3)) {
 			$tableDtil						= $this->order_model->get_available_tables();
 			$loggedUser 					= $this->ion_auth->user()->row();
-			foreach($tableDtil as $key => $table) {
-				$checkOrder					=  $this->order_model->check_table($table['id'], $loggedUser->id);
+			foreach ($tableDtil as $key => $table) {
+				$checkOrder					= $this->order_model->check_table($table['id'], $loggedUser->id);
 				if (!empty($checkOrder)) {
 					unset($tableDtil[$key]);
 				}
@@ -1097,14 +1097,51 @@ class Manage extends Cpanel_Controller
 		}
 	}
 	
-	function print_bill_cashier(){
+	function create_bill($orderId = NULL){ 
 		$dateTime						= date('Y-m-d H:i:s');
-		$order_id						= $this->input->post('order_id', true);
+		/*$order_id						= $this->input->post('order_id', true);
 		$updateOrderEntity				= _DB_update($this->tables['order_entity'], array('status' => 'closed', 'updated_at' => $dateTime), array('entity_id' => $order_id));
 		$this->data['order_id']			= $order_id;
 		$this->data['bill_details']		= $this->order_model->bill_details($order_id);
-		$this->render('ajax/print_bill');
-
+		$this->render('ajax/print_bill');*/
+		if ($orderId) {
+			$checkOrder					= _DB_get_record($this->tables['order_entity'], array('entity_id' => $orderId,'is_bill' => 1));
+			if (!empty($checkOrder)) {
+				$user 					= $this->ion_auth->user()->row();
+				$orderDetails			= $checkOrder;
+				$orderitems				= _DB_data($this->tables['order_entity_items'], array('order_id' => $orderId));
+				
+				$getMaxOrderId			= $this->order_model->max_increment_id('bill_entity');
+			if ($getMaxOrderId->increment_id) {
+			 	$incrementId			= $getMaxOrderId->increment_id+1;
+			 } else {
+			 	$incrementId			= 10001;
+			 }
+				$insertBill				= _DB_insert($this->tables['bill_entity'], array('status' => 'closed', 'order_id' => $orderId, 'user_id' => $user->id, 'increment_id' => $incrementId, 'grand_total' => $orderDetails['grand_total'], 'subtotal' => $orderDetails['subtotal'], 'tax_amount' => $orderDetails['tax_amount'], 'total_paid' => $orderDetails['grand_total'], 'discount_amount' => $orderDetails['discount_amount'], 'delivery_charge' => $orderDetails['delivery_charge'], 'total_qty_ordered' => $orderDetails['total_qty_ordered'], 'created_at' => $dateTime, ' 	updated_at' => $dateTime));
+				if ($insertBill) {
+					$billId				= _DB_insert_id();		
+					foreach ($orderitems as $items) {
+						_DB_insert($this->tables['bill_entity_items'], array('bill_id' => $billId, 'menu_id' => $items['menu_id'], 'order_type' => $items['order_type'], 'name' => $items['name'], 'qty_ordered' => $items['qty_ordered'],  'name' => $items['name'], 'price' => $items['price'], 'tax_percent' => $items['tax_percent'], 'tax_amount' => $items['tax_amount'], 'row_total' => $items['row_total'], 'created_at' => $dateTime, 'updated_at' => $dateTime));
+					}
+					_DB_update($this->tables['order_entity'], array('status' => 'closed', 'is_bill' => 2, 'total_paid' => $orderDetails['grand_total']), array('entity_id' => $orderId));
+					$this->data['order_id']			= $orderId;
+					$this->data['bill_id']			= $billId;
+					$this->render('invoice');
+				} else {
+					$this->session->set_flashdata('message', "Oops! Something went wrong. Try again later.");
+					$this->session->set_flashdata('message_type', 'danger');
+					redirect('manage/index', 'refresh');
+				}
+			} else {
+			$this->session->set_flashdata('message', "Oops! Something went wrong. Try again later.");
+			$this->session->set_flashdata('message_type', 'danger');
+			redirect('manage/index', 'refresh');
+			}
+		} else {
+			$this->session->set_flashdata('message', "Oops! Something went wrong. Try again later.");
+			$this->session->set_flashdata('message_type', 'danger');
+			redirect('manage/index', 'refresh');
+		}
 
 
 	}
