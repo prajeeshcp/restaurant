@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 08, 2017 at 09:26 PM
+-- Generation Time: Mar 09, 2017 at 03:26 PM
 -- Server version: 10.1.13-MariaDB
 -- PHP Version: 5.6.23
 
@@ -172,7 +172,8 @@ INSERT INTO `kot_entity` (`entity_id`, `status`, `table_id`, `order_id`, `increm
 (68, 'processing', 3, 72, '10003', '3.00', '2017-03-07 20:52:15', '2017-03-07 15:22:25'),
 (69, 'pending', 3, 73, '10004', '0.00', '2017-03-07 21:27:42', '2017-03-07 15:57:42'),
 (70, 'processing', 3, 74, '10005', '3.00', '2017-03-07 21:37:14', '2017-03-07 16:07:20'),
-(71, 'pending', 2, 75, '10006', '0.00', '2017-03-08 18:23:10', '2017-03-08 12:53:10');
+(71, 'pending', 2, 75, '10006', '0.00', '2017-03-08 18:23:10', '2017-03-08 12:53:10'),
+(72, 'processing', 3, 76, '10007', '2.00', '2017-03-09 15:26:21', '2017-03-09 09:56:27');
 
 -- --------------------------------------------------------
 
@@ -207,7 +208,8 @@ INSERT INTO `kot_entity_items` (`item_id`, `kot_id`, `is_kot`, `menu_id`, `order
 (77, 70, 0, 3, 'undefined', 2, 'New menu (Half )', '1.00', '2017-03-07 21:47:22', '2017-03-07 16:17:22'),
 (78, 70, 0, 3, 'undefined', 1, 'New menu (Normal)', '1.00', '2017-03-07 21:47:33', '2017-03-07 16:17:33'),
 (79, 70, 0, 2, 'undefined', 1, 'Second menu edit (Normal)', '1.00', '2017-03-07 21:47:37', '2017-03-07 16:17:37'),
-(80, 68, 0, 3, 'undefined', 2, 'New menu (Half )', '1.00', '2017-03-07 21:49:47', '2017-03-07 16:19:47');
+(80, 68, 0, 3, 'undefined', 2, 'New menu (Half )', '1.00', '2017-03-07 21:49:47', '2017-03-07 16:19:47'),
+(81, 72, 1, 2, 'undefined', 1, 'Second menu edit (Normal)', '2.00', '2017-03-09 15:26:23', '2017-03-09 09:56:27');
 
 -- --------------------------------------------------------
 
@@ -358,7 +360,8 @@ INSERT INTO `order_entity` (`entity_id`, `status`, `is_bill`, `table_id`, `user_
 (72, 'processing', 0, 3, 9, '10003', '300.00', '0.00', 0.00, '0.00', '0.00', '0.00', 3, '2017-03-07 20:52:15', '2017-03-07 15:22:25'),
 (73, 'pending', 0, 3, 9, '10004', '0.00', '0.00', 0.00, '0.00', '0.00', '0.00', 0, '2017-03-07 21:27:42', '2017-03-07 15:57:42'),
 (74, 'processing', 0, 3, 9, '10005', '610.00', '0.00', 2.49, '0.00', '0.00', '0.00', 3, '2017-03-07 21:37:14', '2017-03-07 16:07:20'),
-(75, 'pending', 0, 2, 9, '10006', '0.00', '0.00', 0.00, '0.00', '0.00', '0.00', 0, '2017-03-08 18:23:10', '2017-03-08 12:53:10');
+(75, 'pending', 0, 2, 9, '10006', '0.00', '0.00', 0.00, '0.00', '0.00', '0.00', 0, '2017-03-08 18:23:10', '2017-03-08 12:53:10'),
+(76, 'processing', 0, 3, 9, '10007', '1000.00', '0.00', 2.49, '0.00', '0.00', '0.00', 2, '2017-03-09 15:26:21', '2017-03-09 09:56:27');
 
 -- --------------------------------------------------------
 
@@ -397,7 +400,8 @@ INSERT INTO `order_entity_items` (`item_id`, `order_id`, `is_kot`, `menu_id`, `o
 (79, 74, 0, 3, 'undefined', 2, 'New menu (Half )', '1.00', '200.00', '0.00', '0.00', '200.00', '2017-03-07 21:47:22', '2017-03-07 16:17:22'),
 (80, 74, 0, 3, 'undefined', 1, 'New menu (Normal)', '1.00', '100.00', '0.00', '0.00', '100.00', '2017-03-07 21:47:33', '2017-03-07 16:17:33'),
 (81, 74, 0, 2, 'undefined', 1, 'Second menu edit (Normal)', '1.00', '497.51', '0.50', '2.49', '500.00', '2017-03-07 21:47:37', '2017-03-07 16:17:37'),
-(82, 72, 0, 3, 'undefined', 2, 'New menu (Half )', '1.00', '200.00', '0.00', '0.00', '200.00', '2017-03-07 21:49:47', '2017-03-07 16:19:47');
+(82, 72, 0, 3, 'undefined', 2, 'New menu (Half )', '1.00', '200.00', '0.00', '0.00', '200.00', '2017-03-07 21:49:47', '2017-03-07 16:19:47'),
+(83, 76, 1, 2, 'undefined', 1, 'Second menu edit (Normal)', '2.00', '497.51', '0.50', '2.49', '1000.00', '2017-03-09 15:26:23', '2017-03-09 09:56:27');
 
 -- --------------------------------------------------------
 
@@ -529,8 +533,8 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `ip_address`, `username`, `password`, `salt`, `email`, `activation_code`, `forgotten_password_code`, `forgotten_password_time`, `remember_code`, `created_on`, `last_login`, `active`, `first_name`, `last_name`, `company`, `phone`) VALUES
 (1, '127.0.0.1', 'administrator', '$2y$08$eFoSZ7WQx7o9Iq5cbDbDeOYyjYCs/FSztxBQUM/vJEJ6iNBCLD7gS', '', 'admin@admin.com', '', NULL, NULL, 'Sqd/6/Bd6I2hUEMFeNIkA.', 1268889823, 1488905762, 1, 'Admin', 'istrator', 'ADMIN', '0'),
-(8, '', 'haridas', '$2y$08$eFoSZ7WQx7o9Iq5cbDbDeOYyjYCs/FSztxBQUM/vJEJ6iNBCLD7gS', NULL, 'haridas@gmail.com', NULL, NULL, NULL, 'kK5prEpXuSTNfzqiC9eM8u', 1268889823, 1488994776, 1, 'Haridas K', 'Kurup', 'IT', '8904055898'),
-(9, '::1', 'ullas', '$2y$08$sL/wunNESizPpYf9VJQ6BeDl54Ezjs5/gMVKVzCEiip8ndlUYJNiu', NULL, 'ullas@gmail.com', NULL, NULL, NULL, 'EPxEX2dxRxGId0BURjbXB.', 1488818723, 1488993721, 1, 'Ullas', 'Kodoth', 'Address', '8904055898');
+(8, '', 'haridas', '$2y$08$eFoSZ7WQx7o9Iq5cbDbDeOYyjYCs/FSztxBQUM/vJEJ6iNBCLD7gS', NULL, 'haridas@gmail.com', NULL, NULL, NULL, '7OfAeb7NIhEdOEgKzKOL.O', 1268889823, 1489069557, 1, 'Haridas K', 'Kurup', 'IT', '8904055898'),
+(9, '::1', 'ullas', '$2y$08$sL/wunNESizPpYf9VJQ6BeDl54Ezjs5/gMVKVzCEiip8ndlUYJNiu', NULL, 'ullas@gmail.com', NULL, NULL, NULL, 'Umv/FDaAogVAiE.vyRj6Z.', 1488818723, 1489069575, 1, 'Ullas', 'Kodoth', 'Address', '8904055898');
 
 -- --------------------------------------------------------
 
@@ -734,12 +738,12 @@ ALTER TABLE `groups`
 -- AUTO_INCREMENT for table `kot_entity`
 --
 ALTER TABLE `kot_entity`
-  MODIFY `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id', AUTO_INCREMENT=72;
+  MODIFY `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id', AUTO_INCREMENT=73;
 --
 -- AUTO_INCREMENT for table `kot_entity_items`
 --
 ALTER TABLE `kot_entity_items`
-  MODIFY `item_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Item Id', AUTO_INCREMENT=81;
+  MODIFY `item_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Item Id', AUTO_INCREMENT=82;
 --
 -- AUTO_INCREMENT for table `login_attempts`
 --
@@ -769,12 +773,12 @@ ALTER TABLE `menu_entity_price_type`
 -- AUTO_INCREMENT for table `order_entity`
 --
 ALTER TABLE `order_entity`
-  MODIFY `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Order Id', AUTO_INCREMENT=76;
+  MODIFY `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Order Id', AUTO_INCREMENT=77;
 --
 -- AUTO_INCREMENT for table `order_entity_items`
 --
 ALTER TABLE `order_entity_items`
-  MODIFY `item_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Item Id', AUTO_INCREMENT=83;
+  MODIFY `item_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Item Id', AUTO_INCREMENT=84;
 --
 -- AUTO_INCREMENT for table `table_category`
 --
