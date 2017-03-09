@@ -188,7 +188,7 @@ if (!empty($kot_details)) {
                             </div>
 		                </div>
 		                <div class="panel-footer text-align-center">
-		                    <a href="javascript:void(0);" class="btn btn-warning btn-lg kot-button <?=(empty($order_id)) ? 'disabled' : ''?>" role="button" onclick="return print_kot();">PRINT KOT</a></div>
+		                    <a href="javascript:void(0);" class="btn btn-warning btn-lg kot-button <?=(empty($pending_kot)) ? 'disabled' : ''?>" role="button" onclick="return print_kot();">PRINT KOT </a></div>
 		            </div>
 		        </div>	
 		    			    	
@@ -601,8 +601,10 @@ if (!empty($kot_details)) {
 					$('#bill-confirm').html(data);
 					$("#order-modal").modal();
 					$('#create-new').removeClass('disabled');
-					$('.kot-button').removeClass('disabled');
+					$('.kot-button').addClass('disabled');
 					$('#content').css({opacity : '1'});
+					var kotId			= $('#kot-id').val(); 	
+						refresh_kot(kotId);
 				},
 				error : function(xhr, ajaxOptions, thrownError) {
 					container.html('<h4 style="margin-top:10px; display:block; text-align:left"><i class="fa fa-warning txt-color-orangeDark"></i> Error 404! Page not found.</h4> <br>Or you are running this page from your hard drive. Please make sure for all ajax calls your page needs to be hosted in a server');

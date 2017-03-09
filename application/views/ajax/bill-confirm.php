@@ -62,8 +62,8 @@
                     <?=$item['name']?>
                     </a></td>
                   <td><?=$item['order_type']?></td>
-                  <td><?=$item['price']?></td>
-                  <td><?=$item['row_total']?></td>
+                  <td><?=$item['price_incld_tax']?></td>
+                  <td><?=$item['row_total_incld_tax']?></td>
                 </tr>
                 <?php } ?>
                 <tr>
@@ -74,7 +74,7 @@
                 </tr>
                 <tr>
                   <td colspan="4">TAX</td>
-                  <td><strong>13%</strong></td>
+                  <td><strong>---</strong></td>
                 </tr>
               </tbody>
             </table>

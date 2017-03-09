@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 09, 2017 at 03:26 PM
+-- Generation Time: Mar 09, 2017 at 09:44 PM
 -- Server version: 10.1.13-MariaDB
 -- PHP Version: 5.6.23
 
@@ -70,7 +70,8 @@ CREATE TABLE `bill_entity` (
 --
 
 INSERT INTO `bill_entity` (`entity_id`, `status`, `order_id`, `user_id`, `increment_id`, `grand_total`, `subtotal`, `tax_amount`, `total_paid`, `discount_amount`, `delivery_charge`, `total_qty_ordered`, `created_at`, `updated_at`) VALUES
-(6, 'closed', 70, 8, '10001', '1500.00', '0.00', '2.49', '1500.00', '0.00', '0.00', 3, '2017-03-08 21:24:32', '2017-03-08 15:54:32');
+(7, 'closed', 81, 8, '10001', '1500.00', '1492.54', '7.46', '1500.00', '0.00', '0.00', 3, '2017-03-09 19:59:37', '2017-03-09 14:29:37'),
+(8, 'closed', 82, 8, '10002', '760.00', '757.51', '2.49', '760.00', '0.00', '0.00', 4, '2017-03-09 20:02:38', '2017-03-09 14:32:38');
 
 -- --------------------------------------------------------
 
@@ -89,6 +90,8 @@ CREATE TABLE `bill_entity_items` (
   `tax_percent` decimal(12,2) UNSIGNED NOT NULL DEFAULT '0.00' COMMENT 'Tax Percent',
   `tax_amount` decimal(12,2) UNSIGNED NOT NULL DEFAULT '0.00' COMMENT 'Tax Amount',
   `row_total` decimal(12,2) UNSIGNED NOT NULL DEFAULT '0.00' COMMENT 'Row Total',
+  `price_incld_tax` decimal(12,2) UNSIGNED NOT NULL DEFAULT '0.00' COMMENT 'Price Include Tax',
+  `row_total_incld_tax` decimal(12,2) UNSIGNED NOT NULL DEFAULT '0.00' COMMENT 'Row total Include tax',
   `created_at` datetime NOT NULL COMMENT 'Created At',
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Updated At'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -97,8 +100,12 @@ CREATE TABLE `bill_entity_items` (
 -- Dumping data for table `bill_entity_items`
 --
 
-INSERT INTO `bill_entity_items` (`item_id`, `bill_id`, `menu_id`, `order_type`, `name`, `qty_ordered`, `price`, `tax_percent`, `tax_amount`, `row_total`, `created_at`, `updated_at`) VALUES
-(5, 6, 2, 'undefined', 'Second menu edit (Normal)', 3, '497.51', '0.50', '2.49', '1500.00', '2017-03-08 21:24:32', '2017-03-08 15:54:32');
+INSERT INTO `bill_entity_items` (`item_id`, `bill_id`, `menu_id`, `order_type`, `name`, `qty_ordered`, `price`, `tax_percent`, `tax_amount`, `row_total`, `price_incld_tax`, `row_total_incld_tax`, `created_at`, `updated_at`) VALUES
+(6, 7, 2, 'undefined', 'Second menu edit (Normal)', 3, '497.51', '0.50', '7.46', '1492.54', '500.00', '1500.00', '2017-03-09 19:59:37', '2017-03-09 14:29:37'),
+(7, 8, 1, 'undefined', 'First Menu Edit (Normal)', 1, '10.00', '0.00', '0.00', '10.00', '10.00', '10.00', '2017-03-09 20:02:38', '2017-03-09 14:32:38'),
+(8, 8, 4, 'undefined', 'First Menu (Normal)', 1, '150.00', '0.00', '0.00', '150.00', '150.00', '150.00', '2017-03-09 20:02:38', '2017-03-09 14:32:38'),
+(9, 8, 3, 'undefined', 'New menu (Normal)', 1, '100.00', '0.00', '0.00', '100.00', '100.00', '100.00', '2017-03-09 20:02:38', '2017-03-09 14:32:38'),
+(10, 8, 2, 'undefined', 'Second menu edit (Normal)', 1, '497.51', '0.50', '2.49', '497.51', '500.00', '500.00', '2017-03-09 20:02:38', '2017-03-09 14:32:38');
 
 -- --------------------------------------------------------
 
@@ -167,13 +174,14 @@ CREATE TABLE `kot_entity` (
 --
 
 INSERT INTO `kot_entity` (`entity_id`, `status`, `table_id`, `order_id`, `increment_id`, `qty_ordered`, `created_at`, `Updated_at`) VALUES
-(66, 'complete', 3, 70, '10001', '3.00', '2017-03-07 20:42:35', '2017-03-07 15:14:15'),
-(67, 'pending', 3, 71, '10002', '0.00', '2017-03-07 20:44:49', '2017-03-07 15:14:49'),
-(68, 'processing', 3, 72, '10003', '3.00', '2017-03-07 20:52:15', '2017-03-07 15:22:25'),
-(69, 'pending', 3, 73, '10004', '0.00', '2017-03-07 21:27:42', '2017-03-07 15:57:42'),
-(70, 'processing', 3, 74, '10005', '3.00', '2017-03-07 21:37:14', '2017-03-07 16:07:20'),
-(71, 'pending', 2, 75, '10006', '0.00', '2017-03-08 18:23:10', '2017-03-08 12:53:10'),
-(72, 'processing', 3, 76, '10007', '2.00', '2017-03-09 15:26:21', '2017-03-09 09:56:27');
+(77, 'complete', 3, 81, '10001', '3.00', '2017-03-09 19:55:44', '2017-03-09 14:29:07'),
+(78, 'complete', 2, 82, '10002', '4.00', '2017-03-09 20:02:00', '2017-03-09 14:32:24'),
+(79, 'processing', 3, 83, '10003', '1.00', '2017-03-09 20:07:24', '2017-03-09 14:38:18'),
+(80, 'processing', 3, 84, '10004', '2.00', '2017-03-09 20:08:36', '2017-03-09 14:55:05'),
+(81, 'processing', 3, 85, '10005', '1.00', '2017-03-09 20:12:56', '2017-03-09 14:42:59'),
+(82, 'processing', 3, 86, '10006', '2.00', '2017-03-09 20:13:44', '2017-03-09 14:53:48'),
+(83, 'pending', 3, 87, '10007', '0.00', '2017-03-09 20:27:21', '2017-03-09 14:57:21'),
+(84, 'pending', 3, 88, '10008', '0.00', '2017-03-09 20:27:26', '2017-03-09 14:57:26');
 
 -- --------------------------------------------------------
 
@@ -199,17 +207,17 @@ CREATE TABLE `kot_entity_items` (
 --
 
 INSERT INTO `kot_entity_items` (`item_id`, `kot_id`, `is_kot`, `menu_id`, `order_type`, `price_type`, `name`, `qty_ordered`, `created_at`, `updated_at`) VALUES
-(71, 66, 1, 2, 'undefined', 1, 'Second menu edit (Normal)', '3.00', '2017-03-07 20:42:37', '2017-03-07 15:12:40'),
-(72, 67, 0, 2, 'undefined', 1, 'Second menu edit (Normal)', '2.00', '2017-03-07 20:44:52', '2017-03-07 15:15:23'),
-(73, 68, 1, 3, 'undefined', 1, 'New menu (Normal)', '3.00', '2017-03-07 20:52:20', '2017-03-07 15:22:25'),
-(74, 70, 1, 1, 'undefined', 1, 'First Menu Edit (Normal)', '1.00', '2017-03-07 21:37:16', '2017-03-07 16:07:20'),
-(75, 70, 1, 2, 'undefined', 1, 'Second menu edit (Normal)', '1.00', '2017-03-07 21:37:17', '2017-03-07 16:07:20'),
-(76, 70, 1, 3, 'undefined', 1, 'New menu (Normal)', '1.00', '2017-03-07 21:37:18', '2017-03-07 16:07:20'),
-(77, 70, 0, 3, 'undefined', 2, 'New menu (Half )', '1.00', '2017-03-07 21:47:22', '2017-03-07 16:17:22'),
-(78, 70, 0, 3, 'undefined', 1, 'New menu (Normal)', '1.00', '2017-03-07 21:47:33', '2017-03-07 16:17:33'),
-(79, 70, 0, 2, 'undefined', 1, 'Second menu edit (Normal)', '1.00', '2017-03-07 21:47:37', '2017-03-07 16:17:37'),
-(80, 68, 0, 3, 'undefined', 2, 'New menu (Half )', '1.00', '2017-03-07 21:49:47', '2017-03-07 16:19:47'),
-(81, 72, 1, 2, 'undefined', 1, 'Second menu edit (Normal)', '2.00', '2017-03-09 15:26:23', '2017-03-09 09:56:27');
+(88, 77, 1, 2, 'undefined', 1, 'Second menu edit (Normal)', '3.00', '2017-03-09 19:55:46', '2017-03-09 14:26:37'),
+(89, 78, 1, 1, 'undefined', 1, 'First Menu Edit (Normal)', '1.00', '2017-03-09 20:02:02', '2017-03-09 14:32:09'),
+(90, 78, 1, 4, 'undefined', 1, 'First Menu (Normal)', '1.00', '2017-03-09 20:02:04', '2017-03-09 14:32:09'),
+(91, 78, 1, 3, 'undefined', 1, 'New menu (Normal)', '1.00', '2017-03-09 20:02:05', '2017-03-09 14:32:09'),
+(92, 78, 1, 2, 'undefined', 1, 'Second menu edit (Normal)', '1.00', '2017-03-09 20:02:06', '2017-03-09 14:32:09'),
+(93, 79, 1, 2, 'undefined', 1, 'Second menu edit (Normal)', '1.00', '2017-03-09 20:07:26', '2017-03-09 14:38:18'),
+(95, 80, 1, 2, 'undefined', 1, 'Second menu edit (Normal)', '1.00', '2017-03-09 20:08:40', '2017-03-09 14:55:05'),
+(98, 81, 1, 3, 'undefined', 1, 'New menu (Normal)', '1.00', '2017-03-09 20:12:58', '2017-03-09 14:42:59'),
+(100, 82, 1, 2, 'undefined', 1, 'Second menu edit (Normal)', '1.00', '2017-03-09 20:13:46', '2017-03-09 14:53:48'),
+(102, 82, 1, 2, 'undefined', 1, 'Second menu edit (Normal)', '1.00', '2017-03-09 20:14:01', '2017-03-09 14:53:48'),
+(103, 80, 1, 1, 'undefined', 1, 'First Menu Edit (Normal)', '1.00', '2017-03-09 20:14:40', '2017-03-09 14:55:05');
 
 -- --------------------------------------------------------
 
@@ -355,13 +363,14 @@ CREATE TABLE `order_entity` (
 --
 
 INSERT INTO `order_entity` (`entity_id`, `status`, `is_bill`, `table_id`, `user_id`, `increment_id`, `grand_total`, `subtotal`, `tax_amount`, `total_paid`, `discount_amount`, `delivery_charge`, `total_qty_ordered`, `created_at`, `updated_at`) VALUES
-(70, 'closed', 2, 3, 9, '10001', '1500.00', '0.00', 2.49, '1500.00', '0.00', '0.00', 3, '2017-03-07 20:42:35', '2017-03-08 20:24:32'),
-(71, 'pending', 0, 3, 9, '10002', '0.00', '0.00', 0.00, '0.00', '0.00', '0.00', 0, '2017-03-07 20:44:49', '2017-03-07 15:14:49'),
-(72, 'processing', 0, 3, 9, '10003', '300.00', '0.00', 0.00, '0.00', '0.00', '0.00', 3, '2017-03-07 20:52:15', '2017-03-07 15:22:25'),
-(73, 'pending', 0, 3, 9, '10004', '0.00', '0.00', 0.00, '0.00', '0.00', '0.00', 0, '2017-03-07 21:27:42', '2017-03-07 15:57:42'),
-(74, 'processing', 0, 3, 9, '10005', '610.00', '0.00', 2.49, '0.00', '0.00', '0.00', 3, '2017-03-07 21:37:14', '2017-03-07 16:07:20'),
-(75, 'pending', 0, 2, 9, '10006', '0.00', '0.00', 0.00, '0.00', '0.00', '0.00', 0, '2017-03-08 18:23:10', '2017-03-08 12:53:10'),
-(76, 'processing', 0, 3, 9, '10007', '1000.00', '0.00', 2.49, '0.00', '0.00', '0.00', 2, '2017-03-09 15:26:21', '2017-03-09 09:56:27');
+(81, 'closed', 2, 3, 9, '10001', '1500.00', '1492.54', 7.46, '1500.00', '0.00', '0.00', 3, '2017-03-09 19:55:44', '2017-03-09 18:59:37'),
+(82, 'closed', 2, 2, 9, '10002', '760.00', '757.51', 2.49, '760.00', '0.00', '0.00', 4, '2017-03-09 20:02:00', '2017-03-09 19:02:39'),
+(83, 'processing', 0, 3, 9, '10003', '500.00', '497.51', 2.49, '0.00', '0.00', '0.00', 1, '2017-03-09 20:07:24', '2017-03-09 14:38:18'),
+(84, 'processing', 0, 3, 9, '10004', '510.00', '507.51', 2.49, '0.00', '0.00', '0.00', 2, '2017-03-09 20:08:36', '2017-03-09 14:55:05'),
+(85, 'processing', 0, 3, 9, '10005', '100.00', '100.00', 0.00, '0.00', '0.00', '0.00', 1, '2017-03-09 20:12:56', '2017-03-09 14:42:59'),
+(86, 'processing', 0, 3, 9, '10006', '1000.00', '995.02', 4.98, '0.00', '0.00', '0.00', 2, '2017-03-09 20:13:44', '2017-03-09 14:53:48'),
+(87, 'pending', 0, 3, 9, '10007', '0.00', '0.00', 0.00, '0.00', '0.00', '0.00', 0, '2017-03-09 20:27:21', '2017-03-09 14:57:21'),
+(88, 'pending', 0, 3, 9, '10008', '0.00', '0.00', 0.00, '0.00', '0.00', '0.00', 0, '2017-03-09 20:27:26', '2017-03-09 14:57:26');
 
 -- --------------------------------------------------------
 
@@ -382,6 +391,8 @@ CREATE TABLE `order_entity_items` (
   `tax_percent` decimal(12,2) UNSIGNED NOT NULL DEFAULT '0.00' COMMENT 'Tax Percent',
   `tax_amount` decimal(12,2) UNSIGNED NOT NULL DEFAULT '0.00' COMMENT 'Tax Amount',
   `row_total` decimal(12,2) UNSIGNED NOT NULL DEFAULT '0.00' COMMENT 'Total Amount',
+  `price_incld_tax` decimal(12,2) UNSIGNED NOT NULL DEFAULT '0.00' COMMENT 'Price Include Tax',
+  `row_total_incld_tax` decimal(12,2) UNSIGNED NOT NULL DEFAULT '0.00' COMMENT 'Row total Include tax',
   `created_at` datetime NOT NULL COMMENT 'Created At',
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Updated At'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -390,18 +401,18 @@ CREATE TABLE `order_entity_items` (
 -- Dumping data for table `order_entity_items`
 --
 
-INSERT INTO `order_entity_items` (`item_id`, `order_id`, `is_kot`, `menu_id`, `order_type`, `price_type`, `name`, `qty_ordered`, `price`, `tax_percent`, `tax_amount`, `row_total`, `created_at`, `updated_at`) VALUES
-(73, 70, 1, 2, 'undefined', 1, 'Second menu edit (Normal)', '3.00', '497.51', '0.50', '2.49', '1500.00', '2017-03-07 20:42:37', '2017-03-07 15:12:40'),
-(74, 71, 0, 2, 'undefined', 1, 'Second menu edit (Normal)', '2.00', '497.51', '0.50', '2.49', '1000.00', '2017-03-07 20:44:52', '2017-03-07 15:15:23'),
-(75, 72, 1, 3, 'undefined', 1, 'New menu (Normal)', '3.00', '100.00', '0.00', '0.00', '300.00', '2017-03-07 20:52:20', '2017-03-07 15:22:25'),
-(76, 74, 1, 1, 'undefined', 1, 'First Menu Edit (Normal)', '1.00', '10.00', '0.00', '0.00', '10.00', '2017-03-07 21:37:16', '2017-03-07 16:07:20'),
-(77, 74, 1, 2, 'undefined', 1, 'Second menu edit (Normal)', '1.00', '497.51', '0.50', '2.49', '500.00', '2017-03-07 21:37:17', '2017-03-07 16:07:20'),
-(78, 74, 1, 3, 'undefined', 1, 'New menu (Normal)', '1.00', '100.00', '0.00', '0.00', '100.00', '2017-03-07 21:37:18', '2017-03-07 16:07:20'),
-(79, 74, 0, 3, 'undefined', 2, 'New menu (Half )', '1.00', '200.00', '0.00', '0.00', '200.00', '2017-03-07 21:47:22', '2017-03-07 16:17:22'),
-(80, 74, 0, 3, 'undefined', 1, 'New menu (Normal)', '1.00', '100.00', '0.00', '0.00', '100.00', '2017-03-07 21:47:33', '2017-03-07 16:17:33'),
-(81, 74, 0, 2, 'undefined', 1, 'Second menu edit (Normal)', '1.00', '497.51', '0.50', '2.49', '500.00', '2017-03-07 21:47:37', '2017-03-07 16:17:37'),
-(82, 72, 0, 3, 'undefined', 2, 'New menu (Half )', '1.00', '200.00', '0.00', '0.00', '200.00', '2017-03-07 21:49:47', '2017-03-07 16:19:47'),
-(83, 76, 1, 2, 'undefined', 1, 'Second menu edit (Normal)', '2.00', '497.51', '0.50', '2.49', '1000.00', '2017-03-09 15:26:23', '2017-03-09 09:56:27');
+INSERT INTO `order_entity_items` (`item_id`, `order_id`, `is_kot`, `menu_id`, `order_type`, `price_type`, `name`, `qty_ordered`, `price`, `tax_percent`, `tax_amount`, `row_total`, `price_incld_tax`, `row_total_incld_tax`, `created_at`, `updated_at`) VALUES
+(90, 81, 1, 2, 'undefined', 1, 'Second menu edit (Normal)', '3.00', '497.51', '0.50', '7.46', '1492.54', '500.00', '1500.00', '2017-03-09 19:55:46', '2017-03-09 14:26:37'),
+(91, 82, 1, 1, 'undefined', 1, 'First Menu Edit (Normal)', '1.00', '10.00', '0.00', '0.00', '10.00', '10.00', '10.00', '2017-03-09 20:02:02', '2017-03-09 14:32:09'),
+(92, 82, 1, 4, 'undefined', 1, 'First Menu (Normal)', '1.00', '150.00', '0.00', '0.00', '150.00', '150.00', '150.00', '2017-03-09 20:02:04', '2017-03-09 14:32:09'),
+(93, 82, 1, 3, 'undefined', 1, 'New menu (Normal)', '1.00', '100.00', '0.00', '0.00', '100.00', '100.00', '100.00', '2017-03-09 20:02:05', '2017-03-09 14:32:09'),
+(94, 82, 1, 2, 'undefined', 1, 'Second menu edit (Normal)', '1.00', '497.51', '0.50', '2.49', '497.51', '500.00', '500.00', '2017-03-09 20:02:06', '2017-03-09 14:32:09'),
+(95, 83, 1, 2, 'undefined', 1, 'Second menu edit (Normal)', '1.00', '497.51', '0.50', '2.49', '497.51', '500.00', '500.00', '2017-03-09 20:07:26', '2017-03-09 14:38:18'),
+(97, 84, 1, 2, 'undefined', 1, 'Second menu edit (Normal)', '1.00', '497.51', '0.50', '2.49', '497.51', '500.00', '500.00', '2017-03-09 20:08:40', '2017-03-09 14:55:05'),
+(100, 85, 1, 3, 'undefined', 1, 'New menu (Normal)', '1.00', '100.00', '0.00', '0.00', '100.00', '100.00', '100.00', '2017-03-09 20:12:58', '2017-03-09 14:42:59'),
+(102, 86, 1, 2, 'undefined', 1, 'Second menu edit (Normal)', '1.00', '497.51', '0.50', '2.49', '497.51', '500.00', '500.00', '2017-03-09 20:13:46', '2017-03-09 14:53:48'),
+(104, 86, 1, 2, 'undefined', 1, 'Second menu edit (Normal)', '1.00', '497.51', '0.50', '2.49', '497.51', '500.00', '500.00', '2017-03-09 20:14:01', '2017-03-09 14:53:48'),
+(105, 84, 1, 1, 'undefined', 1, 'First Menu Edit (Normal)', '1.00', '10.00', '0.00', '0.00', '10.00', '10.00', '10.00', '2017-03-09 20:14:40', '2017-03-09 14:55:05');
 
 -- --------------------------------------------------------
 
@@ -532,9 +543,9 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `ip_address`, `username`, `password`, `salt`, `email`, `activation_code`, `forgotten_password_code`, `forgotten_password_time`, `remember_code`, `created_on`, `last_login`, `active`, `first_name`, `last_name`, `company`, `phone`) VALUES
-(1, '127.0.0.1', 'administrator', '$2y$08$eFoSZ7WQx7o9Iq5cbDbDeOYyjYCs/FSztxBQUM/vJEJ6iNBCLD7gS', '', 'admin@admin.com', '', NULL, NULL, 'Sqd/6/Bd6I2hUEMFeNIkA.', 1268889823, 1488905762, 1, 'Admin', 'istrator', 'ADMIN', '0'),
-(8, '', 'haridas', '$2y$08$eFoSZ7WQx7o9Iq5cbDbDeOYyjYCs/FSztxBQUM/vJEJ6iNBCLD7gS', NULL, 'haridas@gmail.com', NULL, NULL, NULL, '7OfAeb7NIhEdOEgKzKOL.O', 1268889823, 1489069557, 1, 'Haridas K', 'Kurup', 'IT', '8904055898'),
-(9, '::1', 'ullas', '$2y$08$sL/wunNESizPpYf9VJQ6BeDl54Ezjs5/gMVKVzCEiip8ndlUYJNiu', NULL, 'ullas@gmail.com', NULL, NULL, NULL, 'Umv/FDaAogVAiE.vyRj6Z.', 1488818723, 1489069575, 1, 'Ullas', 'Kodoth', 'Address', '8904055898');
+(1, '127.0.0.1', 'administrator', '$2y$08$eFoSZ7WQx7o9Iq5cbDbDeOYyjYCs/FSztxBQUM/vJEJ6iNBCLD7gS', '', 'admin@admin.com', '', NULL, NULL, 'rsiHKaGjhgYtuffqAflwBu', 1268889823, 1489088185, 1, 'Admin', 'istrator', 'ADMIN', '0'),
+(8, '', 'haridas', '$2y$08$eFoSZ7WQx7o9Iq5cbDbDeOYyjYCs/FSztxBQUM/vJEJ6iNBCLD7gS', NULL, 'haridas@gmail.com', NULL, NULL, NULL, 'QTz6nH2EDULiwoh4MVoxeO', 1268889823, 1489086154, 1, 'Haridas K', 'Kurup', 'IT', '8904055898'),
+(9, '::1', 'ullas', '$2y$08$sL/wunNESizPpYf9VJQ6BeDl54Ezjs5/gMVKVzCEiip8ndlUYJNiu', NULL, 'ullas@gmail.com', NULL, NULL, NULL, 'QIRFOb/yzwoOjBX2XOCa/O', 1488818723, 1489086274, 1, 'Ullas', 'Kodoth', 'Address', '8904055898');
 
 -- --------------------------------------------------------
 
@@ -718,12 +729,12 @@ ALTER TABLE `attributes`
 -- AUTO_INCREMENT for table `bill_entity`
 --
 ALTER TABLE `bill_entity`
-  MODIFY `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id', AUTO_INCREMENT=7;
+  MODIFY `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id', AUTO_INCREMENT=9;
 --
 -- AUTO_INCREMENT for table `bill_entity_items`
 --
 ALTER TABLE `bill_entity_items`
-  MODIFY `item_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Item Id', AUTO_INCREMENT=6;
+  MODIFY `item_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Item Id', AUTO_INCREMENT=11;
 --
 -- AUTO_INCREMENT for table `category_entity`
 --
@@ -738,12 +749,12 @@ ALTER TABLE `groups`
 -- AUTO_INCREMENT for table `kot_entity`
 --
 ALTER TABLE `kot_entity`
-  MODIFY `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id', AUTO_INCREMENT=73;
+  MODIFY `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id', AUTO_INCREMENT=85;
 --
 -- AUTO_INCREMENT for table `kot_entity_items`
 --
 ALTER TABLE `kot_entity_items`
-  MODIFY `item_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Item Id', AUTO_INCREMENT=82;
+  MODIFY `item_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Item Id', AUTO_INCREMENT=105;
 --
 -- AUTO_INCREMENT for table `login_attempts`
 --
@@ -773,12 +784,12 @@ ALTER TABLE `menu_entity_price_type`
 -- AUTO_INCREMENT for table `order_entity`
 --
 ALTER TABLE `order_entity`
-  MODIFY `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Order Id', AUTO_INCREMENT=77;
+  MODIFY `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Order Id', AUTO_INCREMENT=89;
 --
 -- AUTO_INCREMENT for table `order_entity_items`
 --
 ALTER TABLE `order_entity_items`
-  MODIFY `item_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Item Id', AUTO_INCREMENT=84;
+  MODIFY `item_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Item Id', AUTO_INCREMENT=107;
 --
 -- AUTO_INCREMENT for table `table_category`
 --

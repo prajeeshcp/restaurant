@@ -85,7 +85,7 @@ class Order_model extends CI_Model {
 	
 	#to get sum of all the order items 
 	function sum_of_order($orderId = NULL) {
-		return 	$this->db->select('SUM(qty_ordered) qty_ordered, SUM(tax_amount) tax_amount, SUM(row_total) row_total')
+		return 	$this->db->select('SUM(qty_ordered) qty_ordered, SUM(tax_amount) tax_amount, SUM(row_total) row_total, SUM(row_total_incld_tax) row_incld_tax')
 				 ->from('order_entity_items')
 				 ->where('order_id', $orderId)
 				 ->get()->row();	

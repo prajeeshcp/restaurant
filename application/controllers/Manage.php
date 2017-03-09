@@ -993,13 +993,15 @@ class Manage extends Cpanel_Controller
 				$taxAmount			= 0;
 				
 			}
+			$price_incld_tax		= $getPrice['price_amount'];
 			$MenuName				= $menuDtil['menu_name']." (".$typeDtil['type_name'].")";
 			
 			$checkMenu				= _DB_get_record($this->tables['order_entity_items'], array('order_id' => $order_id, 'is_kot' => 0, 'menu_id' => $menu_id, 'price_type' => $price_type));	
 			if (empty($checkMenu) && $kot_flag != 2 ){
 				$qty				= 1;
-				$row_total			= $qty*$getPrice['price_amount'];
-				$insertMenu			= _DB_insert($this->tables['order_entity_items'], array('order_id' => $order_id, 'is_kot' => 0, 'menu_id' => $menu_id, 'order_type' => $order_type, 'price_type' => $price_type, 'name' => $MenuName, 'qty_ordered' => $qty, 'price' => $price, 'tax_percent' => $taxPercent, 'tax_amount' => $taxAmount,  'row_total' => $row_total, 'created_at' => $dateTime, 'updated_at' => $dateTime));
+				$row_total			= $price*$qty;
+				$row_total_incld_tax= $price_incld_tax*$qty;
+				$insertMenu			= _DB_insert($this->tables['order_entity_items'], array('order_id' => $order_id, 'is_kot' => 0, 'menu_id' => $menu_id, 'order_type' => $order_type, 'price_type' => $price_type, 'name' => $MenuName, 'qty_ordered' => $qty, 'price' => $price, 'tax_percent' => $taxPercent, 'tax_amount' => $taxAmount,  'row_total' => $row_total, 'price_incld_tax' => $price_incld_tax, 'row_total_incld_tax' => $row_total_incld_tax, 'created_at' => $dateTime, 'updated_at' => $dateTime));
 				if ($insertMenu) {
 					$insertKOT		= _DB_insert($this->tables['kot_entity_items'], array('kot_id' => $kot_id, 'is_kot' => 0, 'menu_id' => $menu_id, 'order_type' => $order_type, 'price_type' => $price_type, 'name' => $MenuName, 'qty_ordered' => $qty, 'created_at' => $dateTime, 'updated_at' => $dateTime));
 					$this->data['order_id']		= $order_id;
@@ -1014,11 +1016,13 @@ class Manage extends Cpanel_Controller
 					$qty				= $checkMenu['qty_ordered']+1;
 
 				}				
-				$row_total			= $qty*$getPrice['price_amount'];
-				$updateMenu			= _DB_update($this->tables['order_entity_items'], array('qty_ordered' => $qty, 'row_total' => $row_total, 'updated_at' => $dateTime), array('item_id' => $checkMenu['item_id']));
-				$checkKOT			= _DB_get_record($this->tables['kot_entity_items'],  array('kot_id' => $kot_id, 'is_kot' => 0, 'menu_id' => $menu_id, 'price_type' => $price_type));
+				$row_total				= $price*$qty;
+				$row_total_incld_tax	= $price_incld_tax*$qty;
+				$taxAmount				= $taxAmount*$qty;
+				$updateMenu				= _DB_update($this->tables['order_entity_items'], array('qty_ordered' => $qty, 'tax_amount' => $taxAmount, 'row_total' => $row_total, 'row_total_incld_tax' => $row_total_incld_tax, 'updated_at' => $dateTime), array('item_id' => $checkMenu['item_id']));
+				$checkKOT				= _DB_get_record($this->tables['kot_entity_items'],  array('kot_id' => $kot_id, 'is_kot' => 0, 'menu_id' => $menu_id, 'price_type' => $price_type));
 				if (!empty($checkKOT)) {
-					$updateKOT		= _DB_update($this->tables['kot_entity_items'], array('qty_ordered' => $qty, 'updated_at' => $dateTime), array('item_id' => $checkKOT['item_id']));
+					$updateKOT			= _DB_update($this->tables['kot_entity_items'], array('qty_ordered' => $qty, 'updated_at' => $dateTime), array('item_id' => $checkKOT['item_id']));
 				}
 				if ($updateMenu) {
 					$this->data['order_id']		= $order_id;
@@ -1056,7 +1060,7 @@ class Manage extends Cpanel_Controller
 	if ($order_id && $kot_id) {
 		$updateTotal				= $this->order_model->sum_of_order($order_id);
 		$kotTotal					= $this->order_model->sum_of_kot($kot_id);
-		$updateOrderEntity			= _DB_update($this->tables['order_entity'], array('status' => 'processing', 'grand_total' => $updateTotal->row_total,'total_qty_ordered' => $updateTotal->qty_ordered, 'tax_amount' => $updateTotal->tax_amount, 'updated_at' => $dateTime), array('entity_id' => $order_id));
+		$updateOrderEntity			= _DB_update($this->tables['order_entity'], array('status' => 'processing', 'grand_total' => $updateTotal->row_incld_tax, 'subtotal' => $updateTotal->row_total,'total_qty_ordered' => $updateTotal->qty_ordered, 'tax_amount' => $updateTotal->tax_amount, 'updated_at' => $dateTime), array('entity_id' => $order_id));
 		$updateKOTEntity			= _DB_update($this->tables['kot_entity'], array('status' => 'processing', 'qty_ordered' => $kotTotal->qty_ordered, 'Updated_at' => $dateTime), array('entity_id' => $kot_id));
 		
 		$this->data['kot_details']	= $this->order_model->kot_details($kot_id,1);
@@ -1121,7 +1125,7 @@ class Manage extends Cpanel_Controller
 				if ($insertBill) {
 					$billId				= _DB_insert_id();		
 					foreach ($orderitems as $items) {
-						_DB_insert($this->tables['bill_entity_items'], array('bill_id' => $billId, 'menu_id' => $items['menu_id'], 'order_type' => $items['order_type'], 'name' => $items['name'], 'qty_ordered' => $items['qty_ordered'],  'name' => $items['name'], 'price' => $items['price'], 'tax_percent' => $items['tax_percent'], 'tax_amount' => $items['tax_amount'], 'row_total' => $items['row_total'], 'created_at' => $dateTime, 'updated_at' => $dateTime));
+						_DB_insert($this->tables['bill_entity_items'], array('bill_id' => $billId, 'menu_id' => $items['menu_id'], 'order_type' => $items['order_type'], 'name' => $items['name'], 'qty_ordered' => $items['qty_ordered'],  'name' => $items['name'], 'price' => $items['price'], 'tax_percent' => $items['tax_percent'], 'tax_amount' => $items['tax_amount'], 'row_total' => $items['row_total'], 'price_incld_tax' => $items['price_incld_tax'], 'row_total_incld_tax' => $items['row_total_incld_tax'], 'created_at' => $dateTime, 'updated_at' => $dateTime));
 					}
 					_DB_update($this->tables['order_entity'], array('status' => 'closed', 'is_bill' => 2, 'total_paid' => $orderDetails['grand_total']), array('entity_id' => $orderId));
 					$this->data['order_id']			= $orderId;
@@ -1160,6 +1164,7 @@ class Manage extends Cpanel_Controller
 		$this->data['order_items']	= _DB_data($this->tables['order_entity_items'], array('order_id' => $orderId), null, null, null );
 		$this->data['get_kot']		= $kotDtil	= _DB_get_record($this->tables['kot_entity'], array('order_id' => $orderId));
 		$this->data['kot_details']	= _DB_data($this->tables['kot_entity_items'], array('kot_id' => $kotDtil['entity_id']), null, null, null );
+		$this->data['pending_kot']	= _DB_get_count($this->tables['kot_entity_items'], array('kot_id' => $kotDtil['entity_id'], 'is_kot' => 0)); 
 		if ($tableId) {	
 			$checkOrder				= $this->order_model->check_table($tableId, $loggedUser->id);
 			if (!empty($checkOrder)) {
@@ -1211,5 +1216,12 @@ class Manage extends Cpanel_Controller
 				redirect('manage/index', 'refresh');
 			}
 		}
+	}
+	
+	
+	#report start
+	#bill report
+	function bill_report() {
+		$this->render('bill-report');
 	}
 }

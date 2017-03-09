@@ -176,14 +176,14 @@
 										<td class="text-center"><strong><?=$items['qty_ordered']?></strong></td>
 										<td><a href="javascript:void(0);"><?=$items['name']?></a></td>
 										<td><?=$items['order_type']?></td>
-										<td><?=$items['price']?></td>
+										<td><?=$items['price_incld_tax']?></td>
 
-										<td><?=$items['row_total']?></td>
+										<td><?=$items['row_total_incld_tax']?></td>
 									</tr>
 									<?php } endif;?>
 									<tr>
 										<td colspan="4">TAX</td>
-										<td><strong>0%</strong></td>
+										<td><strong>---</strong></td>
 									</tr>
 								</tbody>
 							</table>

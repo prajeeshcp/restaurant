@@ -2,12 +2,15 @@
 	$catelog		= FALSE;
 	$system			= FALSE;
 	$table			= FALSE;
+	$report			= FALSE;
 	if ($selected == "menuattribute" || $selected == "menucategory" || $selected == "allmenus") {
 		$catelog		= TRUE;
 	} else if($selected == "system") {
 		$system		= TRUE;
 	} else if ($selected == "tablecategory" || $selected == "tabledetails") {
 		$table		= TRUE;
+	} else if ($selected == "billreport") {
+		$report		= TRUE;
 	}
  ?>
  <?php 
@@ -70,6 +73,31 @@
 					</li>
 					<li class="<?=($system) ? 'active' : ''?>">
 						<a href="<?=site_url('manage/system_config')?>"><i class="fa fa-lg fa-fw fa-cog"></i> <span class="menu-item-parent">System</span></a>
+					</li>
+                    
+                    
+                    <li class="<?=($report) ? 'open' : ''?>">
+						<a href="#"><i class="fa fa-lg fa-fw fa-sort-alpha-desc"></i> <span class="menu-item-parent">Reports</span></a>
+						<ul style=" <?=($report) ? 'display: block;' : ''?>">	
+							<li class="<?=($selected == 'billreport') ? 'active' : ''?>">
+								<a href="<?=site_url('manage/bill_report')?>">Bill</a>
+							</li>
+                             <li class="<?=($selected == 'tabledetails') ? 'active' : ''?>">
+								<a href="<?=site_url('manage/table_details')?>">Tax</a>
+							</li>
+                             <li class="<?=($selected == 'tablecategory') ? 'active' : ''?>">
+								<a href="<?=site_url('manage/table_categories')?>">Orders</a>
+							</li>
+                            <li class="<?=($selected == 'tablecategory') ? 'active' : ''?>">
+								<a href="<?=site_url('manage/table_categories')?>">Table Orders</a>
+							</li>
+                            <li class="<?=($selected == 'tablecategory') ? 'active' : ''?>">
+								<a href="<?=site_url('manage/table_categories')?>">Parcel Orders</a>
+							</li>
+                            <li class="<?=($selected == 'tablecategory') ? 'active' : ''?>">
+								<a href="<?=site_url('manage/table_categories')?>">KOT</a>
+							</li>
+						</ul>
 					</li>
 					<?php } ?>
 				</ul>
