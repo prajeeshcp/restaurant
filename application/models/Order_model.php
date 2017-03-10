@@ -7,7 +7,7 @@ class Order_model extends CI_Model {
 	}
 	
 	function get_available_tables() { // get all the tables which is availabe exclude main
-		 return $this->db->select("table.*, cat.id, cat.name")
+		 return $this->db->select("table.*, cat.id cat_id, cat.name")
 		->from("table_details table")
 		->join("table_category cat", "table.table_cat_id = cat.id", "left")
 		->where("table.status",1)
@@ -19,12 +19,12 @@ class Order_model extends CI_Model {
 	
 	#check whether table is under taken
 	function check_table($tableId = NULL, $userId = NULL) {
-		 return $this->db->select("odr.entity_id as check_order_id")
+		 return $this->db->select("odr.entity_id as check_order_id, odr.user_id, odr.table_id")
 		->from("order_entity odr")
 		->where("odr.table_id", $tableId)
-		->where("odr.user_id !=", $userId)
 		->where("odr.status", 'pending')
-		->where("odr.status", 'processing')
+		->or_where("odr.status", 'processing')
+		//->where("odr.user_id !=", $userId)
 		->get()->row();
 	}
 	

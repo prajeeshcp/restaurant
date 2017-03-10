@@ -47,7 +47,7 @@
 					</li>
 					<?php if ($this->ion_auth->logged_in() && $this->ion_auth->is_admin()) {?>
 					<li class="<?=($catelog) ? 'open' : ''?>">
-						<a href="#"><i class="fa fa-lg fa-fw fa-list-alt"></i> <span class="menu-item-parent">Catalog</span></a>
+						<a href="#"><i class="fa fa-lg fa-fw fa-list-alt"></i> <span class="menu-item-parent">Menu Master</span></a>
 						<ul style=" <?=($catelog) ? 'display: block;' : ''?>">
 							<li class="<?=($selected == 'allmenus') ? 'active' : ''?>"> 
 								<a href="<?=site_url('manage/manage_menu')?>" >Manage Menu</a>
@@ -61,7 +61,7 @@
 						</ul>
 					</li>
 					<li class="<?=($table) ? 'open' : ''?>">
-						<a href="#"><i class="fa fa-lg fa-fw fa-table"></i> <span class="menu-item-parent">Tables</span></a>
+						<a href="#"><i class="fa fa-lg fa-fw fa-table"></i> <span class="menu-item-parent">Tables Master</span></a>
 						<ul style=" <?=($table) ? 'display: block;' : ''?>">	
 							<li class="<?=($selected == 'tabledetails') ? 'active' : ''?>">
 								<a href="<?=site_url('manage/table_details')?>">Manage Tables</a>
@@ -71,13 +71,9 @@
 							</li>
 						</ul>
 					</li>
-					<li class="<?=($system) ? 'active' : ''?>">
-						<a href="<?=site_url('manage/system_config')?>"><i class="fa fa-lg fa-fw fa-cog"></i> <span class="menu-item-parent">System</span></a>
-					</li>
-                    
-                    
+					
                     <li class="<?=($report) ? 'open' : ''?>">
-						<a href="#"><i class="fa fa-lg fa-fw fa-sort-alpha-desc"></i> <span class="menu-item-parent">Reports</span></a>
+						<a href="#"><i class="fa fa-lg fa-fw fa-sort-alpha-desc"></i> <span class="menu-item-parent">Report Master</span></a>
 						<ul style=" <?=($report) ? 'display: block;' : ''?>">	
 							<li class="<?=($selected == 'billreport') ? 'active' : ''?>">
 								<a href="<?=site_url('manage/bill_report')?>">Bill</a>
@@ -98,6 +94,9 @@
 								<a href="<?=site_url('manage/table_categories')?>">KOT</a>
 							</li>
 						</ul>
+					</li>
+                    <li class="<?=($system) ? 'active' : ''?>">
+						<a href="<?=site_url('manage/system_config')?>"><i class="fa fa-lg fa-fw fa-cog"></i> <span class="menu-item-parent">System</span></a>
 					</li>
 					<?php } ?>
 				</ul>

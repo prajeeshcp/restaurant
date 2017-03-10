@@ -23,8 +23,10 @@ class Manage extends Cpanel_Controller
 			$loggedUser 					= $this->ion_auth->user()->row();
 			foreach ($tableDtil as $key => $table) {
 				$checkOrder					= $this->order_model->check_table($table['id'], $loggedUser->id);
+				//echo "<pre>"; print_r($checkOrder);
 				if (!empty($checkOrder)) {
-					unset($tableDtil[$key]);
+					if (($checkOrder->user_id !== $loggedUser->id) && ($table['id'] == $checkOrder->table_id)) {
+					unset($tableDtil[$key]); }
 				}
 			}
 			$this->data['table_dtil']		= $tableDtil;
@@ -898,7 +900,7 @@ class Manage extends Cpanel_Controller
 		$this->data['order_type']	= $orderType;
 		if ($tableId) {	
 			$checkOrder				= $this->order_model->check_table($tableId, $loggedUser->id);
-			if (!empty($checkOrder)) {
+			if (!empty($checkOrder) && ($checkOrder->user_id !== $loggedUser->id) && ($tableId == $checkOrder->table_id)) {
 				redirect('manage/index', 'refresh');
 			} else {
 				//check whether pending order is there or what
@@ -969,12 +971,7 @@ class Manage extends Cpanel_Controller
 		$price_type					= $this->input->post('price_type', true);
 		$kot_id						= $this->input->post('kot_id', true); 
 		$kot_flag					= $this->input->post('flag', true); 
-
-		if ($orderType) {
-			$order_type 			= $orderType;
-		} else {
-			$order_type 			= 'table';
-		}
+		
 		if ($order_id && $menu_id && $price_type) {
 			$getPrice				= _DB_get_record($this->tables['menu_entity_price'], array('menu_id' => $menu_id, 'price_type' => $price_type));
 			
@@ -995,6 +992,12 @@ class Manage extends Cpanel_Controller
 			}
 			$price_incld_tax		= $getPrice['price_amount'];
 			$MenuName				= $menuDtil['menu_name']." (".$typeDtil['type_name'].")";
+			$order_dtil				= _DB_get_record($this->tables['order_entity'], array('entity_id' => $order_id));
+			if ($order_dtil['table_id'] == 1) {
+					$order_type 	= "Parcel";
+				} else {
+					$order_type 	= 'Table';
+				}
 			
 			$checkMenu				= _DB_get_record($this->tables['order_entity_items'], array('order_id' => $order_id, 'is_kot' => 0, 'menu_id' => $menu_id, 'price_type' => $price_type));	
 			if (empty($checkMenu) && $kot_flag != 2 ){

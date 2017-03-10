@@ -49,7 +49,7 @@
 								<h1>TABLE ORDER</h1>
 					            <div class="widget-body">
 										
-										<a class="btn btn-danger btn-lg" href="<?=site_url('manage/order_desk/1/parsel')?>">PARCEL ORDER</a>&nbsp;<a class="btn btn-primary btn-lg" href="<?=site_url('manage/previous_bill')?>">PREVIOUS BILLS</a>
+										<a class="btn btn-danger btn-lg" href="<?=site_url('manage/order_desk/1/parsel')?>">PARCEL ORDER</a>
 										<hr class="simple">
 					                    </div>
 								<div class="row">
@@ -135,7 +135,7 @@
 	                                     <td>
 			                               <?=$completed['grand_total']?>
 			                            </td>
-	                                    <td id="completed_order_<?= $completed['entity_id']?>"><a href="<?=site_url('manage/show_bill/'.$completed['entity_id'])?>" class="btn btn-warning" ><i class="fa fa-shopping-cart"></i> View Bill</a></td>
+	                                    <td id="completed_order_<?= $completed['entity_id']?>"><a href="<?=site_url('manage/show_bill/'.$completed['entity_id'])?>" class="btn btn-success btn-xs" ><i class="fa fa-shopping-cart"></i> View Bill</a></td>
 			                        </tr>
 	                                <?php } } ?>
 							</tbody>
@@ -243,8 +243,7 @@
 		<script src="<?=site_url('assets/')?>js/app.js"></script>
 
 		<!-- Your GOOGLE ANALYTICS CODE Below -->
-
-		<script type="text/javascript">
+<script type="text/javascript">
 
 	// DO NOT REMOVE : GLOBAL FUNCTIONS!
 	pageSetUp();
@@ -359,7 +358,29 @@
 		
 		/* END TABLE TOOLS */
 
+	}
+	 <?php if (!empty($message)): 
+	 	 $message_type = (!empty($message_type)) ? $message_type : 'info'; 
+		 if (!empty($message_type) && ($message_type == 'success')) {
+		 	$code		= "#060";
+		 } else {
+			 $code		= "#C00";
+		 }
+		 
+	 ?>
+	$(function() {
+		$.smallBox({
+			title : "Information box",
+			content : "<?php echo $message; ?>",
+			color : "<?=$code?>",
+			//timeout: 8000,
+			icon : "fa fa-bell"
+		});
 
+	
+		});
+	<?php endif; ?>
+</script>
 		<?php $this->load->view('includes/footer'); ?>
 
 	</body>
