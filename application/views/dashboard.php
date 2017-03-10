@@ -362,7 +362,7 @@
 				<h1>TABLE ORDER</h1>
                 <div class="widget-body">
 						
-						<a class="btn btn-danger btn-lg" href="<?=site_url('manage/order_desk/1/parsel')?>">PARCEL ORDER</a>&nbsp;<a class="btn btn-primary btn-lg" href="javascript:void(0);">PREVIOUS BILLS</a>
+						<a class="btn btn-danger btn-lg" href="<?=site_url('manage/order_desk/1/parsel')?>">PARCEL ORDER</a>&nbsp;<a class="btn btn-primary btn-lg" href="<?=site_url('manage/previous_bill')?>">PREVIOUS BILLS</a>
 						<hr class="simple">
                         </div>
 				<div class="row">

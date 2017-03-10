@@ -52,11 +52,20 @@ class Order_model extends CI_Model {
 		
 	}
 
-	#get all the pending and processing order of logged user
+	#get all the order which have status ready
 	function processing_odr_cashier($userId	= NULL) {
 		return $this->db->select('*')
 		->from('order_entity')		
 		->where("is_bill", 1)		
+		->get()->result_array();
+	}
+
+	#get all the completed order
+	function completed_odr_cashier() {
+		return $this->db->select('*')
+		->from('order_entity')		
+		->where("is_bill", 2)
+		->order_by("updated_at", "desc")		
 		->get()->result_array();
 	}
 	

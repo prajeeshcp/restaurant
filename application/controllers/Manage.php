@@ -1224,4 +1224,21 @@ class Manage extends Cpanel_Controller
 	function bill_report() {
 		$this->render('bill-report');
 	}
+
+	# Display list of completed previous bills 
+	function previous_bill($value='')
+	{
+		$this->data['completed_odr_cashier']	= $this->order_model->completed_odr_cashier();
+		$this->render('previous_bills');
+
+		
+	}
+
+	# Display completed previous bills 
+
+	function show_bill($orderId = NULL)
+	{
+		$this->data['order_id']			= $orderId;		
+		$this->render('invoice');
+	}
 }

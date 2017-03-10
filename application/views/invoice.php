@@ -1,8 +1,9 @@
-<?php $this->load->view('includes/header'); 
+<?php $this->load->view('includes/header');
 	$orderDtil			= _DB_get_record($this->tables['order_entity'], array('entity_id' => $order_id));
-	$billDtil			= _DB_get_record($this->tables['bill_entity'], array('entity_id' => $bill_id));
+	$billDtil			= _DB_get_record($this->tables['bill_entity'], isset($bill_id) ? array('entity_id' => $bill_id) : array('order_id' => $order_id));
+
 	$tableDtil			= _DB_get_record($this->tables['table_details'], array('id' => $orderDtil['table_id']));
-	$billItems			= _DB_data($this->tables['bill_entity_items'], array('bill_id' => $bill_id), null, null, null);
+	$billItems			= _DB_data($this->tables['bill_entity_items'], isset($bill_id) ? array('bill_id' => $bill_id) : array('bill_id' => $billDtil['entity_id'])   , null, null, null);
 ?>
 		<!-- END HEADER -->
 
