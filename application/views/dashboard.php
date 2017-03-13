@@ -367,42 +367,79 @@
                         </div>
 				<div class="row">
 					<div class="col-xs-12 col-sm-12 col-md-12">
-			            <div class="panel panel-greenLight">
-			                <div class="panel-heading">
-			                    <h3 class="panel-title">
-			                        Compleated Orderes</h3>
-			                </div>
-			                <div class="panel-body no-padding">
-			                    <table class="table">
-			                        <tbody>
-	                                <tr>
-	                                	<th>Order No</th>
-	                                    <th>Table No</th>
-	                                    <th>Status</th>
-	                                    <th>Grand Total</th>
-	                                    <th>Action</th>
-	                                </tr>
-	                                <?php if (!empty($processing_odr_cashier)) { 
-										foreach ($processing_odr_cashier as $key => $processing) {
-											$tableDtl		= _DB_get_record($this->tables['table_details'], array('id' => $processing['table_id']));
-									?>
-	                                <tr class="<?=($key%2 == 0) ? 'active' : ''?>">
-			                            <td>
-			                               <?=$processing['increment_id']?>
-			                            </td>
-	                                    <td><?=$tableDtl['table_number']?></td>
-	                                     <td><span class="label bg-color-<?=($processing['status'] == 'pending') ? 'red' : 'green'?>"><?=ucfirst($processing['status'])?></span></td>
-	                                     <td>
-			                               <?=$processing['grand_total']?>
-			                            </td>
-	                                    <td id="processing_order_<?= $processing['entity_id']?>"><a href="<?=site_url('manage/create_bill/'.$processing['entity_id'])?>" class="btn btn-warning" ><i class="fa fa-shopping-cart"></i> Create Bill</a></td>
-			                        </tr>
-	                                <?php } } ?>
-			                    </tbody></table>
-			                </div>
-			                
-			            </div>
-			        </div>
+					<!-- Widget ID (each widget will need unique ID)-->
+			<div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-1" data-widget-editbutton="false">
+				<!-- widget options:
+				usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
+
+				data-widget-colorbutton="false"
+				data-widget-editbutton="false"
+				data-widget-togglebutton="false"
+				data-widget-deletebutton="false"
+				data-widget-fullscreenbutton="false"
+				data-widget-custombutton="false"
+				data-widget-collapsed="true"
+				data-widget-sortable="false"
+
+				-->
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2>Compleated Orderes</h2>			
+				</header>
+
+				<!-- widget div-->
+				<div>
+
+					<!-- widget edit box -->
+					<div class="jarviswidget-editbox">
+						<!-- This area used as dropdown edit box -->
+
+					</div>
+					<!-- end widget edit box -->
+
+					<!-- widget content -->
+					<div class="widget-body no-padding">
+
+						<table id="datatable_fixed_column" class="table table-striped table-bordered smart-form">
+							<thead>
+								<tr>
+									<th>Order No</th>
+                                    <th>Table No</th>
+                                    <th>Status</th>
+                                    <th>Grand Total</th>
+                                    <th>Action</th>
+								</tr>								
+							</thead>
+							<tbody>
+                            <?php 
+                            	if (!empty($processing_odr_cashier)) { 
+									foreach ($processing_odr_cashier as $key => $processing) {
+										$tableDtl		= _DB_get_record($this->tables['table_details'], array('id' => $processing['table_id']));
+							?>
+								<tr class="<?=($key%2 == 0) ? 'active' : ''?>">
+		                            <td>
+		                               <?=$processing['increment_id']?>
+		                            </td>
+                                    <td><?=$tableDtl['table_number']?></td>
+                                     <td><span class="label label-<?=($processing['status'] == 'pending') ? 'danger' : 'success'?>"><?=ucfirst($processing['status'])?></span></td>
+                                     <td>
+		                               <?=$processing['grand_total']?>
+		                            </td>
+                                    <td id="processing_order_<?= $processing['entity_id']?>"><a href="<?=site_url('manage/create_bill/'.$processing['entity_id'])?>" class="btn btn-warning" ><i class="fa fa-shopping-cart"></i> Create Bill</a></td>
+		                        </tr>
+                            <?php } } ?>
+							</tbody>
+						</table>
+					</div>
+					<!-- end widget content -->
+
+				</div>
+				<!-- end widget div -->
+
+			</div>
+			<!-- end widget -->
+
+			            
     			</div>
                        
             </div>

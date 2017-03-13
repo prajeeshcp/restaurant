@@ -210,26 +210,54 @@ if (!empty($kot_details)) {
 <div id="dialog_simple" title="Dialog Simple Title">
 	<div class="row">
     	<div class="col-xs-12 col-sm-12 col-md-12">
-		            <div class="panel panel-greenLight">
-		                <div class="panel-heading">
-		                    <h3 class="panel-title">
-		                        Pending/Processing</h3>
-		                </div>
-		                <div class="panel-body no-padding">
-		                    <table class="table">
-		                        <tbody>
-                                <tr>
-                                	<th>Order No</th>
+		            <div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-1" data-widget-editbutton="false">
+				<!-- widget options:
+				usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
+
+				data-widget-colorbutton="false"
+				data-widget-editbutton="false"
+				data-widget-togglebutton="false"
+				data-widget-deletebutton="false"
+				data-widget-fullscreenbutton="false"
+				data-widget-custombutton="false"
+				data-widget-collapsed="true"
+				data-widget-sortable="false"
+
+				-->
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2>Pending/Processing</h2>			
+				</header>
+
+				<!-- widget div-->
+				<div>
+
+					<!-- widget edit box -->
+					<div class="jarviswidget-editbox">
+						<!-- This area used as dropdown edit box -->
+
+					</div>
+					<!-- end widget edit box -->
+
+					<!-- widget content -->
+					<div class="widget-body no-padding">
+
+						<table id="datatable_fixed_column" class="table table-striped table-bordered smart-form">
+							<thead>
+								<tr>
+									<th>Order No</th>
                                     <th>Table No</th>
                                     <th>Status</th>
                                     <th>Action</th>
-                                </tr>
-                                <?php if (!empty($processing_odr)) { 
-									foreach ($processing_odr as $key => $processing) {
-										$tableDtl		= _DB_get_record($this->tables['table_details'], array('id' => $processing['table_id']));
-										$kotDtl		= _DB_get_record($this->tables['kot_entity'], array('order_id' => $processing['entity_id']));
+								</tr>								
+							</thead>
+							<tbody>
+	                            <?php if (!empty($processing_odr)) { 
+										foreach ($processing_odr as $key => $processing) {
+											$tableDtl		= _DB_get_record($this->tables['table_details'], array('id' => $processing['table_id']));
+											$kotDtl		= _DB_get_record($this->tables['kot_entity'], array('order_id' => $processing['entity_id']));
 								?>
-                                <tr class="<?=($key%2 == 0) ? 'active' : ''?>">
+								<tr class="<?=($key%2 == 0) ? 'active' : ''?>">
 		                            <td>
 		                               <?=$processing['increment_id']?>
 		                            </td>
@@ -238,10 +266,16 @@ if (!empty($kot_details)) {
                                     <td><a href="<?=site_url('manage/manage_pending_order/'.$processing['entity_id'])?>" class="btn btn-primary" ><i class="fa fa-shopping-cart"></i> GO NOW</a></td>
 		                        </tr>
                                 <?php } } ?>
-		                    </tbody></table>
-		                </div>
-		                
-		            </div>
+							</tbody>
+						</table>
+					</div>
+					<!-- end widget content -->
+
+				</div>
+				<!-- end widget div -->
+
+			</div>
+			<!-- end widget -->
 		        </div>
     </div>
 </div>
