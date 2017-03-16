@@ -1229,8 +1229,7 @@ class Manage extends Cpanel_Controller
 	}
 
 	# Display list of completed previous bills 
-	function previous_bill($value='')
-	{
+	function previous_bill($value='') {
 		$this->data['completed_odr_cashier']	= $this->order_model->completed_odr_cashier();
 		$this->render('previous_bills');
 
@@ -1238,10 +1237,20 @@ class Manage extends Cpanel_Controller
 	}
 
 	# Display completed previous bills 
-
-	function show_bill($orderId = NULL)
-	{
-		$this->data['order_id']			= $orderId;		
+	function show_bill($orderId = NULL) {
+		$this->data['order_id']					= $orderId;		
 		$this->render('invoice');
 	}
+	
+	#ajax call for list reports
+	function bill_report_by_date() {
+		 $periodStart							= $this->input->post('periodstart', true);
+		 $periodEnd								= $this->input->post('periodend', true);
+		 $period								= $this->input->post('period', true);
+		 $reportDetails							= $this->order_model->bill_report($periodStart, $periodEnd, $period);
+		 $totalBill								= $this->order_model->total_bill_report($periodStart, $periodEnd);
+		$this->data['report_details']			= $reportDetails;
+		$this->data['total_bill']				= $totalBill;
+		$this->render('ajax/bill-report');
+	}	
 }

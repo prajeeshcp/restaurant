@@ -78,20 +78,20 @@
 							<li class="<?=($selected == 'billreport') ? 'active' : ''?>">
 								<a href="<?=site_url('manage/bill_report')?>">Bill</a>
 							</li>
-                             <li class="<?=($selected == 'tabledetails') ? 'active' : ''?>">
-								<a href="<?=site_url('manage/table_details')?>">Tax</a>
+                             <li class="">
+								<a href="">Tax</a>
 							</li>
-                             <li class="<?=($selected == 'tablecategory') ? 'active' : ''?>">
-								<a href="<?=site_url('manage/table_categories')?>">Orders</a>
+                             <li class="">
+								<a href="">Orders</a>
 							</li>
-                            <li class="<?=($selected == 'tablecategory') ? 'active' : ''?>">
-								<a href="<?=site_url('manage/table_categories')?>">Table Orders</a>
+                            <li class="">
+								<a href="">Table Orders</a>
 							</li>
-                            <li class="<?=($selected == 'tablecategory') ? 'active' : ''?>">
-								<a href="<?=site_url('manage/table_categories')?>">Parcel Orders</a>
+                            <li class="">
+								<a href="">Parcel Orders</a>
 							</li>
-                            <li class="<?=($selected == 'tablecategory') ? 'active' : ''?>">
-								<a href="<?=site_url('manage/table_categories')?>">KOT</a>
+                            <li class="">
+								<a href="">KOT</a>
 							</li>
 						</ul>
 					</li>

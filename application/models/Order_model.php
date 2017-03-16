@@ -135,4 +135,34 @@ class Order_model extends CI_Model {
 				 ->get()->result_array();
 		}
 	}
+	
+	#get report of bill
+	function bill_report($startDate = NULL, $endDate = NULL, $timeperiod = NULL) {
+		if ($timeperiod == 'day')  {
+			$this->db->select('DATE_FORMAT(bill.created_at, "%d %b %Y") datetime, COUNT(bill.entity_id) bill_count, ROUND(SUM(bill.grand_total)) grand_total_bill');
+		} else if($timeperiod == 'month') {
+			$this->db->select('DATE_FORMAT(bill.created_at, "%b %Y") datetime, COUNT(bill.entity_id) bill_count, ROUND(SUM(bill.grand_total)) grand_total_bill');
+		} else {
+			$this->db->select('DATE_FORMAT(bill.created_at, "%Y") datetime, COUNT(bill.entity_id) bill_count, ROUND(SUM(bill.grand_total)) grand_total_bill');
+		}
+		$this->db->from('bill_entity bill');
+		$this->db->where('date(bill.created_at) >=', $startDate);
+		$this->db->where('date(bill.created_at) <=', $endDate);
+		if ($timeperiod == 'day')  {
+			$this->db->group_by('weekday(bill.created_at)');
+		} else if ($timeperiod == 'day') {
+			$this->db->group_by('month(bill.created_at)');
+		} else {
+			$this->db->group_by('year(bill.created_at)');
+		}
+		return $this->db->get()->result_array();
+	}
+	#total bill report
+	function total_bill_report($startDate = NULL, $endDate = NULL) {
+		$this->db->select('COUNT(bill.entity_id) bill_count, ROUND(SUM(bill.grand_total)) grand_total_bill');
+		$this->db->from('bill_entity bill');
+		$this->db->where('date(bill.created_at) >=', $startDate);
+		$this->db->where('date(bill.created_at) <=', $endDate);
+		return $this->db->get()->row();
+	}
 }
