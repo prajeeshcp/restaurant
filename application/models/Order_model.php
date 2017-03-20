@@ -7,7 +7,7 @@ class Order_model extends CI_Model {
 	}
 	
 	function get_available_tables() { // get all the tables which is availabe exclude main
-		 return $this->db->select("table.*, cat.id, cat.name")
+		 return $this->db->select("table.*, cat.id cat_id, cat.name")
 		->from("table_details table")
 		->join("table_category cat", "table.table_cat_id = cat.id", "left")
 		->where("table.status",1)
@@ -19,12 +19,12 @@ class Order_model extends CI_Model {
 	
 	#check whether table is under taken
 	function check_table($tableId = NULL, $userId = NULL) {
-		 return $this->db->select("odr.entity_id as check_order_id")
+		 return $this->db->select("odr.entity_id as check_order_id, odr.user_id, odr.table_id")
 		->from("order_entity odr")
 		->where("odr.table_id", $tableId)
-		->where("odr.user_id !=", $userId)
 		->where("odr.status", 'pending')
-		->where("odr.status", 'processing')
+		->or_where("odr.status", 'processing')
+		//->where("odr.user_id !=", $userId)
 		->get()->row();
 	}
 	
@@ -134,5 +134,35 @@ class Order_model extends CI_Model {
 				 ->where('ord.entity_id', $order_id)
 				 ->get()->result_array();
 		}
+	}
+	
+	#get report of bill
+	function bill_report($startDate = NULL, $endDate = NULL, $timeperiod = NULL) {
+		if ($timeperiod == 'day')  {
+			$this->db->select('DATE_FORMAT(bill.created_at, "%d %b %Y") datetime, COUNT(bill.entity_id) bill_count, ROUND(SUM(bill.grand_total)) grand_total_bill');
+		} else if($timeperiod == 'month') {
+			$this->db->select('DATE_FORMAT(bill.created_at, "%b %Y") datetime, COUNT(bill.entity_id) bill_count, ROUND(SUM(bill.grand_total)) grand_total_bill');
+		} else {
+			$this->db->select('DATE_FORMAT(bill.created_at, "%Y") datetime, COUNT(bill.entity_id) bill_count, ROUND(SUM(bill.grand_total)) grand_total_bill');
+		}
+		$this->db->from('bill_entity bill');
+		$this->db->where('date(bill.created_at) >=', $startDate);
+		$this->db->where('date(bill.created_at) <=', $endDate);
+		if ($timeperiod == 'day')  {
+			$this->db->group_by('weekday(bill.created_at)');
+		} else if ($timeperiod == 'day') {
+			$this->db->group_by('month(bill.created_at)');
+		} else {
+			$this->db->group_by('year(bill.created_at)');
+		}
+		return $this->db->get()->result_array();
+	}
+	#total bill report
+	function total_bill_report($startDate = NULL, $endDate = NULL) {
+		$this->db->select('COUNT(bill.entity_id) bill_count, ROUND(SUM(bill.grand_total)) grand_total_bill');
+		$this->db->from('bill_entity bill');
+		$this->db->where('date(bill.created_at) >=', $startDate);
+		$this->db->where('date(bill.created_at) <=', $endDate);
+		return $this->db->get()->row();
 	}
 }

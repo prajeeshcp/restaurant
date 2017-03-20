@@ -329,14 +329,14 @@
 	<div class="row">
 		<article class="col-sm-12">
         	<div class="widget-body">
-						<h1>TABLE ORDER</h1>
+						<h1>MAKE ORDER</h1>
 						<div class="row">
                         <?php 
-						if (!empty($table_dtil)) {
+						if (!empty($table_dtil)) { 
 							foreach ($table_dtil as $table) {
 						?>
 							<div class="col-sm-3 col-md-2" style="padding-bottom:15px;">
-                            	<a href="<?=site_url('manage/order_desk/'.$table['id'])?>" class="btn btn-success btn-lg">Table-<?=$table['table_number']?></a>
+                            	<a href="<?=site_url('manage/order_desk/'.$table['id'])?>" class="btn btn-success btn-lg" style="padding: 15%; font-weight:bold">Table-<?=$table['table_number']?></a>
                             </div>
                             <?php } } else { ?>
                             <div class="col-sm-12 col-md-12" style="padding-bottom:15px;">

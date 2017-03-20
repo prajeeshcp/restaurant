@@ -89,58 +89,48 @@
 
 					<!-- widget content -->
 					<div class="widget-body no-padding">
-                    <form class="smart-form" id="smart-form-register" action="" novalidate="novalidate">
+                    <form class="smart-form" method="post" id="smart-form-report">
                     <fieldset>
                     <div class="row">
 									<section class="col col-3">
 										<label class="input"> <i class="icon-append fa fa-calendar"></i>
-											<input type="text" name="request" placeholder="Period end" class="datepicker" data-dateformat='dd/mm/yy'>
+											<input type="text" id="period-start" name="period_start" required placeholder="Period start" class="datepicker" data-dateformat='yy-mm-dd'>
 										</label>
 									</section>
                                     <section class="col col-3">
 										<label class="input"> <i class="icon-append fa fa-calendar"></i>
-											<input type="text" name="request" placeholder="Period start" class="datepicker" data-dateformat='dd/mm/yy'>
+											<input type="text" id="period-end" name="period_end" placeholder="Period end" class="datepicker" data-dateformat='yy-mm-dd' required>
 										</label>
 									</section>
                                     <section class="col col-2">
 										<label class="select">
-											<select name="gender">
-													<option value="year">Year</option>
-                                                        <option value="month">Month</option>
-                                                        <option value="day">Day</option>
+											<select name="period" id="period" required>
+                                                <option value="year">Year</option>
+                                                <option value="month">Month</option>
+                                                <option value="day">Day</option>
 											</select> <i></i> </label>
 									</section>
                                     <section class="col col-4">
 									<label class="select">
-                                    <a class="btn btn-primary" href="javascript:void(0);" style="padding:1% 5%"><i class="fa fa-gear"></i>  Show Report</a>
+                                    <a class="btn btn-primary" href="javascript:void(0);" onclick="return get_report();" style="padding:1% 5%"><i class="fa fa-gear"></i>  Show Report</a>
                                </label>
 							</div>
 									</section>
 								</div>
+                                <input type="submit" style="display:none" name="submit"  />
                           </fieldset></form>
-
+<div id="report-area">
 						<table id="datatable_fixed_column" class="table table-striped table-bordered smart-form">
 							<thead>
 								<tr>
-									<th>SL NO</th>
-									<th>Price Type</th>
-									<th>Status</th>
-									<th>Action</th>
+									<th>Time Period</th>
+									<th>Total Orders Bill</th>
+									<th>Total Paid</th>
+									<th>Total not Paid </th>
 								</tr>
 							</thead>
-							<tbody>
-                            <?php if (!empty($price_type)) { 
-									foreach ($price_type as $key => $type) {
-							?>
-								<tr class="odd gradeX">
-									<td><?=$key+1?></td>
-									<td><?=stripslashes($type['type_name'])?></td>
-									<td><a href="javascript:void(0);" class="btn btn-<?=($type['status'] == 1) ? 'success' : 'warning'?> btn-xs"><?=($type['status'] == 1) ? 'Enabled' : 'Disabled'?></a></td>		
-									<td><a href="<?=site_url('manage/edit_price_type/'.$type['entity_id'])?>" class="btn btn-warning btn-xs"><i class="fa fa-edit"></i> Edit</a></td>
-								</tr>
-                                <?php  } } ?>
-							</tbody>
 						</table>
+                        </div>
 					</div>
 					<!-- end widget content -->
 
@@ -392,6 +382,35 @@
 		});
 	<?php endif; ?>
 </script> 
+<script type="text/javascript" language="javascript">
+	function get_report() {
+				
+				var $myForm = $('#smart-form-report');
+				if (!$myForm[0].checkValidity()) {
+				  // If the form is invalid, submit it. The form won't actually submit;
+				  // this will just cause the browser to display the native HTML5 error messages.
+				  $myForm.find(':submit').click();
+				} else {
+					var periodstart			= $('#period-start').val();
+					var periodend			= $('#period-end').val();
+					var period				= $('#period').val();
+					var datastring			= "periodstart="+periodstart+"&periodend="+periodend+"&period="+period; 
+					$('#content').css({opacity : '0.5'});
+					$.ajax({
+							type:"POST",
+							url:"<?=site_url()?>/manage/bill_report_by_date",
+							data:datastring,
+							success: function(msg){
+									//alert(msg);
+									$('#report-area').html(msg);
+									$('#content').css({opacity : '1'});
+								}
+						});
+					
+				}
+	}
+</script>
+
 	</body>
 
 </html>
