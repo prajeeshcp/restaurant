@@ -464,6 +464,10 @@ class Manage extends Cpanel_Controller
 	public function get_userDetails($userId  = null){
 
 		$get_data 	= $this->manage_model->get_user_details();
+		$get_groups = _DB_data($this->tables['groups'], null, null, null, null);
+
+		// print_r($get_groups);
+		// die();
 		$userData="";
 		foreach ($get_data as $rows) {
 			$userData .='<tr class="odd gradeX" >
@@ -475,28 +479,21 @@ class Manage extends Cpanel_Controller
 			if(($rows['id'] != 1) && ($rows['username'] != 'administrator')){
 				$userData.='<td id="td_id_'.$rows['id'].'" ><a href="#" class="btn btn-warning btn-xs btn_delete" onclick="deleteUser('.$rows['id'].')"><i class="fa fa-edit"></i> Delete</a></td>';
 			}
-		$userData.='</tr>';
-
-			
-
-			
-		}
-		
-			$data = array('userData'=>$userData);
-			print_r(json_encode($data));
-
-		
-				
+		$userData.='</tr>';			
+		}		
+		$data = array('userData'=>$userData,
+					  'userGroups' => $get_groups);
+		print_r(json_encode($data));				
 	}
 
 	#load edit user_details
 	public function edit_userDetails($userId=null){
+
 		
 		$get_data 	= $this->manage_model->get_user_details($userId);
 		
 		$userData="";
-		foreach ($get_data as $rows) {
-			
+		foreach ($get_data as $rows) {			
 		
 		$userData.='
 				<div class="row" id="editsuccessMessages" style="display:none">
@@ -589,20 +586,117 @@ class Manage extends Cpanel_Controller
 
 	}
 
+	#load edit userprofile details oflogined user
+	public function editUserProfile(){
+
+		$userId = $this->ion_auth->get_user_id();		
+		$get_data 	= $this->manage_model->get_user_details($userId);		
+		$userData="";
+		foreach ($get_data as $rows) {			
+		
+		$userData.='
+				<div class="row" id="editProfilesuccessMessages" style="display:none">
+					<div class="col-lg-12 col-sm-offset-12">
+		            	<div class="alert alert-danger" ></div>
+		          	</div>					
+				</div>
+				
+				<!-- <form id="registerForm"> -->
+				<div class="row">
+					<div class="col-md-6">
+						<div class="form-group">
+							<input type="hidden" class="form-control" placeholder="First Name" name="editProfileuser_id" id="editProfileuser_id" value="'.$rows['id'].'"  />
+						</div>
+					</div>					
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<div class="form-group">
+							<input type="text" class="form-control" placeholder="First Name" name="editProfilefirstName" id="editProfilefirstName" value="'.$rows['first_name'].'" required />
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<input type="text" class="form-control" placeholder="Last Name" name="editProfilelastName" id="editProfilelastName" value="'.$rows['last_name'].'" required />
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<div class="form-group">
+							<input type="text" class="form-control" placeholder="User Name" name="editProfileuserName" id="editProfileuserName" value="'.$rows['username'].'" required />
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<input type="number" class="form-control" placeholder="Phone" name="editProfilephone" id="editProfilephone" value="'.$rows['phone'].'"   required />
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<div class="form-group">
+							<input type="password" class="form-control" placeholder="Password" name="editProfilepassword" id="editProfilepassword" value="'.$rows['password'].'" required readonly />
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<input type="password" class="form-control" placeholder="Confirm Password" name="editProfileconfPassword" id="editProfileconfPassword" value="'.$rows['password'].'"  readonly required />
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<div class="form-group">
+							<input type="email" class="form-control" placeholder="Email" name="editProfileemail" id="editProfileemail" value="'.$rows['email'].'" required />
+						</div>
+						<div class="form-group">
+							<textarea class="form-control" placeholder="Address" rows="5" id="editProfileaddress" name="editProfileaddress" required>'.$rows['company'].'</textarea>
+						</div>
+					</div>
+				</div>
+				
+				<div class="row">
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="category"> User Type</label>
+							<select class="form-control" id="editProfileuserType" name="editProfileuserType" id="userType">
+								<option value="" selected>Select A Type</option>';
+
+								$c_selected= $w_selected= '';
+								(!empty($rows['user_type']) && $rows['user_type']=='cashier') ? $c_selected='selected="selected"' : $w_selected='selected="selected"';
+
+					$userData.='<option '.$c_selected.' value="2">Cashier</option>
+								<option '.$w_selected.' value="3">Waiter</option>
+							</select>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							
+						</div>
+					</div>
+				</div>
+			';
+			}
+		$data = array('userData'=>$userData);
+		print_r(json_encode($data));
+
+
+	}
+
+
 	#edit user_details
 	public function edit_user($Id=null){
 		if ($this->ion_auth->logged_in() && $this->ion_auth->is_admin()) { // Check whether the user is already logged-in and is admin 
 			
 		$this->load->library('form_validation');
-		$this->form_validation->set_rules('userName', 'user name', 'trim|required|min_length[5]|max_length[12]|alpha');
-		//$this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[5]');
-		//$this->form_validation->set_rules('confPassword', 'Confirm password', 'trim|matches[password]');
+		$this->form_validation->set_rules('userName', 'user name', 'trim|required|min_length[5]|max_length[12]|alpha');		
 		$this->form_validation->set_rules('email', 'email address', 'trim|required|valid_email');
 		$this->form_validation->set_rules('phone', 'Phone Number', 'required|integer|min_length[10]|max_length[12]');
 		$this->form_validation->set_rules('firstName', 'First name', 'required');
 		$this->form_validation->set_rules('lastName', 'Last name', 'required');
 		$this->form_validation->set_rules('address', 'Address', 'required');
-
 		$this->form_validation->set_rules('userType', 'user type', 'required');
 		if ($this->form_validation->run() == true) {
 			
@@ -633,16 +727,8 @@ class Manage extends Cpanel_Controller
 			$userUpdate = _DB_update($this->tables['users'], array('first_name' => $fisrtName, 'last_name' => $lastName, 'username' => $userName, 'email' => $email,  'company' => $address, 'phone' => $phone), array('id' => $user_id));
 			$userUpdateGroup = _DB_update($this->tables['users_groups'], array('group_id' => $userGroup), array('id' => $user_id));
 
-
-			
 			if ($userUpdate) {
-				//$user_id = _DB_insert_id();
-
-				$userData="";
-				// $this->session->set_flashdata('message', $this->ion_auth->messages());
-				// $this->session->set_flashdata('message_type', 'success');
-				// redirect('manage/', 'refresh');
-
+				$userData="";				
 				$userData .='<tr class="odd gradeX" >
 					<td>'. stripslashes($fisrtName).'</td>
 					<td>'. stripslashes($userType).'</td>
@@ -659,8 +745,6 @@ class Manage extends Cpanel_Controller
 								);
 				print_r(json_encode($data));
 			} else {
-				// $this->session->set_flashdata('message', $this->ion_auth->errors());
-				// $this->session->set_flashdata('message_type', 'danger');
 				$data 	= array('message' => 'error',
 								'message_type' => 'danger'
 								);
@@ -672,9 +756,7 @@ class Manage extends Cpanel_Controller
 								'message_type' => 'danger'
 								);
 				print_r(json_encode($data));
-
-			}
-			
+			}			
 		}
 	}
 	

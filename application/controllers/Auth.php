@@ -69,26 +69,45 @@ class Auth extends Cpanel_Controller
 		$this->form_validation->set_rules('con_password', 'confirm password', 'required');
 		if ($this->form_validation->run() == true) { 
 				if ($this->ion_auth->change_password($this->input->post('user_name'), $this->input->post('current_pass'), $this->input->post('new_password'))) {
-				$this->session->set_flashdata('message', $this->ion_auth->messages());
-				$this->session->set_flashdata('message_type', 'info');
-				redirect('auth/logout', 'refresh');
+				// $this->session->set_flashdata('message', $this->ion_auth->messages());
+				// $this->session->set_flashdata('message_type', 'info');
+				// redirect('auth/logout', 'refresh');
+					$data 	= array('message' => $this->ion_auth->messages(),
+								'message_type' => 'success'
+								);
+				print_r(json_encode($data));
 				} else {
-				$this->session->set_flashdata('message', $this->ion_auth->errors());
-				$this->session->set_flashdata('message_type', 'danger');
-				redirect('manage/', 'refresh'); //use redirects instead of loading views for compatibility with MY_Controller libraries
+				// $this->session->set_flashdata('message', $this->ion_auth->errors());
+				// $this->session->set_flashdata('message_type', 'danger');
+				// redirect('manage/', 'refresh'); //use redirects instead of loading views for compatibility with MY_Controller libraries
+					$data 	= array('message' => $this->ion_auth->errors(),
+								'message_type' => 'danger'
+								);
+				print_r(json_encode($data));
 				}
 		} else {
 			//the user is not logging in so display the login page
 			//set the flash data error message if there is one
 			if (validation_errors()) {
-				$this->data['message'] 		= "Sorry you don't have permission to access this application";
-				$this->data['message_type'] = 'danger';
+				// $this->data['message'] 		= "Sorry you don't have permission to access this application";
+				// $this->data['message_type'] = 'danger';
+				$data 	= array('message' => "Sorry you don't have permission to access this application",
+								'message_type' => 'danger'
+								);
+				print_r(json_encode($data));
+				die();
+
 			} else {
 				$this->data['message'] 		= $this->session->flashdata('message');
 				$this->data['message_type'] = $this->session->flashdata('message_type');
 			}
 
-			redirect('manage/','');
+			//redirect('manage/','');
+			$data 	= array('message' => validation_errors(),
+							'message_type' => 'danger'
+								);
+				print_r(json_encode($data));
+
 		}
 	} else {
 		//if the login was un-successful

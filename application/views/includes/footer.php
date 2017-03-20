@@ -8,10 +8,32 @@
 			dataType: "json",			
 			success : function (objResult) {
 				$('#userData').html(objResult.userData);
+				// $.each(objResult.userGroups,function(index,value){
+				// 	//alert(index+":"+value);
+				// });
+
 			}
 		});
 
+		$.ajax({
+
+			type 	: "POST",
+			url 	: "<?=site_url('manage/editUserProfile/')?>",
+			dataType: "json",			
+			success : function (objResult) {
+				//$('#myModalListUsers').modal('hide');				
+				$('#myModalEditProfileBody').html(objResult.userData);
+				//$('#myModalEdit').modal('show');
+
+					
+
+				
+			}			
+		});
+
 	});
+
+
 	$('#register').click(function () {
 		
 		var firstName 	= 	$('#firstName').val();
@@ -51,10 +73,42 @@
 		});
 	});
 
-	// $('.deleteUser').click(function () {
-	// 	var a=$('this').val();
-	// 	alert(a);
-	// });
+
+	$('#changePassword').click(function () {
+		
+		var user_name 		= 	$('#user_name').val();
+		var current_pass 	= 	$('#current_pass').val();
+		var new_password 	= 	$('#new_password').val();
+		var con_password 	= 	$('#con_password').val();
+
+		$.ajax({
+
+			type 	: "POST",
+			url 	: "<?=site_url('auth/change_password')?>",
+			dataType: "json",
+			data 	: {'user_name':user_name,'current_pass':current_pass,'new_password':new_password,'con_password':con_password},
+			success : function (objResult) {
+				if (objResult.message_type == 'danger') {
+					$('#changePasswordMessages').show();
+					$('#changePasswordMessages').html(objResult.message);
+				}
+
+				if (objResult.message_type == 'success') {
+					//$('#messages').show();
+					$('#successMessages').show();
+					$('#successMessages').html(objResult.message);
+					$("#userData").append(objResult.userData);
+					$('#myModalRegister').modal('hide');					
+					$('#myModalListUsers').modal('show');
+					
+				}
+
+
+			}
+		});
+	});
+
+
 
 	function deleteUser(id = null){
 		$.ajax({

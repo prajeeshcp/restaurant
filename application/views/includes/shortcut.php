@@ -13,7 +13,7 @@
 			<a href="#" class="jarvismetro-tile big-cubes bg-color-greenLight" data-toggle="modal" data-target="#myModalChangePassword"> <span class="iconbox"> <i class="fa fa-key fa-4x"></i> <span>Change password</span> </span> </a>
 		</li>
 		<li>
-			<a href="#ajax/gmap-xml.html" class="jarvismetro-tile big-cubes bg-color-purple"> <span class="iconbox"> <i class="fa fa-pencil-square-o fa-4x"></i> <span>Edit Profile</span> </span> </a>
+			<a href="#ajax/gmap-xml.html" class="jarvismetro-tile big-cubes bg-color-purple" data-toggle="modal" data-target="#myModalEditUserProfile"> <span class="iconbox"> <i class="fa fa-pencil-square-o fa-4x"></i> <span>Edit Profile</span> </span> </a>
 		</li>
 		
 	</ul>
@@ -133,6 +133,37 @@
 			</div>
 
 			<div class="modal-body" id="myModalEditBody">
+				
+
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">
+					Cancel
+				</button>
+				<button type="button" class="btn btn-primary" id="editUser" >
+					Edit
+				</button>
+			</div>
+				
+			<!-- </form> -->
+
+				
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!-- Modal -->
+<div class="modal fade" id="myModalEditUserProfile" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+					&times;
+				</button>
+				<h4 class="modal-title" id="myModalLabel">Edit User Profile</h4>
+			</div>
+
+			<div class="modal-body" id="myModalEditProfileBody">
 				
 
 			</div>
