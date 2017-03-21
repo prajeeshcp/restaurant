@@ -98,14 +98,14 @@
 		});		
 		
 
-		var oTable = $('#datatable_fixed_column').dataTable({
-			"sDom" : "<'dt-top-row'><'dt-wrapper't><'dt-row dt-bottom-row'<'row'<'col-sm-6'i><'col-sm-6 text-right'p>>",
-			//"sDom" : "t<'row dt-wrapper'<'col-sm-6'i><'dt-row dt-bottom-row'<'row'<'col-sm-6'i><'col-sm-6 text-right'>>",
-			"oLanguage" : {
-				"sSearch" : "Search all columns:"
-			},
-			"bSortCellsTop" : true
-		});		
+		// var oTable = $('#datatable_fixed_column').dataTable({
+		// 	"sDom" : "<'dt-top-row'><'dt-wrapper't><'dt-row dt-bottom-row'<'row'<'col-sm-6'i><'col-sm-6 text-right'p>>",
+		// 	//"sDom" : "t<'row dt-wrapper'<'col-sm-6'i><'dt-row dt-bottom-row'<'row'<'col-sm-6'i><'col-sm-6 text-right'>>",
+		// 	"oLanguage" : {
+		// 		"sSearch" : "Search all columns:"
+		// 	},
+		// 	"bSortCellsTop" : true
+		// });		
 		
 
 

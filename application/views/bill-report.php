@@ -282,6 +282,33 @@
 
 	}
 
+	$(document).ready(function(){
+
+		var date1 = new Date();
+        date1.setDate(date1.getDate()-6)
+        $("#period-start").datepicker("setDate", date1);
+        $("#period-end").datepicker().datepicker("setDate", new Date());        
+        $("#period").val("day");
+
+        var periodstart			= $('#period-start').val();
+		var periodend			= $('#period-end').val();
+		var period				= $('#period').val();
+		var datastring			= "periodstart="+periodstart+"&periodend="+periodend+"&period="+period; 
+		$('#content').css({opacity : '0.5'});
+
+		$.ajax({
+			type:"POST",
+			url:"<?=site_url()?>/manage/bill_report_by_date",
+			data:datastring,
+			success: function(msg){
+					//alert(msg);
+					$('#report-area').html(msg);
+					$('#content').css({opacity : '1'});
+				}
+		});
+
+	});
+
 	function runDataTables() {
 
 		/*
