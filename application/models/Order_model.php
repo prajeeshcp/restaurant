@@ -165,4 +165,91 @@ class Order_model extends CI_Model {
 		$this->db->where('date(bill.created_at) <=', $endDate);
 		return $this->db->get()->row();
 	}
+
+	#get report of tax
+	function tax_report($startDate = NULL, $endDate = NULL, $timeperiod = NULL) {
+		if ($timeperiod == 'day')  {
+			$this->db->select('DATE_FORMAT(bill.created_at, "%d %b %Y") datetime, COUNT(bill.entity_id) tax_count, SUM(bill.tax_amount) grand_total_tax');
+		} else if($timeperiod == 'month') {
+			$this->db->select('DATE_FORMAT(bill.created_at, "%b %Y") datetime, COUNT(bill.entity_id) tax_count, SUM(bill.tax_amount) grand_total_tax');
+		} else {
+			$this->db->select('DATE_FORMAT(bill.created_at, "%Y") datetime, COUNT(bill.entity_id) tax_count, SUM(bill.tax_amount) grand_total_tax');
+		}
+		$this->db->from('bill_entity bill');
+		$this->db->where('date(bill.created_at) >=', $startDate);
+		$this->db->where('date(bill.created_at) <=', $endDate);
+		if ($timeperiod == 'day')  {
+			$this->db->group_by('weekday(bill.created_at)');
+		} else if ($timeperiod == 'day') {
+			$this->db->group_by('month(bill.created_at)');
+		} else {
+			$this->db->group_by('year(bill.created_at)');
+		}
+		return $this->db->get()->result_array();
+	}
+	#total tax report
+	function total_tax_report($startDate = NULL, $endDate = NULL) {
+		$this->db->select('COUNT(bill.entity_id) tax_count, SUM(bill.tax_amount) grand_total_tax');
+		$this->db->from('bill_entity bill');
+		$this->db->where('date(bill.created_at) >=', $startDate);
+		$this->db->where('date(bill.created_at) <=', $endDate);
+		return $this->db->get()->row();
+	}
+
+	#get report of order
+	function order_report($startDate = NULL, $endDate = NULL, $timeperiod = NULL) {
+		if ($timeperiod == 'day')  {
+			$this->db->select('DATE_FORMAT(order.updated_at, "%d %b %Y") datetime, COUNT(order.entity_id) order_count, SUM(order.total_paid) grand_total_order');
+		} else if($timeperiod == 'month') {
+			$this->db->select('DATE_FORMAT(order.updated_at, "%b %Y") datetime, COUNT(order.entity_id) order_count, SUM(order.total_paid) grand_total_order');
+		} else {
+			$this->db->select('DATE_FORMAT(order.updated_at, "%Y") datetime, COUNT(order.entity_id) order_count, SUM(order.total_paid) grand_total_order');
+		}
+		$this->db->from('order_entity order');
+		$this->db->where('date(order.updated_at) >=', $startDate);
+		$this->db->where('date(order.updated_at) <=', $endDate);
+		if ($timeperiod == 'day')  {
+			$this->db->group_by('weekday(order.updated_at)');
+		} else if ($timeperiod == 'day') {
+			$this->db->group_by('month(order.updated_at)');
+		} else {
+			$this->db->group_by('year(order.updated_at)');
+		}
+
+		$result['order_report'] =  $this->db->get()->result_array();
+
+
+		if ($timeperiod == 'day')  {
+			$this->db->select('DATE_FORMAT(order.updated_at, "%d %b %Y") datetime, COUNT(order.total_paid) not_paid_count');
+		} else if($timeperiod == 'month') {
+			$this->db->select('DATE_FORMAT(order.updated_at, "%b %Y") datetime, COUNT(order.total_paid) not_paid_count');
+		} else {
+			$this->db->select('DATE_FORMAT(order.updated_at, "%Y") datetime, COUNT(order.total_paid) not_paid_count');
+		}
+		$this->db->from('order_entity order');
+		$this->db->where('date(order.updated_at) >=', $startDate);
+		$this->db->where('date(order.updated_at) <=', $endDate);
+		$this->db->where('order.total_paid <=', 0.00);
+		if ($timeperiod == 'day')  {
+			$this->db->group_by('weekday(order.updated_at)');
+		} else if ($timeperiod == 'day') {
+			$this->db->group_by('month(order.updated_at)');
+		} else {
+			$this->db->group_by('year(order.updated_at)');
+		}
+
+		$result['order_not_paid'] = $this->db->get()->result_array();
+
+		return $result;
+
+
+	}
+	#total order report
+	function total_order_report($startDate = NULL, $endDate = NULL) {
+		$this->db->select('COUNT(order.entity_id) order_count, SUM(order.total_paid) grand_total_order');
+		$this->db->from('order_entity order');
+		$this->db->where('date(order.updated_at) >=', $startDate);
+		$this->db->where('date(order.updated_at) <=', $endDate);
+		return $this->db->get()->row();
+	}
 }

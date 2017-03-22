@@ -1242,7 +1242,7 @@ class Manage extends Cpanel_Controller
 		$this->render('invoice');
 	}
 	
-	#ajax call for list reports
+	#ajax call for list bill report
 	function bill_report_by_date() {
 		 $periodStart							= $this->input->post('periodstart', true);
 		 $periodEnd								= $this->input->post('periodend', true);
@@ -1253,4 +1253,39 @@ class Manage extends Cpanel_Controller
 		$this->data['total_bill']				= $totalBill;
 		$this->render('ajax/bill-report');
 	}	
+
+	#tax report
+	function tax_report() {
+		$this->render('tax-report');
+	}
+	#ajax call for list tax reports
+	function tax_report_by_date() {
+		 $periodStart							= $this->input->post('periodstart', true);
+		 $periodEnd								= $this->input->post('periodend', true);
+		 $period								= $this->input->post('period', true);
+		 $reportDetails							= $this->order_model->tax_report($periodStart, $periodEnd, $period);
+		 $totalTax								= $this->order_model->total_tax_report($periodStart, $periodEnd);
+		$this->data['report_details']			= $reportDetails;
+		$this->data['total_tax']				= $totalTax;
+		$this->render('ajax/tax-report');
+	}	
+
+	#order report
+	function order_report() {
+		$this->render('order-report');
+	}
+	#ajax call for list order reports
+	function order_report_by_date() {
+		 $periodStart							= $this->input->post('periodstart', true);
+		 $periodEnd								= $this->input->post('periodend', true);
+		 $period								= $this->input->post('period', true);
+		 $reportDetails							= $this->order_model->order_report($periodStart, $periodEnd, $period);
+		 $totalOrder								= $this->order_model->total_order_report($periodStart, $periodEnd);
+		 // echo "<pre>";
+		 // print_r($reportDetails);
+		 // die();
+		$this->data['report_details']			= $reportDetails;
+		$this->data['total_order']				= $totalOrder;
+		$this->render('ajax/order-report');
+	}
 }

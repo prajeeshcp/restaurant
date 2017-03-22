@@ -78,11 +78,11 @@
 							<li class="<?=($selected == 'billreport') ? 'active' : ''?>">
 								<a href="<?=site_url('manage/bill_report')?>">Bill</a>
 							</li>
-                             <li class="">
-								<a href="">Tax</a>
+                             <li class="<?=($selected == 'taxreport') ? 'active' : ''?>">
+								<a href="<?=site_url('manage/tax_report')?>">Tax</a>
 							</li>
-                             <li class="">
-								<a href="">Orders</a>
+                             <li class="<?=($selected == 'orderreport') ? 'active' : ''?>">
+								<a href="<?=site_url('manage/order_report')?>">Orders</a>
 							</li>
                             <li class="">
 								<a href="">Table Orders</a>
