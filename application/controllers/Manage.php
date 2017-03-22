@@ -1155,7 +1155,7 @@ class Manage extends Cpanel_Controller
 	
 	#manage processing and pending orders
 	function manage_pending_order($orderId = NULL){
-	if ($orderId) {
+	if ($orderId) { 
 		$loggedUser 				= $this->ion_auth->user()->row();
 		$getOrder					= _DB_get_record($this->tables['order_entity'], array('entity_id' => $orderId));
 		$tableId					= $getOrder['table_id'];
@@ -1170,7 +1170,9 @@ class Manage extends Cpanel_Controller
 		$this->data['pending_kot']	= _DB_get_count($this->tables['kot_entity_items'], array('kot_id' => $kotDtil['entity_id'], 'is_kot' => 0)); 
 		if ($tableId) {	
 			$checkOrder				= $this->order_model->check_table($tableId, $loggedUser->id);
-			if (!empty($checkOrder)) {
+			if (!empty($checkOrder) && ($checkOrder->user_id !== $loggedUser->id) && ($tableId == $checkOrder->table_id)) {
+				$this->session->set_flashdata('message', "Oops! Something went wrong. Try again later.");
+				$this->session->set_flashdata('message_type', 'danger');
 				redirect('manage/index', 'refresh');
 			} else {
 				//check whether pending order is there or what
