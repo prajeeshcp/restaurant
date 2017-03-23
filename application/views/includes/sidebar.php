@@ -84,15 +84,16 @@
                              <li class="<?=($selected == 'orderreport') ? 'active' : ''?>">
 								<a href="<?=site_url('manage/order_report')?>">Orders</a>
 							</li>
-                            <li class="">
-								<a href="">Table Orders</a>
+                            <li class="<?=($selected == 'tableorderreport') ? 'active' : ''?>">
+								<a href="<?=site_url('manage/table_order_report')?>">Table Orders</a>
 							</li>
-                            <li class="">
-								<a href="">Parcel Orders</a>
+                            <li class="<?=($selected == 'parcelorderreport') ? 'active' : ''?>">
+								<a href="<?=site_url('manage/parcel_order_report')?>">Parcel Orders</a>
 							</li>
-                            <li class="">
-								<a href="">KOT</a>
+							<li class="<?=($selected == 'salesreport') ? 'active' : ''?>">
+								<a href="<?=site_url('manage/sales_report')?>">Sales</a>
 							</li>
+                            
 						</ul>
 					</li>
                     <li class="<?=($system) ? 'active' : ''?>">

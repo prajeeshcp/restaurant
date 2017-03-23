@@ -1280,12 +1280,71 @@ class Manage extends Cpanel_Controller
 		 $periodEnd								= $this->input->post('periodend', true);
 		 $period								= $this->input->post('period', true);
 		 $reportDetails							= $this->order_model->order_report($periodStart, $periodEnd, $period);
-		 $totalOrder								= $this->order_model->total_order_report($periodStart, $periodEnd);
+		 $totalOrder							= $this->order_model->total_order_report($periodStart, $periodEnd);
 		 // echo "<pre>";
 		 // print_r($reportDetails);
 		 // die();
 		$this->data['report_details']			= $reportDetails;
 		$this->data['total_order']				= $totalOrder;
 		$this->render('ajax/order-report');
+	}
+        
+        #parcel order report
+	function parcel_order_report() {
+		$this->render('parcel-order-report');
+	}
+	#ajax call for list parcel order reports
+	function parcel_order_report_by_date() {
+		 $periodStart							= $this->input->post('periodstart', true);
+		 $periodEnd								= $this->input->post('periodend', true);
+		 $period								= $this->input->post('period', true);
+		 $reportDetails							= $this->order_model->parcel_order_report($periodStart, $periodEnd, $period);
+		 $totalParcelOrder						= $this->order_model->total_parcel_order_report($periodStart, $periodEnd);
+		 // echo "<pre>";
+		 // print_r($reportDetails);
+		 // print_r($totalParcelOrder);
+
+		 // die();
+		$this->data['report_details']			= $reportDetails;
+		$this->data['total_parcel_order']		= $totalParcelOrder;
+		$this->render('ajax/parcel-order-report');
+	}
+        
+        #table order report
+	function table_order_report() {
+		$this->render('table-order-report');
+	}
+	#ajax call for list table order reports
+	function table_order_report_by_date() {
+		 $periodStart							= $this->input->post('periodstart', true);
+		 $periodEnd								= $this->input->post('periodend', true);
+		 $period								= $this->input->post('period', true);
+		 $reportDetails							= $this->order_model->table_order_report($periodStart, $periodEnd, $period);
+		 $totalTableOrder						= $this->order_model->total_table_order_report($periodStart, $periodEnd);
+		 // echo "<pre>";
+		 // print_r($reportDetails);
+		 // die();
+		$this->data['report_details']			= $reportDetails;
+		$this->data['total_table_order']		= $totalTableOrder;
+		$this->render('ajax/table-order-report');
+	}
+
+	#sales report
+	function sales_report() {
+		$this->render('sales-report');
+	}
+	#ajax call for list sales reports
+	function sales_report_by_date() {
+		 $periodStart							= $this->input->post('periodstart', true);
+		 $periodEnd								= $this->input->post('periodend', true);
+		 $period								= $this->input->post('period', true);
+		 $reportDetails							= $this->order_model->sales_report($periodStart, $periodEnd, $period);
+		 $totalSales							= $this->order_model->total_sales_report($periodStart, $periodEnd);
+		 // echo "<pre>";
+		 // print_r($reportDetails);
+		 // die();
+		$this->data['report_details']			= $reportDetails;
+		$this->data['total_sales_order']		= $totalSales;
+		$this->render('ajax/sales-report');
 	}
 }

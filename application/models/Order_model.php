@@ -252,4 +252,223 @@ class Order_model extends CI_Model {
 		$this->db->where('date(order.updated_at) <=', $endDate);
 		return $this->db->get()->row();
 	}
+        
+        #get report of parcel_order
+	function parcel_order_report($startDate = NULL, $endDate = NULL, $timeperiod = NULL) {
+		$this->db->distinct('order_items.order_id');
+		$this->db->select('order_items.order_id');
+		$this->db->from('order_entity_items order_items');
+		$this->db->where('order_items.order_type', 'Parcel');
+		$this->db->where('date(order_items.updated_at) >=', $startDate);
+		$this->db->where('date(order_items.updated_at) <=', $endDate);
+		$orderIdResult =  $this->db->get()->result_array();
+
+		$orderId = array();
+		foreach ($orderIdResult as $row) {
+			$orderId[] = $row['order_id'];
+		}
+
+		if ($timeperiod == 'day')  {
+			$this->db->select('DATE_FORMAT(order.updated_at, "%d %b %Y") datetime, COUNT(order.entity_id) parcel_order_count, SUM(order.total_paid) grand_total_parcel_order');
+		} else if($timeperiod == 'month') {
+			$this->db->select('DATE_FORMAT(order.updated_at, "%b %Y") datetime, COUNT(order.entity_id) parcel_order_count, SUM(order.total_paid) grand_total_parcel_order');
+		} else {
+			$this->db->select('DATE_FORMAT(order.updated_at, "%Y") datetime, COUNT(order.entity_id) parcel_order_count, SUM(order.total_paid) grand_total_parcel_order');
+		}
+		$this->db->from('order_entity order');		
+		$this->db->where('date(order.updated_at) >=', $startDate);
+		$this->db->where('date(order.updated_at) <=', $endDate);
+		if (!empty($orderId)) {			
+			$this->db->where_in('order.entity_id', $orderId);
+		} 
+		if ($timeperiod == 'day')  {
+			$this->db->group_by('weekday(order.updated_at)');
+		} else if ($timeperiod == 'day') {
+			$this->db->group_by('month(order.updated_at)');
+		} else {
+			$this->db->group_by('year(order.updated_at)');
+		}
+
+		$result['parcel_order_report'] =  $this->db->get()->result_array();
+
+
+		if ($timeperiod == 'day')  {
+			$this->db->select('DATE_FORMAT(order.updated_at, "%d %b %Y") datetime, COUNT(order.total_paid) not_paid_count');
+		} else if($timeperiod == 'month') {
+			$this->db->select('DATE_FORMAT(order.updated_at, "%b %Y") datetime, COUNT(order.total_paid) not_paid_count');
+		} else {
+			$this->db->select('DATE_FORMAT(order.updated_at, "%Y") datetime, COUNT(order.total_paid) not_paid_count');
+		}		
+		$this->db->from('order_entity order');		
+		$this->db->where('date(order.updated_at) >=', $startDate);
+		$this->db->where('date(order.updated_at) <=', $endDate);
+		$this->db->where('order.total_paid <=', 0.00);
+		if (!empty($orderId)) {			
+			$this->db->where_in('order.entity_id', $orderId);
+		} 
+		if ($timeperiod == 'day')  {
+			$this->db->group_by('weekday(order.updated_at)');
+		} else if ($timeperiod == 'day') {
+			$this->db->group_by('month(order.updated_at)');
+		} else {
+			$this->db->group_by('year(order.updated_at)');
+		}
+
+		$result['parcel_order_not_paid'] = $this->db->get()->result_array();
+
+		return $result;
+
+
+	}
+	#total parcel_order report
+	function total_parcel_order_report($startDate = NULL, $endDate = NULL) {
+		$this->db->distinct('order_items.order_id');
+		$this->db->select('order_items.order_id');
+		$this->db->from('order_entity_items order_items');
+		$this->db->where('order_items.order_type', 'Parcel');
+		$this->db->where('date(order_items.updated_at) >=', $startDate);
+		$this->db->where('date(order_items.updated_at) <=', $endDate);
+		$orderIdResult =  $this->db->get()->result_array();
+
+		$orderId = array();
+		foreach ($orderIdResult as $row) {
+			$orderId[] = $row['order_id'];
+		}
+
+
+		$this->db->select('COUNT(order.entity_id) parcel_order_count, SUM(order.total_paid) grand_total_parcel_order');
+		$this->db->from('order_entity order');		
+		$this->db->where('date(order.updated_at) >=', $startDate);
+		$this->db->where('date(order.updated_at) <=', $endDate);
+		if (!empty($orderId)) {			
+			$this->db->where_in('order.entity_id', $orderId);
+		} 
+		return $this->db->get()->row();
+	}
+        
+        #get report of table_order
+	function table_order_report($startDate = NULL, $endDate = NULL, $timeperiod = NULL) {
+
+		$this->db->distinct('order_items.order_id');
+		$this->db->select('order_items.order_id');
+		$this->db->from('order_entity_items order_items');
+		$this->db->where('order_items.order_type', 'Table');
+		$this->db->where('date(order_items.updated_at) >=', $startDate);
+		$this->db->where('date(order_items.updated_at) <=', $endDate);
+		$orderIdResult =  $this->db->get()->result_array();
+
+		$orderId = array();
+		foreach ($orderIdResult as $row) {
+			$orderId[] = $row['order_id'];
+		}		
+
+		if ($timeperiod == 'day')  {
+			$this->db->select('DATE_FORMAT(order.updated_at, "%d %b %Y") datetime, COUNT(order.entity_id) table_order_count, SUM(order.total_paid) grand_total_table_order');
+		} else if($timeperiod == 'month') {
+			$this->db->select('DATE_FORMAT(order.updated_at, "%b %Y") datetime, COUNT(order.entity_id) table_order_count, SUM(order.total_paid) grand_total_table_order');
+		} else {
+			$this->db->select('DATE_FORMAT(order.updated_at, "%Y") datetime, COUNT(order.entity_id) table_order_count, SUM(order.total_paid) grand_total_table_order');
+		}
+		$this->db->from('order_entity order');		
+		$this->db->where('date(order.updated_at) >=', $startDate);
+		$this->db->where('date(order.updated_at) <=', $endDate);		
+		if (!empty($orderId)) {			
+			$this->db->where_in('order.entity_id', $orderId);
+		} 
+
+		if ($timeperiod == 'day')  {
+			$this->db->group_by('weekday(order.updated_at)');
+		} else if ($timeperiod == 'day') {
+			$this->db->group_by('month(order.updated_at)');
+		} else {
+			$this->db->group_by('year(order.updated_at)');
+		}
+
+		$result['table_order_report'] =  $this->db->get()->result_array();		
+
+
+		if ($timeperiod == 'day')  {
+			$this->db->select('DATE_FORMAT(order.updated_at, "%d %b %Y") datetime, COUNT(order.total_paid) not_paid_count');
+		} else if($timeperiod == 'month') {
+			$this->db->select('DATE_FORMAT(order.updated_at, "%b %Y") datetime, COUNT(order.total_paid) not_paid_count');
+		} else {
+			$this->db->select('DATE_FORMAT(order.updated_at, "%Y") datetime, COUNT(order.total_paid) not_paid_count');
+		}		
+		$this->db->from('order_entity order');		
+		$this->db->where('date(order.updated_at) >=', $startDate);
+		$this->db->where('date(order.updated_at) <=', $endDate);
+		$this->db->where('order.total_paid <=', 0.00);
+		if (!empty($orderId)) {			
+			$this->db->where_in('order.entity_id', $orderId);
+		} 
+		if ($timeperiod == 'day')  {
+			$this->db->group_by('weekday(order.updated_at)');
+		} else if ($timeperiod == 'day') {
+			$this->db->group_by('month(order.updated_at)');
+		} else {
+			$this->db->group_by('year(order.updated_at)');
+		}
+
+		$result['table_order_not_paid'] = $this->db->get()->result_array();
+
+		return $result;
+
+
+	}
+	#total table_order report
+	function total_table_order_report($startDate = NULL, $endDate = NULL) {
+
+		$this->db->distinct('order_items.order_id');
+		$this->db->select('order_items.order_id');
+		$this->db->from('order_entity_items order_items');
+		$this->db->where('order_items.order_type', 'Table');
+		$this->db->where('date(order_items.updated_at) >=', $startDate);
+		$this->db->where('date(order_items.updated_at) <=', $endDate);
+		$orderIdResult =  $this->db->get()->result_array();
+
+		$orderId = array();
+		foreach ($orderIdResult as $row) {
+			$orderId[] = $row['order_id'];
+		}
+
+
+		$this->db->select('COUNT(order.entity_id) table_order_count, SUM(order.total_paid) grand_total_table_order');
+		$this->db->from('order_entity order');		
+		$this->db->where('date(order.updated_at) >=', $startDate);
+		$this->db->where('date(order.updated_at) <=', $endDate);
+		if (!empty($orderId)) {			
+			$this->db->where_in('order.entity_id', $orderId);
+		} 
+		return $this->db->get()->row();
+	}
+
+	#get report of sales
+	function sales_report($startDate = NULL, $endDate = NULL, $timeperiod = NULL) {
+		if ($timeperiod == 'day')  {
+			$this->db->select('DATE_FORMAT(bill.created_at, "%d %b %Y") datetime, COUNT(bill.entity_id) bill_count, ROUND(SUM(bill.grand_total)) grand_total_bill');
+		} else if($timeperiod == 'month') {
+			$this->db->select('DATE_FORMAT(bill.created_at, "%b %Y") datetime, COUNT(bill.entity_id) bill_count, ROUND(SUM(bill.grand_total)) grand_total_bill');
+		} else {
+			$this->db->select('DATE_FORMAT(bill.created_at, "%Y") datetime, COUNT(bill.entity_id) bill_count, ROUND(SUM(bill.grand_total)) grand_total_bill');
+		}
+		$this->db->from('bill_entity bill');
+		$this->db->where('date(bill.created_at) >=', $startDate);
+		$this->db->where('date(bill.created_at) <=', $endDate);
+		if ($timeperiod == 'day')  {
+			$this->db->group_by('weekday(bill.created_at)');
+		} else if ($timeperiod == 'day') {
+			$this->db->group_by('month(bill.created_at)');
+		} else {
+			$this->db->group_by('year(bill.created_at)');
+		}
+		return $this->db->get()->result_array();
+	}
+	#total sales report
+	function total_sales_report($startDate = NULL, $endDate = NULL) {
+		$this->db->select('COUNT(bill.entity_id) bill_count, ROUND(SUM(bill.grand_total)) grand_total_bill');
+		$this->db->from('bill_entity bill');
+		$this->db->where('date(bill.created_at) >=', $startDate);
+		$this->db->where('date(bill.created_at) <=', $endDate);
+		return $this->db->get()->row();
+	}
 }
