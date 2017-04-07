@@ -22,5 +22,6 @@ $config['tables']['kot_entity_items']    		= 'kot_entity_items';
 $config['tables']['bill_entity']    			= 'bill_entity';
 $config['tables']['bill_entity_items']    		= 'bill_entity_items';
 $config['tables']['order_status']				= 'order_status';
+$config['tables']['system_config']				= 'system_config';
 
 
