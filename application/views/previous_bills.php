@@ -50,6 +50,7 @@
 					            <div class="widget-body">
 										
 										<a class="btn btn-danger btn-lg" href="<?=site_url('manage/order_desk/1/parsel')?>">PARCEL ORDER</a>
+                                        <a class="btn btn-default pull-right" href="<?=site_url()?>"><i class="fa fa-backward"></i>&nbsp;&nbsp;&nbsp; Back</a>
 										<hr class="simple">
 					                    </div>
 								<div class="row">

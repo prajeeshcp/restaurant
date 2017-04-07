@@ -94,6 +94,9 @@
 								</div>
 
 								<div class="col-sm-8 text-align-right">
+                                 <div class="btn-group">
+										<a href="<?=site_url('manage/previous_bill')?>"  class="btn btn-sm btn-default"><i class="fa fa-backward"></i>&nbsp;&nbsp;&nbsp;Back </a>
+									</div>
                                 <div class="btn-group">
 										<a href="javascript:void(0)" id="print-bill" class="btn btn-sm btn-warning"> <i class="fa fa-print"></i> Print </a>
 									</div>
@@ -112,7 +115,7 @@
 
 						</div>
 
-						<div class="padding-10" id="bill-area">
+						<div class="padding-10" >
 							<br>
 							<div class="pull-left">
 								<img src="<?=site_url('assets/img/restaurent.png')?>" style="height:70px" alt="bill icon">
@@ -184,7 +187,7 @@
 									<?php } endif;?>
 									<tr>
 										<td colspan="4">TAX</td>
-										<td><strong>---</strong></td>
+										<td><strong><?=$billDtil['tax_percent']?></strong></td>
 									</tr>
 								</tbody>
 							</table>
@@ -234,6 +237,116 @@
 
 		</div>
 		<!-- END MAIN PANEL -->
+        
+       <!-- BILL AREA START --> 
+        
+        <div style="padding:10px; display:none" id="bill-area">
+							<br>
+							<div  style="float:left" class="pull-left">
+								<img src="<?=site_url('assets/img/restaurent.png')?>" style="height:70px" alt="bill icon">
+							</div>
+							
+							<div style="clear:both" class="clearfix"></div>
+							<br>
+							<div class="row" style="width:100% !important" >
+								<div class="col-sm-9" style="width:70% !important; float:left !important">
+									<h4 class="semi-bold">Order No. #<?=$orderDtil['increment_id']?></h4>
+									<address>
+										<strong>Table No. #<?=$tableDtil['table_number']?></strong>
+										<br>
+										Maya International,
+										<br>
+										Mangalore, pin 431464
+										<br>
+										<abbr title="Phone">P:</abbr> (467) 143-4317
+									</address>
+								</div>
+								<div class="col-sm-3" style="width:30% !important; float:left !important">
+									<div>
+										<div class="font-md">
+											<strong>BILL NO :</strong>
+											<span class="pull-right"> #<?=$billDtil['increment_id']?> </span>
+										</div>
+
+									</div>
+									<div>
+										<div class="font-md">
+											<strong>BILL DATE :</strong>
+											<span class="pull-right"> <i class="fa fa-calendar"></i> <?=date('d/m/Y', strtotime($billDtil['created_at']))?> </span>
+										</div>
+
+									</div>
+									<br>
+									<div style="box-sizing: border-box; border: 1px solid #555 !important;background: #fbfbfb none repeat scroll 0 0; border: 1px solid #ddd;box-shadow: 0 1px 1px #ececec; position: relative;color: #fff !important; background-color: #404040 !important; border-radius: 2px;padding: 9px;">
+										<div class="fa-lg">
+											Total Due :
+											<span class="pull-right"> RS <?=$billDtil['grand_total']?>** </span>
+										</div>
+
+									</div>
+									<br>
+									<br>
+								</div>
+							</div>
+                            <div style="clear:both" class="clearfix"></div>
+                            <br /><br />
+							<table style="margin-bottom: 18px;width: 100%;border-collapse: collapse;border-spacing: 0;">
+								<thead>
+									<tr>
+										<th class="text-center">QTY</th>
+										<th>ITEM</th>
+										<th>DESCRIPTION</th>
+										<th>PRICE</th>
+										<th>SUBTOTAL</th>
+									</tr>
+								</thead>
+								<tbody>
+                                <?php if (!empty($billItems)) : foreach ($billItems as $items) { ?>
+									<tr>
+										<td style="text-align:center"><strong><?=$items['qty_ordered']?></strong></td>
+										<td style="text-align:center"><a href="javascript:void(0);"><?=$items['name']?></a></td>
+										<td style="text-align:center"><?=$items['order_type']?></td>
+										<td style="text-align:center"><?=$items['price_incld_tax']?></td>
+
+										<td style="text-align:center"><?=$items['row_total_incld_tax']?></td>
+									</tr>
+									<?php } endif;?>
+                                    <br /> <br /> <br />
+									<tr style="margin-top:20px">
+										<td colspan="4">TAX</td>
+										<td><strong><?=$billDtil['tax_percent']?></strong></td>
+									</tr>
+								</tbody>
+							</table>
+
+							<div class="invoice-footer" style="box-sizing: border-box;">
+
+								<div class="row" style="width:100%;">
+
+									<div class="col-sm-7" style="width:65% !important; float:left !important;">
+										&nbsp;&nbsp;&nbsp;
+									</div>
+									<div class="col-sm-5" style="width:30% !important; float:left !important;">
+										<div style="float:right">
+											<h3><strong>Total: <span class="text-success">RS <?=$billDtil['grand_total']?>**</span></strong></h3>
+										</div>
+									</div>
+
+								</div>
+								 <div style="clear:both" class="clearfix"></div>
+								<div class="row">
+									<div class="col-sm-12">
+										<p class="note">**To avoid any excess panelty charges, please make payments within 30 days of the due date. There will be a 2% interest charge per month on all late invoices.</p>
+									</div>
+								</div>
+
+							</div>
+						</div>
+        
+        
+        
+        
+        <!-- BILL AREA END -->
 
 		<!-- SHORTCUT AREA : With large tiles (activated via clicking user name tag)
 		Note: These tiles are completely responsive,

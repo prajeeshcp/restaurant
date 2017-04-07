@@ -168,7 +168,8 @@
 				<header>
 					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
 					<h2>Tax Classes</h2>
-			<a href="<?=site_url('manage/add_tax')?>" class="btn btn-success btn-sm pull-right">Add Tax Class</a>
+                    &nbsp;&nbsp;&nbsp;<a href="javascript:;" data-toggle="modal" data-target="#set-system-tax" class="btn btn-danger btn-sm ">System Tax</a>&nbsp;&nbsp;&nbsp;
+			<a href="<?=site_url('manage/add_tax')?>" class="btn btn-success btn-sm pull-right">Add Tax Class</a>&nbsp;&nbsp;&nbsp;
 				</header>
 
 				<!-- widget div-->
@@ -267,6 +268,68 @@
 			<!-- END MAIN CONTENT -->
 
 		</div>
+        
+        
+        <div class="modal fade" id="set-system-tax" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+					&times;
+				</button>
+				<h4 class="modal-title" id="myModalLabel">Set system tax class</h4>
+			</div>
+
+			<div class="modal-body" id="myModalEditBody">
+				<div class="row" id="changePasswordMessages" style="display:none">
+					<div class="col-lg-12 col-sm-offset-12">
+		            	<div class="alert alert-danger" ></div>
+		          	</div>					
+				</div>
+				
+				<!-- <form id="registerForm"> -->				
+				<div class="row">
+					<div class="col-md-6">
+						<div class="form-group">
+							<label class="modal-title">Select Tax Class</label>
+						</div>
+					</div>
+                    <?php $tax_class	= _DB_data($this->tables['tax_entity'], array('status' => 1), null, null, array('tax_class', 'asc')); 
+						  $applay_tax	= _DB_get_record($this->tables['system_config'], array('config_code' => 'system-tax'));
+					?>
+					<div class="col-md-6">
+						<div class="form-group">
+							<select class="form-control" name="main_tax" id="main_tax" required >
+                            	<option value="">SELECT CLASS</option>
+                                <?php if (!empty($tax_class)) {
+										foreach ($tax_class as $tax) {
+									 ?>
+                                <option value="<?=stripslashes($tax['entity_id'])?>" <?=($applay_tax['value'] ==$tax['entity_id']) ? 'selected' : ''?>><?=stripslashes($tax['tax_class'])?></option>
+                                <?php } }  ?>
+                            </select>
+						</div>
+					</div>
+					
+				</div>
+                <div class="row">
+                	<div class="col-lg-12"><p>This is the base tax which will get added to the grand total amount. This tax will get added once after calculate the discount.</p></div>
+                </div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">
+					Cancel
+				</button>
+				<button type="button" class="btn btn-primary" id="change-sytem-tax" >
+					Save Tax
+				</button>
+			</div>
+				
+			<!-- </form> -->
+
+				
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div>
 		<!-- END MAIN PANEL -->
 
 		<!-- SHORTCUT AREA : With large tiles (activated via clicking user name tag)
@@ -480,6 +543,40 @@
 		});
 	<?php endif; ?>
 </script> 
+<script type="application/javascript" language="javascript">
+	$('#change-sytem-tax').click(function(){
+			var tax_class		= $('#main_tax').find(":selected").val();
+			
+			if (tax_class) {
+			var dataString    	= "tax_class="+tax_class;
+			$.ajax({ 
+				type : "POST",
+				url : "<?=site_url()?>manage/manage_system_tax",
+				data : dataString,
+				dataType : 'html',
+				cache : false, // (warning: this will cause a timestamp and will call the request twice)
+				beforeSend : function() {
+			// cog placed
+					$('#content').css({opacity : '0.5'});
+						// scroll up
+						$("html, body").animate({
+							scrollTop : 0
+						}, "fast");
+				},
+				success : function(data) { 
+					alert(data);
+					//$('#kot-details').html(data);
+					$('#content').css({opacity : '1'});
+				},
+				error : function(xhr, ajaxOptions, thrownError) {
+					container.html('<h4 style="margin-top:10px; display:block; text-align:left"><i class="fa fa-warning txt-color-orangeDark"></i> Error 404! Page not found.</h4> <br>Or you are running this page from your hard drive. Please make sure for all ajax calls your page needs to be hosted in a server');
+				},
+				async : false
+			});
+		}
+		
+		});
+</script>
 	</body>
 
 </html>
