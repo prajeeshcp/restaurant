@@ -1124,7 +1124,7 @@ class Manage extends Cpanel_Controller
 			 } else {
 			 	$incrementId			= 10001;
 			 }
-				$insertBill				= _DB_insert($this->tables['bill_entity'], array('status' => 'closed', 'order_id' => $orderId, 'user_id' => $user->id, 'increment_id' => $incrementId, 'grand_total' => $orderDetails['grand_total'], 'subtotal' => $orderDetails['subtotal'], 'tax_amount' => $orderDetails['tax_amount'], 'total_paid' => $orderDetails['grand_total'], 'discount_amount' => $orderDetails['discount_amount'], 'delivery_charge' => $orderDetails['delivery_charge'], 'total_qty_ordered' => $orderDetails['total_qty_ordered'], 'created_at' => $dateTime, ' 	updated_at' => $dateTime));
+				$insertBill				= _DB_insert($this->tables['bill_entity'], array('status' => 'closed', 'order_id' => $orderId, 'user_id' => $user->id, 'increment_id' => $incrementId, 'grand_total' => $orderDetails['grand_total'], 'subtotal' => $orderDetails['subtotal'], 'tax_amount' => $orderDetails['tax_amount'], 'tax_percent' => $orderDetails['tax_percent'], 'total_paid' => $orderDetails['grand_total'], 'discount_amount' => $orderDetails['discount_amount'], 'delivery_charge' => $orderDetails['delivery_charge'], 'total_qty_ordered' => $orderDetails['total_qty_ordered'], 'created_at' => $dateTime, ' 	updated_at' => $dateTime));
 				if ($insertBill) {
 					$billId				= _DB_insert_id();		
 					foreach ($orderitems as $items) {
@@ -1155,7 +1155,7 @@ class Manage extends Cpanel_Controller
 	
 	#manage processing and pending orders
 	function manage_pending_order($orderId = NULL){
-	if ($orderId) {
+	if ($orderId) { 
 		$loggedUser 				= $this->ion_auth->user()->row();
 		$getOrder					= _DB_get_record($this->tables['order_entity'], array('entity_id' => $orderId));
 		$tableId					= $getOrder['table_id'];
@@ -1170,7 +1170,9 @@ class Manage extends Cpanel_Controller
 		$this->data['pending_kot']	= _DB_get_count($this->tables['kot_entity_items'], array('kot_id' => $kotDtil['entity_id'], 'is_kot' => 0)); 
 		if ($tableId) {	
 			$checkOrder				= $this->order_model->check_table($tableId, $loggedUser->id);
-			if (!empty($checkOrder)) {
+			if (!empty($checkOrder) && ($checkOrder->user_id !== $loggedUser->id) && ($tableId == $checkOrder->table_id)) {
+				$this->session->set_flashdata('message', "Oops! Something went wrong. Try again later.");
+				$this->session->set_flashdata('message_type', 'danger');
 				redirect('manage/index', 'refresh');
 			} else {
 				//check whether pending order is there or what
@@ -1201,9 +1203,26 @@ class Manage extends Cpanel_Controller
 		$dateTime					= date('Y-m-d H:i:s');
 		if ($orderId) {
 			$getOrder				= _DB_get_record($this->tables['order_entity'], array('entity_id' => $orderId, 'is_bill' => 0));
-			$getOrderItem			= _DB_data($this->tables['order_entity_items'], array('order_id' => $orderId, 'is_kot' => 1));	
+			$getOrderItem			= _DB_data($this->tables['order_entity_items'], array('order_id' => $orderId, 'is_kot' => 1));
+			#check whether system tax is there or not. if it is there then add that percent to grand total
+			$systemTax				= 	_DB_get_record($this->tables['system_config'], array('config_code' => 'system-tax'));
+			if (!empty($systemTax) && $systemTax['value'] != 1) {
+				$system_tax_per		= _DB_get_record($this->tables['tax_entity'], array('entity_id' => $systemTax['value']));
+				if ($system_tax_per['tax_rate'] > 0) {
+				$percentAmount		= ($system_tax_per['tax_rate']/100)*$getOrder['grand_total'];
+				} else {
+					$percentAmount	= 0;
+				}
+				$tax_percent		= $system_tax_per['tax_rate'];
+				$grand_total		= $getOrder['grand_total']+$percentAmount;
+			} else {
+				$grand_total		= $getOrder['grand_total'];
+				$tax_percent		= 0;
+				
+				$percentAmount		= $getOrder['tax_amount'];
+			}
 			if (!empty($getOrder) && !empty($getOrderItem)) { 
-				$updateOrder		= _DB_update($this->tables['order_entity'], array('status' => 'complete' , 'is_bill' => 1, 'updated_at' => $dateTime), array('entity_id' => $orderId));
+				$updateOrder		= _DB_update($this->tables['order_entity'], array('status' => 'complete' , 'is_bill' => 1, 'grand_total' => $grand_total, 'tax_amount' => $percentAmount, 'tax_percent' => $tax_percent,  'updated_at' => $dateTime), array('entity_id' => $orderId));
 				$updateKot			= _DB_update($this->tables['kot_entity'], array('status' => 'complete', 'Updated_at' => $dateTime), array('order_id' => $orderId));
 				if ($updateOrder && $updateKot) {
 					$this->session->set_flashdata('message', "ORDER ".$getOrder['increment_id']." has been compleated");
@@ -1288,6 +1307,7 @@ class Manage extends Cpanel_Controller
 		$this->data['total_order']				= $totalOrder;
 		$this->render('ajax/order-report');
 	}
+
         
         #parcel order report
 	function parcel_order_report() {
@@ -1347,5 +1367,19 @@ class Manage extends Cpanel_Controller
 		$this->data['report_details']			= $reportDetails;
 		$this->data['total_sales_order']		= $totalSales;
 		$this->render('ajax/sales-report');
+	}
+	
+	
+	#ajax function for manage sytem tax
+	function manage_system_tax() {
+		 $taxClass								= $this->input->post('tax_class', true);
+		 if ($taxClass) {
+			 $updateTax							= _DB_update($this->tables['system_config'], array('value' => $taxClass), array('config_code' => 'system-tax'));
+			 if ($updateTax) {
+				 echo "Tax class has been updated successfully";
+			 } else {
+			 	echo "Ooops! Something went wrong try again later.";
+			 }
+		}
 	}
 }

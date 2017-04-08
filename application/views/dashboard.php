@@ -400,7 +400,7 @@
 					<!-- widget content -->
 					<div class="widget-body no-padding">
 
-						<table id="datatable_fixed_column" class="table table-striped table-bordered smart-form">
+						<table id="datatable_fixed_column" class="table table-striped table-bordered">
 							<thead>
 								<tr>
 									<th>Order No</th>
@@ -421,11 +421,11 @@
 		                               <?=$processing['increment_id']?>
 		                            </td>
                                     <td><?=$tableDtl['table_number']?></td>
-                                     <td><span class="label label-<?=($processing['status'] == 'pending') ? 'danger' : 'success'?>"><?=ucfirst($processing['status'])?></span></td>
+                                     <td><span class="label  label-<?=($processing['status'] == 'pending') ? 'danger' : 'success'?>"><?=ucfirst($processing['status'])?></span></td>
                                      <td>
 		                               <?=$processing['grand_total']?>
 		                            </td>
-                                    <td id="processing_order_<?= $processing['entity_id']?>"><a href="<?=site_url('manage/create_bill/'.$processing['entity_id'])?>" class="btn btn-warning" ><i class="fa fa-shopping-cart"></i> Create Bill</a></td>
+                                    <td id="processing_order_<?= $processing['entity_id']?>"><a href="<?=site_url('manage/create_bill/'.$processing['entity_id'])?>" class="btn btn-warning btn-lg btn-block" ><i class="fa fa-shopping-cart"></i> Create Bill</a></td>
 		                        </tr>
                             <?php } } ?>
 							</tbody>

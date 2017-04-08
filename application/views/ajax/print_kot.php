@@ -6,7 +6,7 @@ if ($kot_details[0]["table_id"]) {
 	$tableName			= "Not Mentioned";
 }?>
 <div id="print_kot_div" >
-    
+    <table border="2">
         <tr style="text-align:center">
             <th width="40%">KOT :<?=$kot_details[0]["increment_id"]?></th>
             
@@ -39,6 +39,6 @@ if ($kot_details[0]["table_id"]) {
         <?php } }
          ?>
 
-    
+    </table>
     
 </div>

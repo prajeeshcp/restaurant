@@ -72,10 +72,10 @@
                     <?=$order_detail['grand_total']?>
                     </strong></td>
                 </tr>
-                <tr>
+                <!--<tr>
                   <td colspan="4">TAX</td>
                   <td><strong>---</strong></td>
-                </tr>
+                </tr>-->
               </tbody>
             </table>
             <div class="invoice-footer">
