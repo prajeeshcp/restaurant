@@ -444,31 +444,81 @@ class Order_model extends CI_Model {
 
 	#get report of sales
 	function sales_report($startDate = NULL, $endDate = NULL, $timeperiod = NULL) {
+
 		if ($timeperiod == 'day')  {
-			$this->db->select('DATE_FORMAT(bill.created_at, "%d %b %Y") datetime, COUNT(bill.entity_id) bill_count, ROUND(SUM(bill.grand_total)) grand_total_bill');
+			$this->db->select('DATE_FORMAT(bill_items.created_at, "%d %b %Y") datetime');
 		} else if($timeperiod == 'month') {
-			$this->db->select('DATE_FORMAT(bill.created_at, "%b %Y") datetime, COUNT(bill.entity_id) bill_count, ROUND(SUM(bill.grand_total)) grand_total_bill');
+			$this->db->select('DATE_FORMAT(bill_items.created_at, "%b %Y") datetime');
 		} else {
-			$this->db->select('DATE_FORMAT(bill.created_at, "%Y") datetime, COUNT(bill.entity_id) bill_count, ROUND(SUM(bill.grand_total)) grand_total_bill');
+			$this->db->select('DATE_FORMAT(bill_items.created_at, "%Y") datetime');
 		}
-		$this->db->from('bill_entity bill');
-		$this->db->where('date(bill.created_at) >=', $startDate);
-		$this->db->where('date(bill.created_at) <=', $endDate);
+		$this->db->from('bill_entity_items bill_items');
+		$this->db->where('date(bill_items.created_at) >=', $startDate);
+		$this->db->where('date(bill_items.created_at) <=', $endDate);
 		if ($timeperiod == 'day')  {
-			$this->db->group_by('weekday(bill.created_at)');
+			$this->db->group_by('weekday(bill_items.created_at)');
 		} else if ($timeperiod == 'day') {
-			$this->db->group_by('month(bill.created_at)');
+			$this->db->group_by('month(bill_items.created_at)');
 		} else {
-			$this->db->group_by('year(bill.created_at)');
+			$this->db->group_by('year(bill_items.created_at)');
 		}
-		return $this->db->get()->result_array();
+		$result['sales_dates'] = $this->db->get()->result_array();
+
+
+		if ($timeperiod == 'day')  {
+			$this->db->select('DATE_FORMAT(bill_items.created_at, "%d %b %Y") datetime, bill_items.name name' );
+		} else if($timeperiod == 'month') {
+			$this->db->select('DATE_FORMAT(bill_items.created_at, "%b %Y") datetime, bill_items.name name');
+		} else {
+			$this->db->select('DATE_FORMAT(bill_items.created_at, "%Y") datetime, bill_items.name name');
+		}
+		$this->db->from('bill_entity_items bill_items');
+		$this->db->where('date(bill_items.created_at) >=', $startDate);
+		$this->db->where('date(bill_items.created_at) <=', $endDate);
+		$this->db->group_by('bill_items.name');
+		
+		$result['sales_names'] = $this->db->get()->result_array();
+
+		
+		$this->db->select('ROUND(SUM(bill_items.row_total)) row_total, ROUND(SUM(bill_items.tax_amount)) tax_amount_row_total, bill_items.name name');	
+		$this->db->from('bill_entity_items bill_items');
+		$this->db->where('date(bill_items.created_at) >=', $startDate);
+		$this->db->where('date(bill_items.created_at) <=', $endDate);
+		$this->db->group_by('bill_items.name');
+		
+		$result['sales_row_total'] = $this->db->get()->result_array();
+
+
+		if ($timeperiod == 'day')  {
+			$this->db->select('DATE_FORMAT(bill_items.created_at, "%d %b %Y") datetime, COUNT(bill_items.item_id) bill_items_count, ROUND(SUM(bill_items.row_total)) row_total_bill_items, ROUND(SUM(bill_items.tax_amount)) tax_amount_bill_items, ROUND(SUM(bill_items.row_total_incld_tax)) grand_total_bill_items, bill_items.name name');
+		} else if($timeperiod == 'month') {
+			$this->db->select('DATE_FORMAT(bill_items.created_at, "%b %Y") datetime, COUNT(bill_items.item_id) bill_items_count, ROUND(SUM(bill_items.row_total)) row_total_bill_items, ROUND(SUM(bill_items.tax_amount)) tax_amount_bill_items, ROUND(SUM(bill_items.row_total_incld_tax)) grand_total_bill_items, bill_items.name name');
+		} else {
+			$this->db->select('DATE_FORMAT(bill_items.created_at, "%Y") datetime, COUNT(bill_items.item_id) bill_items_count, ROUND(SUM(bill_items.row_total)) row_total_bill_items, ROUND(SUM(bill_items.tax_amount)) tax_amount_bill_items, ROUND(SUM(bill_items.row_total_incld_tax)) grand_total_bill_items, bill_items.name name');
+		}
+		$this->db->from('bill_entity_items bill_items');
+		$this->db->where('date(bill_items.created_at) >=', $startDate);
+		$this->db->where('date(bill_items.created_at) <=', $endDate);
+		if ($timeperiod == 'day')  {
+			$this->db->group_by('weekday(bill_items.created_at)');
+			$this->db->group_by('bill_items.name');
+		} else if ($timeperiod == 'day') {
+			$this->db->group_by('month(bill_items.created_at)');
+			$this->db->group_by('bill_items.name');
+		} else {
+			$this->db->group_by('year(bill_items.created_at)');
+			$this->db->group_by('bill_items.name');
+		}
+		$result['sales_report'] = $this->db->get()->result_array();
+		
+		return $result;
 	}
 	#total sales report
 	function total_sales_report($startDate = NULL, $endDate = NULL) {
-		$this->db->select('COUNT(bill.entity_id) bill_count, ROUND(SUM(bill.grand_total)) grand_total_bill');
-		$this->db->from('bill_entity bill');
-		$this->db->where('date(bill.created_at) >=', $startDate);
-		$this->db->where('date(bill.created_at) <=', $endDate);
+		$this->db->select('COUNT(bill_items.item_id) bill_items_count, ROUND(SUM(bill_items.row_total)) row_total_bill_items, ROUND(SUM(bill_items.tax_amount)) tax_amount_bill_items, ROUND(SUM(bill_items.row_total_incld_tax)) grand_total_bill_items');
+		$this->db->from('bill_entity_items bill_items');
+		$this->db->where('date(bill_items.created_at) >=', $startDate);
+		$this->db->where('date(bill_items.created_at) <=', $endDate);
 		return $this->db->get()->row();
 	}
 }
