@@ -120,8 +120,7 @@ class Auth extends Cpanel_Controller
 	}
 	
 	public function create_user() { // create new user . Admin privilege
-
-
+		
 		if ($this->ion_auth->logged_in() && $this->ion_auth->is_admin()) { // Check whether the user is already logged-in and is admin 
 			
 		$this->load->library('form_validation');

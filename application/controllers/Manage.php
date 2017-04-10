@@ -1360,10 +1360,10 @@ class Manage extends Cpanel_Controller
 		 $period								= $this->input->post('period', true);
 		 $reportDetails							= $this->order_model->sales_report($periodStart, $periodEnd, $period);
 		 $totalSales							= $this->order_model->total_sales_report($periodStart, $periodEnd);
-		 echo "<pre>";
-		 print_r($reportDetails);
-		 print_r($totalSales);
-		 die();
+		 // echo "<pre>";
+		 // print_r($reportDetails);
+		 // print_r($totalSales);
+		 // die();
 		$this->data['report_details']			= $reportDetails;
 		$this->data['total_sales_order']		= $totalSales;
 		$this->render('ajax/sales-report');

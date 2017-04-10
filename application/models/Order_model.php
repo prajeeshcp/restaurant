@@ -479,6 +479,17 @@ class Order_model extends CI_Model {
 		
 		$result['sales_names'] = $this->db->get()->result_array();
 
+		// print_r($result['sales_names']);
+		// die();
+		
+		// foreach ($result['sales_names'] as $row){
+		// 	$category[$row['name']] 			=	array();
+		// 	$category[$row['name']]['datetime']	=   $row['datetime'];
+		// 	$category[$row['name']]['name'] 	=	$row['name'];
+		// }
+		
+		// $result['sales_names'] = $category;
+
 		
 		$this->db->select('ROUND(SUM(bill_items.row_total)) row_total, ROUND(SUM(bill_items.tax_amount)) tax_amount_row_total, bill_items.name name');	
 		$this->db->from('bill_entity_items bill_items');
@@ -510,6 +521,12 @@ class Order_model extends CI_Model {
 			$this->db->group_by('bill_items.name');
 		}
 		$result['sales_report'] = $this->db->get()->result_array();
+
+		//$result['sales_report'] = array_merge($result['sales_names'],$result['sales_report'], $result['sales_row_total']);
+
+		// echo "<pre>";
+		// print_r($result['sales_report']);
+		// die();
 		
 		return $result;
 	}

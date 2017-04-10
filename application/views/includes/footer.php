@@ -42,7 +42,6 @@
 
 
 	$('#register').click(function () {
-		
 		var firstName 	= 	$('#firstName').val();
 		var lastName 	= 	$('#lastName').val();
 		var userName 	= 	$('#userName').val();
