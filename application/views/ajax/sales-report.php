@@ -23,7 +23,7 @@
 	      	
 	 
 	
-    <?php if (!empty($report_details['sales_report'])) { 
+    <!-- <?php if (!empty($report_details['sales_report'])) { 
 			foreach ($report_details['sales_report'] as $key => $report) {
 	?> 
 		    <tr class="odd gradeX">	    	
@@ -32,9 +32,7 @@
 		      					if ($reportDate['datetime'] == $report['datetime']) { 
 		      ?>
 		      	<td><?=$report['row_total_bill_items']?></td>
-		      	<?php } else { ?>
-		      	<td>-</td>      
-		      <?php } } ?> 
+		      	<?php }  } ?> 
 		      <?php foreach ($report_details['sales_names']  as $reportName) { 
 		      			foreach ($report_details['sales_row_total']  as $report_row_total) {
 
@@ -44,8 +42,27 @@
 		      	<?php } } } ?>           
 		    </tr>    
     
+    <?php  } } ?> -->
+
+    <?php if (!empty($report_details['sales_report'])) { 
+			foreach ($report_details['sales_report'] as $key => $report) {
+	?> 
+		    <tr class="odd gradeX">	    	
+		      <td><?=$key?></td>
+		      <?php foreach ($report_details['sales_dates']  as $reportDate) { 
+		      					 
+		      ?>
+		      	<td><?=$report[$reportDate['datetime']]?></td>
+		      	<?php } ?> 
+		      
+		      	<td><?=$report['total']?></td>
+		      	          
+		    </tr>    
+    
     <?php  } } ?>
-    <tr class="odd gradeX">
+
+
+    <!-- <tr class="odd gradeX">
       <td>Sales Tax</td>
       <?php      
 
@@ -58,7 +75,7 @@
       ?>
       <td><?=$report['tax_amount_bill_items']?></td>
       <?php }  } } } ?>
-    </tr>
+    </tr> -->
     <tr class="even gradeY">
     	<th>Total</th>
         	
