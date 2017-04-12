@@ -3,8 +3,8 @@
     <tr>
     	<th></th>
     	<?php if (!empty($report_details['sales_dates'])) { 
-									foreach ($report_details['sales_dates']  as $reportDate) {
-							?>
+				foreach ($report_details['sales_dates']  as $reportDate) {
+		?>
       	<th><?=$reportDate['datetime']?></th>
       	<?php  } } ?>		
 		<th>Total</th>
@@ -50,13 +50,13 @@
 		    <tr class="odd gradeX">	    	
 		      <td><?=$key?></td>
 		      <?php foreach ($report_details['sales_dates']  as $reportDate) { 
-		      	if(!empty($reportDate['datetime'])){
+		      			if(!empty($reportDate['datetime'])){
 		      					 
 		      ?>
-		      	<td><?=$report[$reportDate['datetime']]?></td>
-		      	<?php } } ?> 
-		      
-		      	<td><?=$report['total']?></td>
+	      	<td><?=$report[$reportDate['datetime']]?></td>
+	      	<?php } } ?> 
+	      
+	      	<td><?=$report['total']?></td>
 		      	          
 		    </tr>    
     

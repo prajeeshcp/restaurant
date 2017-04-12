@@ -1362,27 +1362,40 @@ class Manage extends Cpanel_Controller
 		 $totalSales							= $this->order_model->total_sales_report($periodStart, $periodEnd);
 
 		// $resultMainMenu = $this->main_model->get_menu();
+		$category = array();
 		foreach ($reportDetails['sales_names'] as $row){			
 
 			$category[$row['name']] 					=	array();
-			foreach ($reportDetails['sales_dates'] as $rowDate){
-				foreach ($reportDetails['sales_report'] as $rowReport){
-					if ($rowDate['datetime'] == $rowReport['datetime'] && $row['name'] == $rowReport['name']){
+			foreach ($reportDetails['sales_dates'] as $rowDate) {
+				foreach ($reportDetails['sales_report'] as $rowReport) {
+					if ($rowDate['datetime'] == $rowReport['datetime'] && $row['name'] == $rowReport['name']) {
 						$category[$row['name']][$rowDate['datetime']]	=   $rowReport['row_total_bill_items'];
 					}
 				}
 			}
-			foreach ($reportDetails['sales_row_total'] as $rowTotal){
+			foreach ($reportDetails['sales_row_total'] as $rowTotal) {
 				if ($row['name'] == $rowTotal['name']) {
 
 					$category[$row['name']]['total'] 			=	$rowTotal['row_total'];
 				}
-			}		
-				
+			}
+
 				
 		} 
+		//$category['sales tax'] 					=	array();
+			foreach ($reportDetails['sales_dates'] as $rowDate) {
+
+				foreach ($reportDetails['sales_tax'] as $rowTax) {
+					if ($rowDate['datetime'] == $rowTax['datetime']) {
+
+						$category['sale Tax'][$rowDate['datetime']] 			=	$rowTax['tax_amount_bill_items'];
+					}
+				}			
+			}	
 
 		$reportDetails['sales_report'] = $category;
+
+		
 
 
 		// echo "<pre>";

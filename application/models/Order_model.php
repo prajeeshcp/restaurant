@@ -475,28 +475,14 @@ class Order_model extends CI_Model {
 		$this->db->from('bill_entity_items bill_items');
 		$this->db->where('date(bill_items.created_at) >=', $startDate);
 		$this->db->where('date(bill_items.created_at) <=', $endDate);
-		$this->db->group_by('bill_items.name');
-		
+		$this->db->group_by('bill_items.name');		
 		$result['sales_names'] = $this->db->get()->result_array();
 
-		// print_r($result['sales_names']);
-		// die();
-		
-		// foreach ($result['sales_names'] as $row){
-		// 	$category[$row['name']] 			=	array();
-		// 	$category[$row['name']]['datetime']	=   $row['datetime'];
-		// 	$category[$row['name']]['name'] 	=	$row['name'];
-		// }
-		
-		// $result['sales_names'] = $category;
-
-		
 		$this->db->select('ROUND(SUM(bill_items.row_total)) row_total, ROUND(SUM(bill_items.tax_amount)) tax_amount_row_total, bill_items.name name');	
 		$this->db->from('bill_entity_items bill_items');
 		$this->db->where('date(bill_items.created_at) >=', $startDate);
 		$this->db->where('date(bill_items.created_at) <=', $endDate);
-		$this->db->group_by('bill_items.name');
-		
+		$this->db->group_by('bill_items.name');		
 		$result['sales_row_total'] = $this->db->get()->result_array();
 
 
@@ -522,65 +508,29 @@ class Order_model extends CI_Model {
 		}
 		$result['sales_report'] = $this->db->get()->result_array();
 
-		//$result['sales_report'] = array_merge($result['sales_names'],$result['sales_report'], $result['sales_row_total']);
-
-		// echo "<pre>";
-		// print_r($result['sales_report']);
-		// die();
-
-		// foreach ($result['sales_names'] as  $nameValue) {
-		// 	foreach ($result['sales_dates'] as  $dateValue) {
-		// 		if ($timeperiod == 'day')  {
-		// 			$this->db->select('DATE_FORMAT(bill_items.created_at, "%d %b %Y") datetime, ROUND(SUM(bill_items.row_total_incld_tax)) grand_total_bill_items, bill_items.name name');
-		// 		} else if($timeperiod == 'month') {
-		// 			$this->db->select('DATE_FORMAT(bill_items.created_at, "%b %Y") datetime, ROUND(SUM(bill_items.row_total_incld_tax)) grand_total_bill_items, bill_items.name name');
-		// 		} else {
-		// 			$this->db->select('DATE_FORMAT(bill_items.created_at, "%Y") datetime, ROUND(SUM(bill_items.row_total_incld_tax)) grand_total_bill_items, bill_items.name name');
-		// 		}
-		// 		$this->db->from('bill_entity_items bill_items');
-		// $this->db->where('date(bill_items.created_at) >=', $startDate);
-		// $this->db->where('date(bill_items.created_at) <=', $endDate);
-		// if ($timeperiod == 'day')  {
-		// 	$this->db->group_by('weekday(bill_items.created_at)');
-		// 	$this->db->group_by('bill_items.name');
-		// } else if ($timeperiod == 'day') {
-		// 	$this->db->group_by('month(bill_items.created_at)');
-		// 	$this->db->group_by('bill_items.name');
-		// } else {
-		// 	$this->db->group_by('year(bill_items.created_at)');
-		// 	$this->db->group_by('bill_items.name');
-		// }
-		//$result['sales_report'] = $this->db->get()->result_array();
+		if ($timeperiod == 'day')  {
+			$this->db->select('DATE_FORMAT(bill_items.created_at, "%d %b %Y") datetime, ROUND(SUM(bill_items.tax_amount)) tax_amount_bill_items' );
+		} else if($timeperiod == 'month') {
+			$this->db->select('DATE_FORMAT(bill_items.created_at, "%b %Y") datetime, ROUND(SUM(bill_items.tax_amount)) tax_amount_bill_items');
+		} else {
+			$this->db->select('DATE_FORMAT(bill_items.created_at, "%Y") datetime, ROUND(SUM(bill_items.tax_amount)) tax_amount_bill_items');
+		}
+		$this->db->from('bill_entity_items bill_items');
+		$this->db->where('date(bill_items.created_at) >=', $startDate);
+		$this->db->where('date(bill_items.created_at) <=', $endDate);
+		if ($timeperiod == 'day')  {
+			$this->db->group_by('weekday(bill_items.created_at)');
+		} else if ($timeperiod == 'day') {
+			$this->db->group_by('month(bill_items.created_at)');
+		} else {
+			$this->db->group_by('year(bill_items.created_at)');
+		}
+		$result['sales_tax'] = $this->db->get()->result_array();
 
 
 
-				
-		// 	}
-			
-		// }
-
-		
-
-		// $result['sales_report'] = array(
-		// 							'kappa' => array(
-		// 										'10 Apr 2017' => 300,
-		// 										'11 Apr 2017' => 400,
-		// 										'total' 	=> 700
-		// 										 ), 
-		// 							'mutta' => array(
-		// 										'10 Apr 2017' => 200,
-		// 										'11 Apr 2017' => 500,
-		// 										'total' 	=> 700
-		// 										 ), 
-		// 							'biriyani' => array(
-		// 										'10 Apr 2017' => 1000,
-		// 										'11 Apr 2017' => 800,
-		// 										'total' 	=> 1800
-		// 										 ) 
-		// 							);
 
 
-		
 		return $result;
 	}
 	#total sales report
