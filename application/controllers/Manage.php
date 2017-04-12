@@ -1360,10 +1360,36 @@ class Manage extends Cpanel_Controller
 		 $period								= $this->input->post('period', true);
 		 $reportDetails							= $this->order_model->sales_report($periodStart, $periodEnd, $period);
 		 $totalSales							= $this->order_model->total_sales_report($periodStart, $periodEnd);
-		 // echo "<pre>";
-		 // print_r($reportDetails);
-		 // print_r($totalSales);
-		 // die();
+
+		// $resultMainMenu = $this->main_model->get_menu();
+		foreach ($reportDetails['sales_names'] as $row){			
+
+			$category[$row['name']] 					=	array();
+			foreach ($reportDetails['sales_dates'] as $rowDate){
+				foreach ($reportDetails['sales_report'] as $rowReport){
+					if ($rowDate['datetime'] == $rowReport['datetime'] && $row['name'] == $rowReport['name']){
+						$category[$row['name']][$rowDate['datetime']]	=   $rowReport['row_total_bill_items'];
+					}
+				}
+			}
+			foreach ($reportDetails['sales_row_total'] as $rowTotal){
+				if ($row['name'] == $rowTotal['name']) {
+
+					$category[$row['name']]['total'] 			=	$rowTotal['row_total'];
+				}
+			}		
+				
+				
+		} 
+
+		$reportDetails['sales_report'] = $category;
+
+
+		// echo "<pre>";
+		//  print_r($reportDetails);
+		//  print_r($totalSales);
+		// print_r($category);
+		// die();
 		$this->data['report_details']			= $reportDetails;
 		$this->data['total_sales_order']		= $totalSales;
 		$this->render('ajax/sales-report');

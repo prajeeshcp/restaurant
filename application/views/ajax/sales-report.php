@@ -50,10 +50,11 @@
 		    <tr class="odd gradeX">	    	
 		      <td><?=$key?></td>
 		      <?php foreach ($report_details['sales_dates']  as $reportDate) { 
+		      	if(!empty($reportDate['datetime'])){
 		      					 
 		      ?>
 		      	<td><?=$report[$reportDate['datetime']]?></td>
-		      	<?php } ?> 
+		      	<?php } } ?> 
 		      
 		      	<td><?=$report['total']?></td>
 		      	          
