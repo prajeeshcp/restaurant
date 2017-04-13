@@ -1361,10 +1361,9 @@ class Manage extends Cpanel_Controller
 		 $reportDetails							= $this->order_model->sales_report($periodStart, $periodEnd, $period);
 		 $totalSales							= $this->order_model->total_sales_report($periodStart, $periodEnd);
 
-		// $resultMainMenu = $this->main_model->get_menu();
 		$category = array();
-		foreach ($reportDetails['sales_names'] as $row){			
 
+		foreach ($reportDetails['sales_names'] as $row){	
 			$category[$row['name']] 					=	array();
 			foreach ($reportDetails['sales_dates'] as $rowDate) {
 				foreach ($reportDetails['sales_report'] as $rowReport) {
@@ -1373,36 +1372,40 @@ class Manage extends Cpanel_Controller
 					}
 				}
 			}
+
 			foreach ($reportDetails['sales_row_total'] as $rowTotal) {
 				if ($row['name'] == $rowTotal['name']) {
 
 					$category[$row['name']]['total'] 			=	$rowTotal['row_total'];
 				}
 			}
-
 				
 		} 
-		//$category['sales tax'] 					=	array();
-			foreach ($reportDetails['sales_dates'] as $rowDate) {
+		
+		foreach ($reportDetails['sales_dates'] as $rowDate) {
+			foreach ($reportDetails['sales_tax'] as $rowTax) {
+				if ($rowDate['datetime'] == $rowTax['datetime']) {
+					$category['sales_tax'][$rowDate['datetime']] 			=	$rowTax['tax_amount_bill_items'];							
+				}
+			}
+		}
 
+		$category['sales_tax']['total'] 			=	$totalSales->tax_amount_bill_items;		
+
+		foreach ($reportDetails['sales_dates'] as $rowDate) {
+			foreach ($reportDetails['sales_total'] as $rowTotal) {
 				foreach ($reportDetails['sales_tax'] as $rowTax) {
-					if ($rowDate['datetime'] == $rowTax['datetime']) {
-
-						$category['sale Tax'][$rowDate['datetime']] 			=	$rowTax['tax_amount_bill_items'];
+					if (($rowDate['datetime'] == $rowTotal['datetime']) && ($rowDate['datetime'] == $rowTax['datetime'])) {
+						$category['Total'][$rowDate['datetime']] 			=	$rowTotal['row_total_bill_items'] + $rowTax['tax_amount_bill_items'];							
 					}
-				}			
-			}	
+				}
+			}
+
+		}
+		$category['Total']['total'] 			=	$totalSales->grand_total_bill_items;
 
 		$reportDetails['sales_report'] = $category;
-
-		
-
-
-		// echo "<pre>";
-		//  print_r($reportDetails);
-		//  print_r($totalSales);
-		// print_r($category);
-		// die();
+				
 		$this->data['report_details']			= $reportDetails;
 		$this->data['total_sales_order']		= $totalSales;
 		$this->render('ajax/sales-report');

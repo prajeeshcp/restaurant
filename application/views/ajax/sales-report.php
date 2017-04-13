@@ -10,45 +10,13 @@
 		<th>Total</th>
     </tr>
   </thead>
-  <tbody>
-  
-   
-   <!-- <?php if (!empty($report_details['sales_names'])) { 
-					foreach ($report_details['sales_names']  as $reportName) {
-		?>
-	    <tr class="odd gradeX">
-	    <td><?=$reportName['name']?></td>
-	    </tr>
-	<?php  } } ?> -->
-	      	
-	 
-	
-    <!-- <?php if (!empty($report_details['sales_report'])) { 
-			foreach ($report_details['sales_report'] as $key => $report) {
-	?> 
-		    <tr class="odd gradeX">	    	
-		      <td><?=$report['name']?></td>
-		      <?php foreach ($report_details['sales_dates']  as $reportDate) { 
-		      					if ($reportDate['datetime'] == $report['datetime']) { 
-		      ?>
-		      	<td><?=$report['row_total_bill_items']?></td>
-		      	<?php }  } ?> 
-		      <?php foreach ($report_details['sales_names']  as $reportName) { 
-		      			foreach ($report_details['sales_row_total']  as $report_row_total) {
-
-		      					if ($reportName['name'] == $report_row_total['name']) { 
-		      ?>
-		      	<td><?=$report_row_total['row_total']?></td>
-		      	<?php } } } ?>           
-		    </tr>    
-    
-    <?php  } } ?> -->
+  <tbody>  
 
     <?php if (!empty($report_details['sales_report'])) { 
 			foreach ($report_details['sales_report'] as $key => $report) {
 	?> 
 		    <tr class="odd gradeX">	    	
-		      <td><?=$key?></td>
+		      <th><?=$key?></th>
 		      <?php foreach ($report_details['sales_dates']  as $reportDate) { 
 		      			if(!empty($reportDate['datetime'])){
 		      					 
@@ -61,26 +29,6 @@
 		    </tr>    
     
     <?php  } } ?>
-
-
-    <!-- <tr class="odd gradeX">
-      <td>Sales Tax</td>
-      <?php      
-
-      if (!empty($report_details['sales_report'])) { 
-			
-
-		      foreach ($report_details['sales_dates']  as $reportDate) {
-		      		foreach ($report_details['sales_report'] as $key => $report) { 
-		      					if ($report['tax_amount_bill_items'] > 0 && $reportDate['datetime'] == $report['datetime']) { 
-      ?>
-      <td><?=$report['tax_amount_bill_items']?></td>
-      <?php }  } } } ?>
-    </tr> -->
-    <tr class="even gradeY">
-    	<th>Total</th>
-        	
-    </tr> 
   </tbody>
 </table>
 <script type="text/javascript">
