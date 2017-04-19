@@ -28,7 +28,9 @@
       		?>
 
       	<td><?=$not_paid['not_paid_count']?></td> 
-     <?php } } ?>
+     <?php } else {	?>
+     	<td>-</td>
+    <?php } } ?>
     </tr>
     
     <?php 

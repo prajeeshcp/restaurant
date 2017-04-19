@@ -16,15 +16,16 @@
 			foreach ($report_details['sales_report'] as $key => $report) {
 	?> 
 		    <tr class="odd gradeX">	    	
-		      <th><?=$key?></th>
-		      <?php foreach ($report_details['sales_dates']  as $reportDate) { 
-		      			if(!empty($reportDate['datetime'])){
-		      					 
-		      ?>
-	      	<td><?=$report[$reportDate['datetime']]?></td>
-	      	<?php } } ?> 
-	      
-	      	<td><?=$report['total']?></td>
+			    <th><?=$key?></th>
+			    <?php foreach ($report_details['sales_dates']  as $reportDate) { 
+			    			if(!empty($report[$reportDate['datetime']])){ 
+			   	?>
+		      	<td><?=$report[$reportDate['datetime']]?></td>
+		      	<?php } else {?>
+		      	<td>0.00</td>
+		      	<?php } } ?> 
+		      
+		      	<td><?=$report['total']?></td>
 		      	          
 		    </tr>    
     

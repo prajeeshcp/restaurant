@@ -149,8 +149,8 @@ class Order_model extends CI_Model {
 		$this->db->where('date(bill.created_at) >=', $startDate);
 		$this->db->where('date(bill.created_at) <=', $endDate);
 		if ($timeperiod == 'day')  {
-			$this->db->group_by('weekday(bill.created_at)');
-		} else if ($timeperiod == 'day') {
+			$this->db->group_by('day(bill.created_at)');
+		} else if ($timeperiod == 'month') {
 			$this->db->group_by('month(bill.created_at)');
 		} else {
 			$this->db->group_by('year(bill.created_at)');
@@ -179,8 +179,8 @@ class Order_model extends CI_Model {
 		$this->db->where('date(bill.created_at) >=', $startDate);
 		$this->db->where('date(bill.created_at) <=', $endDate);
 		if ($timeperiod == 'day')  {
-			$this->db->group_by('weekday(bill.created_at)');
-		} else if ($timeperiod == 'day') {
+			$this->db->group_by('day(bill.created_at)');
+		} else if ($timeperiod == 'month') {
 			$this->db->group_by('month(bill.created_at)');
 		} else {
 			$this->db->group_by('year(bill.created_at)');
@@ -209,8 +209,8 @@ class Order_model extends CI_Model {
 		$this->db->where('date(order.updated_at) >=', $startDate);
 		$this->db->where('date(order.updated_at) <=', $endDate);
 		if ($timeperiod == 'day')  {
-			$this->db->group_by('weekday(order.updated_at)');
-		} else if ($timeperiod == 'day') {
+			$this->db->group_by('day(order.updated_at)');
+		} else if ($timeperiod == 'month') {
 			$this->db->group_by('month(order.updated_at)');
 		} else {
 			$this->db->group_by('year(order.updated_at)');
@@ -231,8 +231,8 @@ class Order_model extends CI_Model {
 		$this->db->where('date(order.updated_at) <=', $endDate);
 		$this->db->where('order.total_paid <=', 0.00);
 		if ($timeperiod == 'day')  {
-			$this->db->group_by('weekday(order.updated_at)');
-		} else if ($timeperiod == 'day') {
+			$this->db->group_by('day(order.updated_at)');
+		} else if ($timeperiod == 'month') {
 			$this->db->group_by('month(order.updated_at)');
 		} else {
 			$this->db->group_by('year(order.updated_at)');
@@ -280,10 +280,12 @@ class Order_model extends CI_Model {
 		$this->db->where('date(order.updated_at) <=', $endDate);
 		if (!empty($orderId)) {			
 			$this->db->where_in('order.entity_id', $orderId);
+		} else {
+			$this->db->where_in('order.entity_id', '');
 		} 
 		if ($timeperiod == 'day')  {
-			$this->db->group_by('weekday(order.updated_at)');
-		} else if ($timeperiod == 'day') {
+			$this->db->group_by('day(order.updated_at)');
+		} else if ($timeperiod == 'month') {
 			$this->db->group_by('month(order.updated_at)');
 		} else {
 			$this->db->group_by('year(order.updated_at)');
@@ -305,10 +307,12 @@ class Order_model extends CI_Model {
 		$this->db->where('order.total_paid <=', 0.00);
 		if (!empty($orderId)) {			
 			$this->db->where_in('order.entity_id', $orderId);
+		} else {
+			$this->db->where_in('order.entity_id', '');
 		} 
 		if ($timeperiod == 'day')  {
-			$this->db->group_by('weekday(order.updated_at)');
-		} else if ($timeperiod == 'day') {
+			$this->db->group_by('day(order.updated_at)');
+		} else if ($timeperiod == 'month') {
 			$this->db->group_by('month(order.updated_at)');
 		} else {
 			$this->db->group_by('year(order.updated_at)');
@@ -342,6 +346,8 @@ class Order_model extends CI_Model {
 		$this->db->where('date(order.updated_at) <=', $endDate);
 		if (!empty($orderId)) {			
 			$this->db->where_in('order.entity_id', $orderId);
+		} else {
+			$this->db->where_in('order.entity_id', '');
 		} 
 		return $this->db->get()->row();
 	}
@@ -374,11 +380,13 @@ class Order_model extends CI_Model {
 		$this->db->where('date(order.updated_at) <=', $endDate);		
 		if (!empty($orderId)) {			
 			$this->db->where_in('order.entity_id', $orderId);
+		} else {
+			$this->db->where_in('order.entity_id', '');
 		} 
 
 		if ($timeperiod == 'day')  {
-			$this->db->group_by('weekday(order.updated_at)');
-		} else if ($timeperiod == 'day') {
+			$this->db->group_by('day(order.updated_at)');
+		} else if ($timeperiod == 'month') {
 			$this->db->group_by('month(order.updated_at)');
 		} else {
 			$this->db->group_by('year(order.updated_at)');
@@ -400,10 +408,12 @@ class Order_model extends CI_Model {
 		$this->db->where('order.total_paid <=', 0.00);
 		if (!empty($orderId)) {			
 			$this->db->where_in('order.entity_id', $orderId);
+		} else {
+			$this->db->where_in('order.entity_id', '');
 		} 
 		if ($timeperiod == 'day')  {
-			$this->db->group_by('weekday(order.updated_at)');
-		} else if ($timeperiod == 'day') {
+			$this->db->group_by('day(order.updated_at)');
+		} else if ($timeperiod == 'month') {
 			$this->db->group_by('month(order.updated_at)');
 		} else {
 			$this->db->group_by('year(order.updated_at)');
@@ -438,6 +448,8 @@ class Order_model extends CI_Model {
 		$this->db->where('date(order.updated_at) <=', $endDate);
 		if (!empty($orderId)) {			
 			$this->db->where_in('order.entity_id', $orderId);
+		} else {
+			$this->db->where_in('order.entity_id', '');
 		} 
 		return $this->db->get()->row();
 	}
@@ -456,15 +468,14 @@ class Order_model extends CI_Model {
 		$this->db->where('date(bill_items.created_at) >=', $startDate);
 		$this->db->where('date(bill_items.created_at) <=', $endDate);
 		if ($timeperiod == 'day')  {
-			$this->db->group_by('weekday(bill_items.created_at)');
-		} else if ($timeperiod == 'day') {
+			$this->db->group_by('day(bill_items.created_at)');
+		} else if ($timeperiod == 'month') {
 			$this->db->group_by('month(bill_items.created_at)');
 		} else {
 			$this->db->group_by('year(bill_items.created_at)');
 		}
 
 		$result['sales_dates'] = $this->db->get()->result_array();
-
 
 		if ($timeperiod == 'day')  {
 			$this->db->select('DATE_FORMAT(bill_items.created_at, "%d %b %Y") datetime, bill_items.name name' );
@@ -480,7 +491,7 @@ class Order_model extends CI_Model {
 
 		$result['sales_names'] = $this->db->get()->result_array();
 
-		$this->db->select('ROUND(SUM(bill_items.row_total)) row_total, ROUND(SUM(bill_items.tax_amount)) tax_amount_row_total, bill_items.name name');	
+		$this->db->select('SUM(bill_items.row_total) row_total, SUM(bill_items.tax_amount) tax_amount_row_total, bill_items.name name');	
 		$this->db->from('bill_entity_items bill_items');
 		$this->db->where('date(bill_items.created_at) >=', $startDate);
 		$this->db->where('date(bill_items.created_at) <=', $endDate);
@@ -490,19 +501,19 @@ class Order_model extends CI_Model {
 
 
 		if ($timeperiod == 'day')  {
-			$this->db->select('DATE_FORMAT(bill_items.created_at, "%d %b %Y") datetime, COUNT(bill_items.item_id) bill_items_count, ROUND(SUM(bill_items.row_total)) row_total_bill_items, ROUND(SUM(bill_items.tax_amount)) tax_amount_bill_items, ROUND(SUM(bill_items.row_total_incld_tax)) grand_total_bill_items, bill_items.name name');
+			$this->db->select('DATE_FORMAT(bill_items.created_at, "%d %b %Y") datetime, COUNT(bill_items.item_id) bill_items_count, SUM(bill_items.row_total) row_total_bill_items, SUM(bill_items.tax_amount) tax_amount_bill_items, SUM(bill_items.row_total_incld_tax) grand_total_bill_items, bill_items.name name');
 		} else if($timeperiod == 'month') {
-			$this->db->select('DATE_FORMAT(bill_items.created_at, "%b %Y") datetime, COUNT(bill_items.item_id) bill_items_count, ROUND(SUM(bill_items.row_total)) row_total_bill_items, ROUND(SUM(bill_items.tax_amount)) tax_amount_bill_items, ROUND(SUM(bill_items.row_total_incld_tax)) grand_total_bill_items, bill_items.name name');
+			$this->db->select('DATE_FORMAT(bill_items.created_at, "%b %Y") datetime, COUNT(bill_items.item_id) bill_items_count, SUM(bill_items.row_total) row_total_bill_items, SUM(bill_items.tax_amount) tax_amount_bill_items, SUM(bill_items.row_total_incld_tax) grand_total_bill_items, bill_items.name name');
 		} else {
-			$this->db->select('DATE_FORMAT(bill_items.created_at, "%Y") datetime, COUNT(bill_items.item_id) bill_items_count, ROUND(SUM(bill_items.row_total)) row_total_bill_items, ROUND(SUM(bill_items.tax_amount)) tax_amount_bill_items, ROUND(SUM(bill_items.row_total_incld_tax)) grand_total_bill_items, bill_items.name name');
+			$this->db->select('DATE_FORMAT(bill_items.created_at, "%Y") datetime, COUNT(bill_items.item_id) bill_items_count, SUM(bill_items.row_total) row_total_bill_items, SUM(bill_items.tax_amount) tax_amount_bill_items, SUM(bill_items.row_total_incld_tax) grand_total_bill_items, bill_items.name name');
 		}
 		$this->db->from('bill_entity_items bill_items');
 		$this->db->where('date(bill_items.created_at) >=', $startDate);
 		$this->db->where('date(bill_items.created_at) <=', $endDate);
 		if ($timeperiod == 'day')  {
-			$this->db->group_by('weekday(bill_items.created_at)');
+			$this->db->group_by('day(bill_items.created_at)');
 			$this->db->group_by('bill_items.name');
-		} else if ($timeperiod == 'day') {
+		} else if ($timeperiod == 'month') {
 			$this->db->group_by('month(bill_items.created_at)');
 			$this->db->group_by('bill_items.name');
 		} else {
@@ -513,18 +524,18 @@ class Order_model extends CI_Model {
 		$result['sales_report'] = $this->db->get()->result_array();
 
 		if ($timeperiod == 'day')  {
-			$this->db->select('DATE_FORMAT(bill_items.created_at, "%d %b %Y") datetime, ROUND(SUM(bill_items.tax_amount)) tax_amount_bill_items' );
+			$this->db->select('DATE_FORMAT(bill_items.created_at, "%d %b %Y") datetime, SUM(bill_items.tax_amount) tax_amount_bill_items' );
 		} else if($timeperiod == 'month') {
-			$this->db->select('DATE_FORMAT(bill_items.created_at, "%b %Y") datetime, ROUND(SUM(bill_items.tax_amount)) tax_amount_bill_items');
+			$this->db->select('DATE_FORMAT(bill_items.created_at, "%b %Y") datetime, SUM(bill_items.tax_amount) tax_amount_bill_items');
 		} else {
-			$this->db->select('DATE_FORMAT(bill_items.created_at, "%Y") datetime, ROUND(SUM(bill_items.tax_amount)) tax_amount_bill_items');
+			$this->db->select('DATE_FORMAT(bill_items.created_at, "%Y") datetime, SUM(bill_items.tax_amount) tax_amount_bill_items');
 		}
 		$this->db->from('bill_entity_items bill_items');
 		$this->db->where('date(bill_items.created_at) >=', $startDate);
 		$this->db->where('date(bill_items.created_at) <=', $endDate);
 		if ($timeperiod == 'day')  {
-			$this->db->group_by('weekday(bill_items.created_at)');
-		} else if ($timeperiod == 'day') {
+			$this->db->group_by('day(bill_items.created_at)');
+		} else if ($timeperiod == 'month') {
 			$this->db->group_by('month(bill_items.created_at)');
 		} else {
 			$this->db->group_by('year(bill_items.created_at)');
@@ -533,18 +544,18 @@ class Order_model extends CI_Model {
 		$result['sales_tax'] = $this->db->get()->result_array();
 
 		if ($timeperiod == 'day')  {
-			$this->db->select('DATE_FORMAT(bill_items.created_at, "%d %b %Y") datetime, ROUND(SUM(bill_items.row_total)) row_total_bill_items' );
+			$this->db->select('DATE_FORMAT(bill_items.created_at, "%d %b %Y") datetime, SUM(bill_items.row_total) row_total_bill_items' );
 		} else if($timeperiod == 'month') {
-			$this->db->select('DATE_FORMAT(bill_items.created_at, "%b %Y") datetime, ROUND(SUM(bill_items.row_total)) row_total_bill_items');
+			$this->db->select('DATE_FORMAT(bill_items.created_at, "%b %Y") datetime, SUM(bill_items.row_total) row_total_bill_items');
 		} else {
-			$this->db->select('DATE_FORMAT(bill_items.created_at, "%Y") datetime, ROUND(SUM(bill_items.row_total)) row_total_bill_items');
+			$this->db->select('DATE_FORMAT(bill_items.created_at, "%Y") datetime, SUM(bill_items.row_total) row_total_bill_items');
 		}
 		$this->db->from('bill_entity_items bill_items');
 		$this->db->where('date(bill_items.created_at) >=', $startDate);
 		$this->db->where('date(bill_items.created_at) <=', $endDate);
 		if ($timeperiod == 'day')  {
-			$this->db->group_by('weekday(bill_items.created_at)');
-		} else if ($timeperiod == 'day') {
+			$this->db->group_by('day(bill_items.created_at)');
+		} else if ($timeperiod == 'month') {
 			$this->db->group_by('month(bill_items.created_at)');
 		} else {
 			$this->db->group_by('year(bill_items.created_at)');
@@ -556,7 +567,7 @@ class Order_model extends CI_Model {
 	}
 	#total sales report
 	function total_sales_report($startDate = NULL, $endDate = NULL) {
-		$this->db->select('COUNT(bill_items.item_id) bill_items_count, ROUND(SUM(bill_items.row_total)) row_total_bill_items, ROUND(SUM(bill_items.tax_amount)) tax_amount_bill_items, ROUND(SUM(bill_items.row_total_incld_tax)) grand_total_bill_items');
+		$this->db->select('COUNT(bill_items.item_id) bill_items_count, SUM(bill_items.row_total) row_total_bill_items, SUM(bill_items.tax_amount) tax_amount_bill_items, SUM(bill_items.row_total_incld_tax) grand_total_bill_items');
 		$this->db->from('bill_entity_items bill_items');
 		$this->db->where('date(bill_items.created_at) >=', $startDate);
 		$this->db->where('date(bill_items.created_at) <=', $endDate);

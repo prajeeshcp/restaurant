@@ -27,8 +27,10 @@
               $count += $not_paid['not_paid_count'];
       		?>
 
-      	<td><?=$not_paid['not_paid_count']?></td> 
-     <?php } } ?>
+      	<td><?=$not_paid['not_paid_count']?></td>
+      <?php } else {	?>
+     	<td>-</td> 
+      <?php } } ?>
     </tr>
     
     <?php 

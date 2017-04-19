@@ -1361,22 +1361,22 @@ class Manage extends Cpanel_Controller
 		 $reportDetails							= $this->order_model->sales_report($periodStart, $periodEnd, $period);
 		 $totalSales							= $this->order_model->total_sales_report($periodStart, $periodEnd);
 
-		$category = array();
+		$salesReportArray = array();
 
 		foreach ($reportDetails['sales_names'] as $row){	
-			$category[$row['name']] 					=	array();
+			$salesReportArray[$row['name']] 					=	array();
 			foreach ($reportDetails['sales_dates'] as $rowDate) {
 				foreach ($reportDetails['sales_report'] as $rowReport) {
 					if ($rowDate['datetime'] == $rowReport['datetime'] && $row['name'] == $rowReport['name']) {
-						$category[$row['name']][$rowDate['datetime']]	=   $rowReport['row_total_bill_items'];
-					}
+						$salesReportArray[$row['name']][$rowDate['datetime']]	=   $rowReport['row_total_bill_items'];
+					} 
 				}
 			}
 
 			foreach ($reportDetails['sales_row_total'] as $rowTotal) {
 				if ($row['name'] == $rowTotal['name']) {
 
-					$category[$row['name']]['total'] 			=	$rowTotal['row_total'];
+					$salesReportArray[$row['name']]['total'] 			=	$rowTotal['row_total'];
 				}
 			}
 				
@@ -1385,26 +1385,30 @@ class Manage extends Cpanel_Controller
 		foreach ($reportDetails['sales_dates'] as $rowDate) {
 			foreach ($reportDetails['sales_tax'] as $rowTax) {
 				if ($rowDate['datetime'] == $rowTax['datetime']) {
-					$category['sales_tax'][$rowDate['datetime']] 			=	$rowTax['tax_amount_bill_items'];							
+					$salesReportArray['sales_tax'][$rowDate['datetime']] 			=	$rowTax['tax_amount_bill_items'];							
 				}
 			}
 		}
 
-		$category['sales_tax']['total'] 			=	$totalSales->tax_amount_bill_items;		
+		$salesReportArray['sales_tax']['total'] 			=	$totalSales->tax_amount_bill_items;		
 
 		foreach ($reportDetails['sales_dates'] as $rowDate) {
 			foreach ($reportDetails['sales_total'] as $rowTotal) {
 				foreach ($reportDetails['sales_tax'] as $rowTax) {
 					if (($rowDate['datetime'] == $rowTotal['datetime']) && ($rowDate['datetime'] == $rowTax['datetime'])) {
-						$category['Total'][$rowDate['datetime']] 			=	$rowTotal['row_total_bill_items'] + $rowTax['tax_amount_bill_items'];							
+						$salesReportArray['Total'][$rowDate['datetime']] 			=	$rowTotal['row_total_bill_items'] + $rowTax['tax_amount_bill_items'];							
 					}
 				}
 			}
 
 		}
-		$category['Total']['total'] 			=	$totalSales->grand_total_bill_items;
+		$salesReportArray['Total']['total'] 			=	$totalSales->grand_total_bill_items;
 
-		$reportDetails['sales_report'] = $category;
+		$reportDetails['sales_report'] = $salesReportArray;
+
+		// echo "<pre>";
+		// print_r($reportDetails);
+		// die();
 				
 		$this->data['report_details']			= $reportDetails;
 		$this->data['total_sales_order']		= $totalSales;
